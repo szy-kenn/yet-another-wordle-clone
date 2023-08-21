@@ -1,7 +1,7 @@
 // global variables
 const WORD_LENGTH = 5;        // length of the word to be guessed
 const TRIES = 6;              // maximum number of guesses
-const _WORD_TO_GUESS = 'QUART';
+const _WORD_TO_GUESS = 'SWEET';
 
 // main containers
 const gridContainer = document.querySelector<HTMLElement>(".wordle-grid-container") // container of all row cotainers containing letter boxes 
@@ -54,8 +54,12 @@ function getWord(row: number) {
     return word;
 }
 
+function isValid(word: string) {
+    return true;
+}
+
 function evaluate(word: string) {
-    console.log(word);
+
     for (let i = 0; i < word.length; i++) {
 
         // get current cell to evaluate
@@ -109,13 +113,19 @@ document.addEventListener("keydown", (event) => {
         else if (event.key === 'Enter') {
             if (currentSquare === WORD_LENGTH) {
                 const word = getWord(currentRow);
-                evaluate(word);
-                if (currentRow < TRIES - 1) {
-                    currentRow++;
-                    currentSquare = 0;
-                } else {
-                    gameOver = true;
+
+                if (isValid(word)) {
+
+                    evaluate(word);
+
+                    if (currentRow < TRIES - 1) {
+                        currentRow++;
+                        currentSquare = 0;
+                    } else {
+                        gameOver = true;
+                    }
                 }
+
             }
         }
 
