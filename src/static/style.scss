@@ -1,0 +1,111 @@
+@import url("https://meyerweb.com/eric/tools/css/reset/reset.css");
+
+.wrapper {
+    position: relative;
+    height: 100dvh;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 6fr 3fr;
+}
+
+.wordle-grid-container {
+    position: relative;
+
+    width: clamp(400px, 50%, 50%);
+    height: 400px;
+
+    max-width: 100%;
+    max-height: 100%;
+
+    padding: 1rem;
+    box-sizing: border-box;
+    
+    align-self: center;
+    justify-self: center;
+
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(6, 1fr);
+    gap: 0.5rem;
+
+}
+
+.row-container {
+
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    * {
+        border: 1px solid gray;
+    }
+}
+
+.cell {
+    position: relative;
+    width: max(3rem, 7.5%);
+    aspect-ratio: 1;
+}
+
+
+.key-container {
+    bottom: 0;
+    /* padding: 20px 20px; */
+    display: grid;
+    align-items: center;
+    color: white;
+    justify-content:space-evenly;
+  
+}
+  
+.key-container > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40%;
+}
+  
+.key-container > div > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    margin: 5px 3px;
+    /* padding: 2vw 1vw; */
+    /* height: 100%; */
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    text-align: center;
+}
+
+.key {
+    border: 2px solid gray;
+    background-color: #818384;
+    /* height: 25px; */
+    /* width: 12.5px; */
+    font-size: 1.5em;
+    font-family: Arial;
+    font-weight: bold;
+    height: 7vh;
+    width: 1.9rem;
+  }
+  
+.key.clicked {
+background-color: #5C5E5E;
+border-color: #5C5E5E;
+}
+
+.ENTER {
+font-size: 0.75em;
+width: 3rem;
+}
+
+.⌫ {
+font-size: medium;
+width: 3.5rem;
+}

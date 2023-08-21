@@ -1,0 +1,8 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "lib": ["ESNext", "DOM"],
+        "rootDir": "./src",
+        "outDir": "./dist"
+    }
+}
