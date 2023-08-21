@@ -3,6 +3,6 @@
         "target": "ES6",
         "lib": ["ESNext", "DOM"],
         "rootDir": "./src",
-        "outDir": "./dist"
+        "outFile": "./src/dist/main.js"
     }
 }

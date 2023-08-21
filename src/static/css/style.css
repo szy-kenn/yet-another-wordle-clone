@@ -11,7 +11,6 @@
 .wordle-grid-container {
   position: relative;
   width: clamp(400px, 50%, 50%);
-  height: 400px;
   max-width: 100%;
   max-height: 100%;
   padding: 1rem;
@@ -21,22 +20,22 @@
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: repeat(6, 1fr);
-  gap: 0.5rem;
+  gap: clamp(0.25rem, 0.35vw, 0.35vw);
 }
 
 .row-container {
   position: relative;
   display: flex;
+  align-self: center;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-}
-.row-container * {
-  border: 1px solid gray;
+  gap: clamp(0.25rem, 0.35vw, 0.35vw);
 }
 
-.cell {
+.square {
   position: relative;
   width: max(3rem, 7.5%);
   aspect-ratio: 1;
+  border-radius: 5px;
+  border: 1px solid gray;
 }/*# sourceMappingURL=style.css.map */
