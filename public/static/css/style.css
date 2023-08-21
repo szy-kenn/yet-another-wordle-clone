@@ -156,9 +156,6 @@ body {
 .square.filled {
   border-color: #E9A1B9;
 }
-.square.filled p {
-  text-shadow: 1px 1px 1px rgba(28, 25, 26, 0.5);
-}
 .square.correct {
   border-color: #94b0da;
   background-color: #94b0da;
