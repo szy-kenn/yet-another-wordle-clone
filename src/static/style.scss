@@ -1,7 +1,23 @@
 @import url("https://meyerweb.com/eric/tools/css/reset/reset.css");
 
+// $background-color: #251B37; 
+// $square-border-color: #FFECEF;
+// $filled-color: #FFCACA;
+
+// $correct: #15FFA8;
+// $misplaced: #FF9213;
+
+$background-color: #1C191A; 
+$square-border-color: #FFDDE7;
+$filled-color: #E9A1B9;
+
+$correct: #94b0da;
+$misplaced: #e2725b;
+$wrong: #3b3536;
+
 body {
-    // background-color: red;
+    background-color: $background-color;
+    font-family: 'Lilita One';
 }
 
 .wrapper {
@@ -47,5 +63,43 @@ body {
     width: max(3rem, 7.5%);
     aspect-ratio: 1;    // to make this a square
     border-radius: 5px;
-    border: 1px solid gray;
+    border: 3px solid rgba($square-border-color, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.filled {
+        border-color: $filled-color;
+    }
+
+    &.correct {
+        border-color: $correct;
+        background-color: $correct;
+
+        p {
+            color: $background-color;
+        }
+    }
+
+    &.misplaced {
+        border-color: $misplaced;
+        background-color: $misplaced;
+
+        p {
+            color: $background-color;
+        }
+    }
+
+    &.wrong {
+        border-color: $wrong;
+        background-color: $wrong;
+    }
+
+    p {
+        color: $filled-color;
+        font-size: 1.5em;
+        text-transform: uppercase;
+        text-align: center;
+        // font-weight: bold;
+    }
 }
