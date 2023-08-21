@@ -6,6 +6,7 @@
 
 // $correct: #15FFA8;
 // $misplaced: #FF9213;
+// $wrong: #3b3536;
 
 $background-color: #1C191A; 
 $square-border-color: #FFDDE7;
@@ -13,7 +14,7 @@ $filled-color: #E9A1B9;
 
 $correct: #94b0da;
 $misplaced: #e2725b;
-$wrong: #3b3536;
+$wrong: #423b3d;
 
 body {
     background-color: $background-color;
@@ -68,8 +69,16 @@ body {
     align-items: center;
     justify-content: center;
 
+    &.flipped {
+        animation: 0.5s flip ease;
+    }
+
     &.filled {
         border-color: $filled-color;
+
+        p {
+            text-shadow: 1px 1px 1px rgba($background-color, 0.5);
+        }
     }
 
     &.correct {
@@ -102,4 +111,19 @@ body {
         text-align: center;
         // font-weight: bold;
     }
+}
+
+@keyframes flip {
+    0% {
+        transform: scaleY(1);
+    }
+
+    50% {
+        transform: scaleY(0);
+    }
+
+    100% {
+        transform: scaleY(1);
+    }
+
 }

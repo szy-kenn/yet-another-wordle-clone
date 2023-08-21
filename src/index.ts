@@ -61,13 +61,21 @@ function evaluate(word: string) {
         // get current cell to evaluate
         const cellToEvaluate = getCell(currentRow, i);
 
-        if (word[i].toLowerCase() === _WORD_TO_GUESS[i].toLowerCase()) {
-            cellToEvaluate.classList.add('correct');
-        } else if (_WORD_TO_GUESS.includes(word[i].toUpperCase())) {
-            cellToEvaluate.classList.add('misplaced');
-        } else {
-            cellToEvaluate.classList.add('wrong');
-        }
+        setTimeout(() => {
+            cellToEvaluate.classList.add('flipped');
+        }, i * 250);
+        
+        setTimeout(() => {
+            if (word[i].toLowerCase() === _WORD_TO_GUESS[i].toLowerCase()) {
+                cellToEvaluate.classList.add('correct');
+            } else if (_WORD_TO_GUESS.includes(word[i].toUpperCase())) {
+                cellToEvaluate.classList.add('misplaced');
+            } else {
+                cellToEvaluate.classList.add('wrong');
+            }
+
+        }, (i * 250) + 250);
+
     }
 }
 

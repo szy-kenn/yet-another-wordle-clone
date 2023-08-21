@@ -47,8 +47,14 @@ body {
   align-items: center;
   justify-content: center;
 }
+.square.flipped {
+  animation: 0.5s flip ease;
+}
 .square.filled {
   border-color: #E9A1B9;
+}
+.square.filled p {
+  text-shadow: 1px 1px 1px rgba(28, 25, 26, 0.5);
 }
 .square.correct {
   border-color: #94b0da;
@@ -65,12 +71,24 @@ body {
   color: #1C191A;
 }
 .square.wrong {
-  border-color: #3b3536;
-  background-color: #3b3536;
+  border-color: #423b3d;
+  background-color: #423b3d;
 }
 .square p {
   color: #E9A1B9;
   font-size: 1.5em;
   text-transform: uppercase;
   text-align: center;
+}
+
+@keyframes flip {
+  0% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0);
+  }
+  100% {
+    transform: scaleY(1);
+  }
 }/*# sourceMappingURL=style.css.map */
