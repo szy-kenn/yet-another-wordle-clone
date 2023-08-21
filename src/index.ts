@@ -1,42 +1,9 @@
-function createKeyPad(keyContainer: Element) {
-    const keypad = [['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-                    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-                    ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '⌫']]
-    
-    let tempCounter = 0;
+function isLetter(str: string) {
+    let letterRegex = /^[a-zA-Z]$/; // check from start to end if it matches with any letters ranging from a-Z
 
-    for (let row of keypad) {
-        let keyRow = document.createElement('div');
-        for (let letter of row) {
-            let key = document.createElement('div');
-            key.classList.add(letter)
-            key.classList.add('key')
-            key.textContent = letter;
-            keyRow.appendChild(key);
-            tempCounter++;
-            key.addEventListener('click', () => {
-                
-                key.classList.add('clicked')
-                setTimeout(() => {
-                    key.classList.remove('clicked')
-                }, 100);
-
-                let keyCode = key.textContent
-                if (key.textContent === 'ENTER') {
-                    keyCode = 'Enter';
-                } else if (key.textContent === '⌫') {
-                    keyCode = 'Backspace';
-                }
-                const keyEvent = new KeyboardEvent('keydown', {key : `${keyCode}`})
-                document.dispatchEvent(keyEvent)
-            });
-        }
-        keyContainer.appendChild(keyRow);
-    }
+    return letterRegex.test(str) && str.length == 1; 
+    // returns true if it matches with the regex AND if it is a single character
 }
-
-const keyContainer = document.querySelector(".key-container");
-createKeyPad(keyContainer);
 
 document.addEventListener("keydown", (event) => {
     console.log(event.key);
