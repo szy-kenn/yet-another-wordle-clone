@@ -27,7 +27,65 @@ body {
     width: 100%;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 6fr 3fr; // navbar grid keypad
+    grid-template-rows: 1fr 6.25fr 2.75fr; // navbar grid keypad
+    box-sizing: border-box;
+    padding: min(1%, 2rem) 0;
+}
+
+.key-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, 1fr);
+    padding: 0.5rem;
+    box-sizing: border-box;
+    gap: 0.25rem;
+
+    width: clamp(400px, 32.5%, 32.5%);
+    height: 100%;
+    max-width: 100%;
+    justify-self: center;
+}
+
+.key-row {
+    display: grid;
+    grid-template-rows: 1fr;
+    gap: 0.25rem;
+
+    &.keys-1 {
+        grid-template-columns: repeat(10, 1fr);
+
+    }
+
+    &.keys-2 {
+        grid-template-columns: repeat(9, 1fr);
+    }
+
+    &.keys-3 {
+        grid-template-columns: repeat(9, 1fr);
+    }
+}
+
+.key {
+    position: relative;
+    font-size: clamp(0.8em, 1vw, 1vw);
+    font-weight: bold;
+    height: 100%;
+    width: 100%;
+    color: $square-border-color;
+    background-color: $wrong;
+    border: none;
+    border: 2px solid rgba($square-border-color, 0.3);
+    border-radius: 5px;
+    cursor: pointer;
+
+    &.enter, &.delete {
+        font-size: clamp(0.7em, 0.9vw, 0.9vw);
+    }
+
+    &.popped {
+        animation: 0.1s pop ease-out;
+    }
+
 }
 
 .wordle-grid-container {

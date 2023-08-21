@@ -5,7 +5,6 @@ const _WORD_TO_GUESS = 'SWEET';
 
 // main containers
 const gridContainer = document.querySelector<HTMLElement>(".wordle-grid-container") // container of all row cotainers containing letter boxes 
-
 // tracker
 let squares: Element[] = []
 let currentRow = 0;
@@ -131,5 +130,27 @@ document.addEventListener("keydown", (event) => {
 
     }
 
+})
+
+// keypad
+const keys = document.querySelectorAll<HTMLElement>(".key");
+keys.forEach(key => {
+    key.addEventListener('click', () => {
+        key.classList.add('popped');
+        setTimeout(() => {
+            key.classList.remove('popped');
+        }, 100);
+
+        // fire an event that simulates a keydown event
+        let keyCode = key.textContent;
+
+        if (key.textContent === 'Delete') {
+            keyCode = 'Backspace';
+        }
+
+        const keyEvent = new KeyboardEvent('keydown', {key: keyCode})
+        document.dispatchEvent(keyEvent);
+
+    })
 })
 

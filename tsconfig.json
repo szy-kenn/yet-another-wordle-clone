@@ -2,7 +2,7 @@
     "compilerOptions": {
         "target": "ES6",
         "lib": ["ESNext", "DOM"],
-        "rootDir": "./src",
-        "outFile": "./src/dist/main.js"
+        "rootDir": "public",
+        "outFile": "public/dist/main.js"
     }
 }

@@ -106,3 +106,20 @@ document.addEventListener("keydown", (event) => {
         }
     }
 });
+// keypad
+const keys = document.querySelectorAll(".key");
+keys.forEach(key => {
+    key.addEventListener('click', () => {
+        key.classList.add('popped');
+        setTimeout(() => {
+            key.classList.remove('popped');
+        }, 100);
+        // fire an event that simulates a keydown event
+        let keyCode = key.textContent;
+        if (key.textContent === 'Delete') {
+            keyCode = 'Backspace';
+        }
+        const keyEvent = new KeyboardEvent('keydown', { key: keyCode });
+        document.dispatchEvent(keyEvent);
+    });
+});
