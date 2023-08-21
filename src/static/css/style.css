@@ -36,6 +36,9 @@ body {
   justify-content: center;
   gap: clamp(0.25rem, 0.35vw, 0.35vw);
 }
+.row-container.shake {
+  animation: 0.1s shake ease;
+}
 
 .square {
   position: relative;
@@ -46,6 +49,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.square.popped {
+  animation: 0.1s pop ease-out;
+}
+.square.out {
+  animation: 0.1s out ease-out;
 }
 .square.flipped {
   animation: 0.5s flip ease;
@@ -90,5 +99,44 @@ body {
   }
   100% {
     transform: scaleY(1);
+  }
+}
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5%);
+  }
+  50% {
+    transform: translateX(0);
+  }
+  75% {
+    transform: translateX(5%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes out {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.8);
+  }
+  100% {
+    transform: scale(1);
   }
 }/*# sourceMappingURL=style.css.map */
