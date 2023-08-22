@@ -1,7 +1,7 @@
 // global variables
 const WORD_LENGTH = 5;        // length of the word to be guessed
 const TRIES = 6;              // maximum number of guesses
-const _WORD_TO_GUESS = 'WITCH';
+const _WORD_TO_GUESS = 'LUCKY';
 const ALL_STATS = ['gamesPlayed', 'gamesWon', 'winRate', 'currentStreak', 'longestStreak']
 
 // custom types 
@@ -32,7 +32,7 @@ console.log(gameState)
 if (gameState == null) {
     let newGameState: GameState = {
         guesses: [],
-        wordToGuess: 'WITCH'
+        wordToGuess: _WORD_TO_GUESS
     };
 
     let newUserData: UserData = {
@@ -101,9 +101,11 @@ function showStats(show: boolean=true) {
     if (show) {
         // update stats in texts
         loadStats();
-
-        for (let i = 0; i < guessStats.length; i++) {
-            guessStats[i].style.width = `${Math.round((userData.guessDistribution[i] / userData.gamesPlayed) * 100)}%`;
+        
+        if (userData.gamesPlayed > 0) {
+            for (let i = 0; i < guessStats.length; i++) {
+                guessStats[i].style.width = `${Math.round((userData.guessDistribution[i] / userData.gamesPlayed) * 100)}%`;
+            }
         }
 
         cover.classList.add('displayed');
