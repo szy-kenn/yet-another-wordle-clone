@@ -19,9 +19,8 @@ body {
   position: relative;
   height: 100%;
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 2fr 6fr 2fr;
   border-bottom: 2px solid rgba(255, 255, 255, 0.3);
   padding: 0 1rem;
   box-sizing: border-box;
@@ -44,7 +43,7 @@ body {
 }
 .navbar .icon-group {
   display: flex;
-  justify-content: center;
+  justify-content: right;
   align-items: center;
   gap: clamp(0.5rem, 1vw, 1vw);
 }
@@ -52,7 +51,7 @@ body {
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: left;
   cursor: pointer;
 }
 .navbar .icon svg {

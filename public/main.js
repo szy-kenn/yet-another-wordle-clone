@@ -1,7 +1,7 @@
 // global variables
 const WORD_LENGTH = 5; // length of the word to be guessed
 const TRIES = 6; // maximum number of guesses
-const _WORD_TO_GUESS = 'COACH';
+const _WORD_TO_GUESS = 'WITCH';
 // main containers
 const gridContainer = document.querySelector(".wordle-grid-container"); // container of all row cotainers containing letter boxes 
 const keyContainer = document.querySelector(".key-container");
