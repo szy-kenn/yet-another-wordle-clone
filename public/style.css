@@ -203,9 +203,9 @@ body {
   font-size: 0.75em;
   border-radius: 5px;
   background-color: #423b3d;
-  width: fit-content;
   padding: 0.25rem;
   box-sizing: border-box;
+  min-width: fit-content;
 }
 .stats-container .guess-distrib-container .guess-container .guess-value p {
   text-align: right;

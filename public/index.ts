@@ -2,6 +2,117 @@
 const WORD_LENGTH = 5;        // length of the word to be guessed
 const TRIES = 6;              // maximum number of guesses
 const _WORD_TO_GUESS = 'WITCH';
+const ALL_STATS = ['gamesPlayed', 'gamesWon', 'winRate', 'currentStreak', 'longestStreak']
+
+// custom types 
+type GameState = {
+    guesses?: string[];
+    wordToGuess: string;
+};
+
+type UserData = {
+    gamesPlayed: number;
+    gamesWon: number,
+    winRate: number;
+    currentStreak: number;
+    longestStreak: number;
+    guessDistribution: number[];
+}
+
+type Stats = 'gamesPlayed' | 'gamesWon' | 'winRate' | 'currentStreak' | 'longestStreak'
+
+// LOCAL STORAGE
+
+// initialization
+let gameState: GameState = JSON.parse(localStorage.getItem('gameState')) as GameState;
+let userData: UserData;
+
+console.log(gameState)
+
+if (gameState == null) {
+    let newGameState: GameState = {
+        guesses: [],
+        wordToGuess: 'WITCH'
+    };
+
+    let newUserData: UserData = {
+        gamesPlayed: 0,
+        gamesWon: 0,
+        winRate: 0,
+        currentStreak: 0,
+        longestStreak: 0,
+        guessDistribution: [0, 0, 0, 0, 0, 0]
+    };
+
+    localStorage.setItem('gameState', JSON.stringify(newGameState));
+    localStorage.setItem('userData', JSON.stringify(newUserData));
+
+    gameState = newGameState;
+    userData = newUserData;
+
+} else {
+    userData = JSON.parse(localStorage.getItem('userData')) as UserData;
+}
+
+// guess distribution values
+const statsText = document.querySelectorAll<HTMLElement>(".value");
+const guessStats = document.querySelectorAll<HTMLElement>(".guess-value");
+
+// load user data
+
+function loadStats() {
+    document.querySelector<HTMLElement>('.games-played-value-p').textContent = userData.gamesPlayed.toString();
+    document.querySelector<HTMLElement>('.win-rate-value-p').textContent = userData.winRate.toString();
+    document.querySelector<HTMLElement>('.current-streak-value-p').textContent = userData.currentStreak.toString();
+    document.querySelector<HTMLElement>('.longest-streak-value-p').textContent = userData.longestStreak.toString();
+        
+    for (let i = 0; i < TRIES; i++) {
+        guessStats[i].textContent = userData.guessDistribution[i].toString();
+    }
+}
+
+function updateStats(stat: Stats, val) {
+    if (stat === 'gamesPlayed') {
+        userData.gamesPlayed = val;
+    } else if (stat === 'gamesWon') {
+        userData.gamesWon = val;
+    } else if (stat === 'winRate') {
+        userData.winRate = val;
+    } else if (stat === 'currentStreak') {
+        userData.currentStreak = val;
+    } else if (stat === 'longestStreak') {
+        userData.longestStreak = val;
+    }
+
+    localStorage.setItem('userData', JSON.stringify(userData));
+
+}
+ 
+function updateGuessStats(idx) {
+    userData.guessDistribution[idx]++;
+    const guessNum = guessStats[idx];
+    guessNum.classList.add('added');
+
+    localStorage.setItem('userData', JSON.stringify(userData));
+}
+
+function showStats(show: boolean=true) {
+
+    if (show) {
+        // update stats in texts
+        loadStats();
+
+        for (let i = 0; i < guessStats.length; i++) {
+            guessStats[i].style.width = `${Math.round((userData.guessDistribution[i] / userData.gamesPlayed) * 100)}%`;
+        }
+
+        cover.classList.add('displayed');
+        statsContainer.classList.add('displayed');
+    } else {
+        cover.classList.remove('displayed');
+        statsContainer.classList.remove('displayed');
+    }
+}
 
 // main containers
 const gridContainer = document.querySelector<HTMLElement>(".wordle-grid-container") // container of all row cotainers containing letter boxes 
@@ -11,9 +122,6 @@ const statsContainer = document.querySelector<HTMLElement>(".stats-container");
 // objects
 const cover = document.querySelector<HTMLElement>(".cover");
 const statsIcon = document.querySelector<HTMLElement>(".stats-icon");
-
-// guess distribution values
-const guessStats = document.querySelectorAll<HTMLElement>(".guess-value");
 
 // winner note
 const winnerNote = document.querySelector<HTMLElement>(".winner-note");
@@ -50,17 +158,6 @@ function initialize(length: number, tries: number, container: Element) {
     }
 }
 
-function showStats(show: boolean=true) {
-
-    if (show) {
-        cover.classList.add('displayed');
-        statsContainer.classList.add('displayed');
-    } else {
-        cover.classList.remove('displayed');
-        statsContainer.classList.remove('displayed');
-    }
-}
-
 function disableKeypad(disable:boolean = true) {
     keyContainer.style.opacity = disable ? '0.5' : '1';
     keyContainer.style.pointerEvents = disable ? 'none' : 'all';
@@ -68,13 +165,24 @@ function disableKeypad(disable:boolean = true) {
 }
 
 function endGame(isOver: boolean = true) {
+
     gameOver = isOver;
+
+    updateStats("gamesPlayed", userData.gamesPlayed+1);
+
     if (isWinner) {
-        const guessNum = guessStats[currentRow-1];
-        guessNum.firstElementChild.textContent = (parseInt(guessNum.firstElementChild.textContent)+1).toString();
-        guessNum.style.width = '100%';
-        guessNum.classList.add('added');
+        updateGuessStats(currentRow-1);
+        updateStats("gamesWon", userData.gamesWon+1);
+        updateStats("currentStreak", userData.currentStreak+1);
+
+        if (userData.currentStreak > userData.longestStreak) {
+            updateStats("longestStreak", userData.currentStreak);
+        }
+    } else {
+        updateStats("currentStreak", 0);
     }
+
+    updateStats("winRate", Math.round((userData.gamesWon / userData.gamesPlayed) * 100));
     disableKeypad(true);
 }
 
@@ -243,9 +351,6 @@ cover.addEventListener('click', () => {
 statsIcon.addEventListener('click', () => {
     showStats();
 })
-
-// stats font
-const statsText = document.querySelectorAll<HTMLElement>(".value");
 
 // keypad
 const keys = document.querySelectorAll<HTMLElement>(".key");
