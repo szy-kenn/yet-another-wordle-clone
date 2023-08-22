@@ -135,8 +135,15 @@ document.addEventListener("keydown", (event) => {
 // keypad
 const keys = document.querySelectorAll<HTMLElement>(".key");
 keys.forEach(key => {
+
+    key.addEventListener("mousedown", () => {
+        key.classList.add('pressed');
+        console.log("pressed")
+    })
+
     key.addEventListener('click', () => {
         key.classList.add('popped');
+        console.log("here")
         setTimeout(() => {
             key.classList.remove('popped');
         }, 100);

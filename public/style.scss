@@ -12,8 +12,8 @@ $background-color: #1C191A;
 $square-border-color: #FFDDE7;
 $filled-color: #E9A1B9;
 
-$correct: #94b0da;
-$misplaced: #e2725b;
+$correct: #5993eb;
+$misplaced: #dd9384;
 $wrong: #423b3d;
 
 body {
@@ -129,6 +129,10 @@ body {
     border: 2px solid rgba($square-border-color, 0.3);
     border-radius: 5px;
     cursor: pointer;
+
+    &.pressed {
+        background-color: $filled-color;
+    }
 
     &.enter, &.delete {
         font-size: clamp(0.7em, 0.9vw, 0.9vw);

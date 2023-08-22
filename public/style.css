@@ -37,10 +37,10 @@ body {
   font-size: clamp(1.25em, 2vw, 2vw);
 }
 .navbar .title p .wordle {
-  color: #94b0da;
+  color: #5993eb;
 }
 .navbar .title p .clone {
-  color: #e2725b;
+  color: #dd9384;
 }
 .navbar .icon-group {
   display: flex;
@@ -100,6 +100,9 @@ body {
   border-radius: 5px;
   cursor: pointer;
 }
+.key.pressed {
+  background-color: #E9A1B9;
+}
 .key.enter, .key.delete {
   font-size: clamp(0.7em, 0.9vw, 0.9vw);
 }
@@ -157,15 +160,15 @@ body {
   border-color: #E9A1B9;
 }
 .square.correct {
-  border-color: #94b0da;
-  background-color: #94b0da;
+  border-color: #5993eb;
+  background-color: #5993eb;
 }
 .square.correct p {
   color: #1C191A;
 }
 .square.misplaced {
-  border-color: #e2725b;
-  background-color: #e2725b;
+  border-color: #dd9384;
+  background-color: #dd9384;
 }
 .square.misplaced p {
   color: #1C191A;
