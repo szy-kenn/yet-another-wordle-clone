@@ -128,18 +128,20 @@ body {
     border: none;
     border: 2px solid rgba($square-border-color, 0.3);
     border-radius: 5px;
-    cursor: pointer;
+    transform: scale(1);
+    transition: transform 0.1s ease;
+    z-index: inherit;
 
     &.pressed {
         background-color: $filled-color;
+        color: $background-color;
+        transform: scale(1.1);
+        transition: transform 0.1s ease;
+        z-index: 999;
     }
 
     &.enter, &.delete {
         font-size: clamp(0.7em, 0.9vw, 0.9vw);
-    }
-
-    &.popped {
-        animation: 0.1s pop ease-out;
     }
 
 }
@@ -301,6 +303,26 @@ body {
     }
 
     100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.2);
+    }
+}
+
+@keyframes zoomOut {
+    from {
+        transform: scale(1.2);
+    }
+
+    to {
         transform: scale(1);
     }
 }

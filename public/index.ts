@@ -136,9 +136,24 @@ document.addEventListener("keydown", (event) => {
 const keys = document.querySelectorAll<HTMLElement>(".key");
 keys.forEach(key => {
 
-    key.addEventListener("mousedown", () => {
-        key.classList.add('pressed');
-        console.log("pressed")
+    ['mousedown', 'touchstart'].forEach(event => {
+        key.addEventListener(event, () => {
+            key.classList.add('pressed');
+        })
+    });
+
+    ['mouseup', 'touchend'].forEach(event => {
+        key.addEventListener(event, () => {
+            key.classList.remove('pressed');
+        })
+    });
+
+    ['mouseleave', 'touchcancel'].forEach(event => {
+        key.addEventListener(event, () => {
+            if (key.classList.contains('pressed')) {
+                key.classList.remove('pressed');
+            }
+        })
     })
 
     key.addEventListener('click', () => {
