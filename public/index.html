@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lilita+One">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lilita+One|Poppins:300,400,500,700">
     <link rel="stylesheet" href="style.css">
     <title>Wordle Clone 2</title>
 </head>
@@ -17,7 +17,7 @@
                 <p>Yet Another <span class="wordle">Wordle</span> <span class="clone">Clone</span>!</p>
             </div>
             <div class="icon-group">
-                <div class="icon">
+                <div class="icon stats-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Pro 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M32 32c17.7 0 32 14.3 32 32V400c0 8.8 7.2 16 16 16H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H80c-44.2 0-80-35.8-80-80V64C0 46.3 14.3 32 32 32zm96 96c0-17.7 14.3-32 32-32l192 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-192 0c-17.7 0-32-14.3-32-32zm32 64H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H160c-17.7 0-32-14.3-32-32s14.3-32 32-32zm0 96H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H160c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg>
                 </div>
                 <div class="icon">
@@ -28,6 +28,74 @@
 
         <div class="winner-note">
             <p>Phew!</p>
+        </div>
+
+        <div class="cover"></div>
+
+        <div class="stats-container">
+            <div class="header">
+                <p>Statistics</p>
+            </div>
+            <div class="main-stats">
+                <div class="games-played main-stats-sec">
+                    <p class="value">1</p>
+                    <p class="stat-text">Played</p>
+                </div>
+                <div class="win-rate main-stats-sec">
+                    <p class="value">100</p>
+                    <p class="stat-text">Win %</p>
+                </div>
+                <div class="current-streak main-stats-sec">
+                    <p class="value">1</p>
+                    <p class="stat-text">Current Streak</p>
+                </div>
+                <div class="longest-streak main-stats-sec">
+                    <p class="value">1</p>
+                    <p class="stat-text">Longest Streak</p>
+                </div>
+            </div>
+            <hr style="width: 100%; border-color: rgba(255, 255, 255, 0.1);">
+            <div class="header">
+                <p>Guess Distribution</p>
+            </div>
+            <div class="guess-distrib-container">
+                <div class="guess-container">
+                    <p class="guess-number">1</p>
+                    <div class="guess-value">
+                        <p>0</p>
+                    </div>
+                </div>
+                <div class="guess-container">
+                    <p class="guess-number">2</p>
+                    <div class="guess-value">
+                        <p>0</p>
+                    </div>
+                </div>
+                <div class="guess-container">
+                    <p class="guess-number">3</p>
+                    <div class="guess-value">
+                        <p>0</p>
+                    </div>
+                </div>
+                <div class="guess-container">
+                    <p class="guess-number">4</p>
+                    <div class="guess-value">
+                        <p>0</p>
+                    </div>
+                </div>
+                <div class="guess-container">
+                    <p class="guess-number">5</p>
+                    <div class="guess-value">
+                        <p>0</p>
+                    </div>
+                </div>
+                <div class="guess-container">
+                    <p class="guess-number">6</p>
+                    <div class="guess-value">
+                        <p>0</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="wordle-grid-container">

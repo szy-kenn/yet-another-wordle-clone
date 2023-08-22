@@ -75,6 +75,7 @@ body {
         display: flex;
         align-items: center;
         justify-content: center;
+        cursor: pointer;
     
         svg {
             fill: white;
@@ -114,6 +115,138 @@ body {
         transition: all 0.2s ease;
     }
 
+}
+
+.cover {
+    position: absolute;
+    z-index: 998;
+    background-color: rgba(0, 0, 0, 0.8);
+    width: 100dvw;
+    height: 100dvh;
+    opacity: 0;
+    user-select: none;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+
+    &.displayed {
+        opacity: 1;
+        transition: opacity 0.2s ease;
+        user-select: all;
+        pointer-events: all;
+    }
+}
+
+.stats-container {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    opacity: 0;
+    // height: 75%;   
+    width: clamp(300px, 35%, 35%);
+    max-width: 100%;
+
+    transition: all 0.3s ease;
+
+    transform: translate(-50%, -50%);
+    z-index: 999;
+
+    background-color: $background-color;
+    border-radius: 10px;
+    filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.5));
+    // border: 1px solid white;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: stretch;
+    gap: 1rem;
+    padding: 2rem;
+    box-sizing: border-box;
+
+    &.displayed {
+        top: 50%;
+        opacity: 1;
+        transition: all 0.3s ease;
+    }
+
+    .header {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        color: white;
+        text-transform: uppercase;
+        font-family: 'Poppins';
+        font-weight: bold;
+    }
+
+    .main-stats {
+        display: flex;
+        align-self: stretch;
+        align-items: center;
+        justify-content: space-around;
+
+        &-sec {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+
+            .value {
+                color: $filled-color;
+                font-size: 2em;
+            }
+
+            .stat-text {
+                font-size: 0.75em;
+                font-family: 'Poppins';    
+            }
+        }
+    }
+
+    .guess-distrib-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+
+        .guess-container {
+            display: grid;
+            grid-template-columns: 1fr 19fr;
+            grid-template-rows: 1fr;
+            color: white;
+            gap: 0.25rem;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+
+            .guess-number {
+                font-size: 0.75em;
+                font-family: 'Poppins';
+            }
+
+            .guess-value {
+                font-family: 'Poppins';
+                font-size: 0.75em;
+                // border: 1px solid red;
+                border-radius: 5px;
+                background-color: $wrong;
+                width: fit-content;
+                padding: 0.25rem;
+                box-sizing: border-box;
+
+                p {
+                    text-align: right;
+                }
+
+                &.added {
+                    color: $background-color;
+                    font-weight: bold;
+                    background-color: $filled-color;
+                }
+            }
+
+        }
+    }
 }
 
 .key-container {
@@ -232,6 +365,10 @@ body {
 
     &.flipped {
         animation: 0.5s flip ease;
+    }
+
+    &.jumped {
+        animation: 0.2s jump ease-out;
     }
 
     &.filled {
@@ -357,5 +494,15 @@ body {
 
     to {
         transform: scale(1);
+    }
+}
+
+@keyframes jump {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-20px);
     }
 }

@@ -5,6 +5,12 @@ const _WORD_TO_GUESS = 'COACH';
 // main containers
 const gridContainer = document.querySelector(".wordle-grid-container"); // container of all row cotainers containing letter boxes 
 const keyContainer = document.querySelector(".key-container");
+const statsContainer = document.querySelector(".stats-container");
+// objects
+const cover = document.querySelector(".cover");
+const statsIcon = document.querySelector(".stats-icon");
+// guess distribution values
+const guessStats = document.querySelectorAll(".guess-value");
 // winner note
 const winnerNote = document.querySelector(".winner-note");
 const notes = ['First Try!', 'Hooray!', 'Nice!', 'You got it!', 'Fantastic!', 'Phew!'];
@@ -13,6 +19,7 @@ let squares = [];
 let currentRow = 0;
 let currentSquare = 0;
 let gameOver = false;
+let isWinner = false;
 let isAnimating = false;
 function initialize(length, tries, container) {
     for (let i = 0; i < tries; i++) {
@@ -33,10 +40,30 @@ function initialize(length, tries, container) {
         container.appendChild(row);
     }
 }
+function showStats(show = true) {
+    if (show) {
+        cover.classList.add('displayed');
+        statsContainer.classList.add('displayed');
+    }
+    else {
+        cover.classList.remove('displayed');
+        statsContainer.classList.remove('displayed');
+    }
+}
 function disableKeypad(disable = true) {
     keyContainer.style.opacity = disable ? '0.5' : '1';
     keyContainer.style.pointerEvents = disable ? 'none' : 'all';
     isAnimating = disable;
+}
+function endGame(isOver = true) {
+    gameOver = isOver;
+    if (isWinner) {
+        const guessNum = guessStats[currentRow - 1];
+        guessNum.firstElementChild.textContent = (parseInt(guessNum.firstElementChild.textContent) + 1).toString();
+        guessNum.style.width = '100%';
+        guessNum.classList.add('added');
+    }
+    disableKeypad(true);
 }
 function isLetter(str) {
     let letterRegex = /^[a-zA-Z]$/; // check from start to end if it matches with any letters ranging from a-Z
@@ -78,19 +105,45 @@ function evaluate(word) {
                 cellToEvaluate.classList.add('wrong');
             }
             if (i === word.length - 1) {
-                setTimeout(() => {
-                    disableKeypad(false);
-                }, 500);
+                // if the player guessed the word 
                 if (correctLetters === WORD_LENGTH) {
-                    gameOver = true;
-                    console.log(winnerNote.firstElementChild);
+                    isWinner = true;
+                    endGame(); // ends the game
                     winnerNote.firstElementChild.textContent = notes[currentRow - 1];
+                    // animate the row
+                    setTimeout(() => {
+                        // lower opacity of squares not in the correct row
+                        for (let s = 0; s < squares.length; s++) {
+                            if (s >= (currentRow - 1) * WORD_LENGTH + WORD_LENGTH ||
+                                s < (currentRow - 1) * WORD_LENGTH) {
+                                squares[s].style.opacity = '0.1';
+                            }
+                        }
+                        for (let k = 0; k < WORD_LENGTH; k++) {
+                            const currentCell = getCell(currentRow - 1, k);
+                            currentCell.style.opacity = `1`;
+                            setTimeout(() => {
+                                currentCell.classList.add('jumped');
+                            }, k * 100);
+                        }
+                    }, 250);
+                    // displays the winner note
                     setTimeout(() => {
                         winnerNote.classList.add('displayed');
-                    }, 250);
+                    }, (WORD_LENGTH * 100) + 500);
                     setTimeout(() => {
                         winnerNote.classList.remove('displayed');
-                    }, 2000);
+                        squares.forEach(square => {
+                            square.style.opacity = '1';
+                        });
+                        showStats();
+                    }, (WORD_LENGTH * 100) + 2000);
+                }
+                else {
+                    // if not, the keypad will be enabled again
+                    setTimeout(() => {
+                        disableKeypad(false);
+                    }, 500);
                 }
             }
         }, (i * 250) + 250);
@@ -129,12 +182,18 @@ document.addEventListener("keydown", (event) => {
                     }
                     else {
                         currentRow++;
-                        gameOver = true;
+                        endGame();
                     }
                 }
             }
         }
     }
+});
+cover.addEventListener('click', () => {
+    showStats(false);
+});
+statsIcon.addEventListener('click', () => {
+    showStats();
 });
 // keypad
 const keys = document.querySelectorAll(".key");

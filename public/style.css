@@ -53,6 +53,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 .navbar .icon svg {
   fill: white;
@@ -86,6 +87,117 @@ body {
   top: min(10%, 10vh);
   opacity: 1;
   transition: all 0.2s ease;
+}
+
+.cover {
+  position: absolute;
+  z-index: 998;
+  background-color: rgba(0, 0, 0, 0.8);
+  width: 100dvw;
+  height: 100dvh;
+  opacity: 0;
+  user-select: none;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.cover.displayed {
+  opacity: 1;
+  transition: opacity 0.2s ease;
+  user-select: all;
+  pointer-events: all;
+}
+
+.stats-container {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  opacity: 0;
+  width: clamp(300px, 35%, 35%);
+  max-width: 100%;
+  transition: all 0.3s ease;
+  transform: translate(-50%, -50%);
+  z-index: 999;
+  background-color: #1C191A;
+  border-radius: 10px;
+  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.5));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: stretch;
+  gap: 1rem;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+.stats-container.displayed {
+  top: 50%;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+.stats-container .header {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  color: white;
+  text-transform: uppercase;
+  font-family: "Poppins";
+  font-weight: bold;
+}
+.stats-container .main-stats {
+  display: flex;
+  align-self: stretch;
+  align-items: center;
+  justify-content: space-around;
+}
+.stats-container .main-stats-sec {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+.stats-container .main-stats-sec .value {
+  color: #E9A1B9;
+  font-size: 2em;
+}
+.stats-container .main-stats-sec .stat-text {
+  font-size: 0.75em;
+  font-family: "Poppins";
+}
+.stats-container .guess-distrib-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.stats-container .guess-distrib-container .guess-container {
+  display: grid;
+  grid-template-columns: 1fr 19fr;
+  grid-template-rows: 1fr;
+  color: white;
+  gap: 0.25rem;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.stats-container .guess-distrib-container .guess-container .guess-number {
+  font-size: 0.75em;
+  font-family: "Poppins";
+}
+.stats-container .guess-distrib-container .guess-container .guess-value {
+  font-family: "Poppins";
+  font-size: 0.75em;
+  border-radius: 5px;
+  background-color: #423b3d;
+  width: fit-content;
+  padding: 0.25rem;
+  box-sizing: border-box;
+}
+.stats-container .guess-distrib-container .guess-container .guess-value p {
+  text-align: right;
+}
+.stats-container .guess-distrib-container .guess-container .guess-value.added {
+  color: #1C191A;
+  font-weight: bold;
+  background-color: #E9A1B9;
 }
 
 .key-container {
@@ -189,6 +301,9 @@ body {
 .square.flipped {
   animation: 0.5s flip ease;
 }
+.square.jumped {
+  animation: 0.2s jump ease-out;
+}
 .square.filled {
   border-color: #E9A1B9;
 }
@@ -281,5 +396,13 @@ body {
   }
   to {
     transform: scale(1);
+  }
+}
+@keyframes jump {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-20px);
   }
 }/*# sourceMappingURL=style.css.map */
