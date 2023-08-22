@@ -142,13 +142,15 @@ body {
     left: 50%;
     opacity: 0;
     // height: 75%;   
-    width: clamp(300px, 35%, 35%);
+    width: clamp(300px, 25%, 25%);
     max-width: 100%;
 
     transition: all 0.3s ease;
 
     transform: translate(-50%, -50%);
     z-index: 999;
+    user-select: none;
+    pointer-events: none;
 
     background-color: $background-color;
     border-radius: 10px;
@@ -167,6 +169,8 @@ body {
         top: 50%;
         opacity: 1;
         transition: all 0.3s ease;
+        user-select: none;
+        pointer-events: all;
     }
 
     .header {
@@ -180,26 +184,40 @@ body {
     }
 
     .main-stats {
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows: repeat(2, minmax(0, 1fr));
+        position: relative;
         align-self: stretch;
-        align-items: center;
-        justify-content: space-around;
+        gap: 1rem;
 
         &-sec {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            position: relative;
+            // height: 100%;
+            grid-template-columns: 1fr;
+            grid-template-rows: minmax(0, 1fr) minmax(0, auto-fit);
+            gap: 0.25rem;
+            color: white;
             align-items: center;
             justify-content: center;
-            color: white;
 
             .value {
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 color: $filled-color;
-                font-size: 2em;
+                font-size: 2rem;
             }
 
             .stat-text {
+                display: flex;
+                align-self: flex-start;
+                align-items: center;
+                justify-content: center;
                 font-size: 0.75em;
                 font-family: 'Poppins';    
+                text-align: center;
             }
         }
     }

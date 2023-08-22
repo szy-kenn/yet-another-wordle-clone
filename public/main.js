@@ -195,6 +195,8 @@ cover.addEventListener('click', () => {
 statsIcon.addEventListener('click', () => {
     showStats();
 });
+// stats font
+const statsText = document.querySelectorAll(".value");
 // keypad
 const keys = document.querySelectorAll(".key");
 keys.forEach(key => {

@@ -244,6 +244,9 @@ statsIcon.addEventListener('click', () => {
     showStats();
 })
 
+// stats font
+const statsText = document.querySelectorAll<HTMLElement>(".value");
+
 // keypad
 const keys = document.querySelectorAll<HTMLElement>(".key");
 keys.forEach(key => {
