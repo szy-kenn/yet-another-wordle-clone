@@ -5,11 +5,18 @@ const _WORD_TO_GUESS = 'COACH';
 
 // main containers
 const gridContainer = document.querySelector<HTMLElement>(".wordle-grid-container") // container of all row cotainers containing letter boxes 
+const keyContainer = document.querySelector<HTMLElement>(".key-container");
+
+// winner note
+const winnerNote = document.querySelector<HTMLElement>(".winner-note");
+const notes = ['First Try!', 'Hooray!', 'Nice!', 'You got it!', 'Fantastic!', 'Phew!'];
+
 // tracker
 let squares: Element[] = []
 let currentRow = 0;
 let currentSquare = 0;
 let gameOver = false;
+let isAnimating = false;
 
 function initialize(length: number, tries: number, container: Element) {
     for (let i = 0; i < tries; i++) {
@@ -32,6 +39,12 @@ function initialize(length: number, tries: number, container: Element) {
         }
         container.appendChild(row);
     }
+}
+
+function disableKeypad(disable:boolean = true) {
+    keyContainer.style.opacity = disable ? '0.5' : '1';
+    keyContainer.style.pointerEvents = disable ? 'none' : 'all';
+    isAnimating = disable;
 }
 
 function isLetter(str: string) {
@@ -59,6 +72,10 @@ function isValid(word: string) {
 
 function evaluate(word: string) {
 
+    let correctLetters = 0;
+
+    disableKeypad(true);
+
     for (let i = 0; i < word.length; i++) {
 
         // get current cell to evaluate
@@ -71,11 +88,33 @@ function evaluate(word: string) {
         setTimeout(() => {
             if (word[i].toLowerCase() === _WORD_TO_GUESS[i].toLowerCase()) {
                 cellToEvaluate.classList.add('correct');
+                correctLetters++;
             } else if (_WORD_TO_GUESS.includes(word[i].toUpperCase())) {
                 cellToEvaluate.classList.add('misplaced');
             } else {
                 cellToEvaluate.classList.add('wrong');
             }
+
+            if (i === word.length - 1) {
+
+                setTimeout(() => {
+                    disableKeypad(false);
+                }, 500);
+
+                if (correctLetters === WORD_LENGTH) {
+                    gameOver = true;
+                    console.log(winnerNote.firstElementChild)
+                    winnerNote.firstElementChild.textContent = notes[currentRow-1];
+                    setTimeout(() => {
+                        winnerNote.classList.add('displayed');
+                    }, 250);
+
+                    setTimeout(() => {
+                        winnerNote.classList.remove('displayed');
+                    }, 2000);   
+                }
+            }
+
         }, (i * 250) + 250);
     }
 }
@@ -84,7 +123,7 @@ initialize(WORD_LENGTH, TRIES, gridContainer);
 
 document.addEventListener("keydown", (event) => {
 
-    if (!gameOver) {
+    if (!gameOver && !isAnimating) {
 
         if (isLetter(event.key) && (currentSquare <= WORD_LENGTH - 1)) {
             const currentCell = getCell(currentRow, currentSquare);     // get current cell to fill 
@@ -121,6 +160,7 @@ document.addEventListener("keydown", (event) => {
                         currentRow++;
                         currentSquare = 0;
                     } else {
+                        currentRow++;
                         gameOver = true;
                     }
                 }

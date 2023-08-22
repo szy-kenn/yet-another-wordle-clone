@@ -59,6 +59,35 @@ body {
   width: clamp(1.15rem, 2vw, 2vw);
 }
 
+.winner-note {
+  position: absolute;
+  background-color: white;
+  padding: 0.25rem;
+  border-radius: 10px;
+  top: 5%;
+  opacity: 0;
+  right: 50%;
+  transform: translate(50%, 50%);
+  width: max(7.5vw, 12.5vh);
+  height: 5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  transition: all 0.2s ease;
+  filter: drop-shadow(0px 5px 2px rgba(0, 0, 0, 0.2));
+}
+.winner-note p {
+  color: #1C191A;
+  font-weight: normal;
+  font-size: clamp(1em, 1.15vw, 1.15vw);
+}
+.winner-note.displayed {
+  top: min(10%, 10vh);
+  opacity: 1;
+  transition: all 0.2s ease;
+}
+
 .key-container {
   display: grid;
   grid-template-columns: 1fr;
@@ -101,6 +130,7 @@ body {
   transform: scale(1);
   transition: transform 0.1s ease;
   z-index: inherit;
+  user-select: none;
 }
 .key.pressed {
   background-color: #E9A1B9;
