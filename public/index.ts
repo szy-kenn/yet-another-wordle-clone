@@ -164,6 +164,24 @@ function disableKeypad(disable:boolean = true) {
     isAnimating = disable;
 }
 
+function displayNote() {
+
+    // displays the winner note
+    setTimeout(() => {
+        winnerNote.classList.add('displayed');
+    }, (WORD_LENGTH * 100) + 500);
+
+    setTimeout(() => {
+        winnerNote.classList.remove('displayed');
+        squares.forEach(square => {
+            square.style.opacity = '1';
+        })
+
+        showStats();
+
+    }, (WORD_LENGTH * 100) + 2000); 
+}
+
 function endGame(isOver: boolean = true) {
 
     gameOver = isOver;
@@ -180,6 +198,12 @@ function endGame(isOver: boolean = true) {
         }
     } else {
         updateStats("currentStreak", 0);
+
+        winnerNote.firstElementChild.textContent = 'Unlucky...';
+
+        setTimeout(() => {
+            displayNote();
+        }, 250);
     }
 
     updateStats("winRate", Math.round((userData.gamesWon / userData.gamesPlayed) * 100));
@@ -262,20 +286,7 @@ function evaluate(word: string) {
                         }
                     }, 250);
 
-                    // displays the winner note
-                    setTimeout(() => {
-                        winnerNote.classList.add('displayed');
-                    }, (WORD_LENGTH * 100) + 500);
-
-                    setTimeout(() => {
-                        winnerNote.classList.remove('displayed');
-                        squares.forEach(square => {
-                            square.style.opacity = '1';
-                        })
-
-                        showStats();
-
-                    }, (WORD_LENGTH * 100) + 2000);   
+                    displayNote();
                 } 
                 
                 else {

@@ -122,6 +122,19 @@ function disableKeypad(disable = true) {
     keyContainer.style.pointerEvents = disable ? 'none' : 'all';
     isAnimating = disable;
 }
+function displayNote() {
+    // displays the winner note
+    setTimeout(() => {
+        winnerNote.classList.add('displayed');
+    }, (WORD_LENGTH * 100) + 500);
+    setTimeout(() => {
+        winnerNote.classList.remove('displayed');
+        squares.forEach(square => {
+            square.style.opacity = '1';
+        });
+        showStats();
+    }, (WORD_LENGTH * 100) + 2000);
+}
 function endGame(isOver = true) {
     gameOver = isOver;
     updateStats("gamesPlayed", userData.gamesPlayed + 1);
@@ -135,6 +148,10 @@ function endGame(isOver = true) {
     }
     else {
         updateStats("currentStreak", 0);
+        winnerNote.firstElementChild.textContent = 'Unlucky...';
+        setTimeout(() => {
+            displayNote();
+        }, 250);
     }
     updateStats("winRate", Math.round((userData.gamesWon / userData.gamesPlayed) * 100));
     disableKeypad(true);
@@ -201,17 +218,7 @@ function evaluate(word) {
                             }, k * 100);
                         }
                     }, 250);
-                    // displays the winner note
-                    setTimeout(() => {
-                        winnerNote.classList.add('displayed');
-                    }, (WORD_LENGTH * 100) + 500);
-                    setTimeout(() => {
-                        winnerNote.classList.remove('displayed');
-                        squares.forEach(square => {
-                            square.style.opacity = '1';
-                        });
-                        showStats();
-                    }, (WORD_LENGTH * 100) + 2000);
+                    displayNote();
                 }
                 else {
                     // if not, the keypad will be enabled again
