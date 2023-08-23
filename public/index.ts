@@ -249,11 +249,9 @@ function isValid(word: string) {
 
 function evaluate(word: string) {
 
-    let correctLetters = 0;
+    let correctLetters = 0; 
 
     disableKeypad(true);
-
-    updateGameStateGuesses(currentRow, word);
 
     for (let i = 0; i < word.length; i++) {
 
@@ -322,8 +320,11 @@ function loadGameState() {
         for (let j = 0; j < gameState.guesses[i].length; j++) {
             squares[i * WORD_LENGTH + j].firstElementChild.textContent = gameState.guesses[i][j];
         }
+
+        const word = getWord(i);
+        evaluate(word);
+        currentRow++;
     }
-    currentRow = gameState.guesses.length;
 }
 
 initialize(WORD_LENGTH, TRIES, gridContainer);
@@ -363,6 +364,7 @@ document.addEventListener("keydown", (event) => {
                 if (isValid(word)) {
 
                     evaluate(word);
+                    updateGameStateGuesses(currentRow, word);
 
                     if (currentRow < TRIES - 1) {
                         currentRow++;
