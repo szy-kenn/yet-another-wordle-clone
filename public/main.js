@@ -1,103 +1,61 @@
+// objects
+const cover = document.querySelector(".cover");
+const statsIcon = document.querySelector(".stats-icon");
+document.addEventListener("keydown", (event) => {
+    if (!gameOver && !isAnimating) {
+        if (isLetter(event.key) && (currentSquare <= WORD_LENGTH - 1)) {
+            const currentCell = getCell(currentRow, currentSquare); // get current cell to fill 
+            currentCell.firstElementChild.textContent = event.key; // change text content to the corresponding event key
+            currentCell.classList.add('popped');
+            currentCell.classList.add('filled'); // change the border color to white (filled cell)
+            currentCell.classList.remove('out');
+            // update the tracker variables
+            currentSquare++;
+        }
+        else if (event.key === 'Backspace') {
+            if (currentSquare !== 0) {
+                const currentCell = getCell(currentRow, currentSquare - 1);
+                currentCell.firstElementChild.textContent = "";
+                currentCell.classList.add('out');
+                currentCell.classList.remove('filled');
+                currentCell.classList.remove('popped');
+                currentSquare--;
+            }
+        }
+        else if (event.key === 'Enter') {
+            if (currentSquare === WORD_LENGTH) {
+                const word = getWord(currentRow);
+                if (isValid(word)) {
+                    evaluate(word);
+                    updateGameStateGuesses(currentRow, word);
+                    if (currentRow < TRIES - 1) {
+                        currentRow++;
+                        currentSquare = 0;
+                    }
+                    else {
+                        currentRow++;
+                        endGame();
+                    }
+                }
+            }
+        }
+    }
+});
+cover.addEventListener('click', () => {
+    showStats(false);
+});
+statsIcon.addEventListener('click', () => {
+    showStats();
+});
 // global variables
 const WORD_LENGTH = 5; // length of the word to be guessed
 const TRIES = 6; // maximum number of guesses
 const _WORD_TO_GUESS = 'LUCKY';
 const ALL_STATS = ['gamesPlayed', 'gamesWon', 'winRate', 'currentStreak', 'longestStreak'];
-// LOCAL STORAGE
-// initialization
-let gameState = JSON.parse(localStorage.getItem('gameState'));
-let userData;
-console.log(gameState);
-if (gameState == null) {
-    let newGameState = {
-        guesses: [],
-        wordToGuess: _WORD_TO_GUESS
-    };
-    let newUserData = {
-        gamesPlayed: 0,
-        gamesWon: 0,
-        winRate: 0,
-        currentStreak: 0,
-        longestStreak: 0,
-        guessDistribution: [0, 0, 0, 0, 0, 0]
-    };
-    localStorage.setItem('gameState', JSON.stringify(newGameState));
-    localStorage.setItem('userData', JSON.stringify(newUserData));
-    gameState = newGameState;
-    userData = newUserData;
-}
-else {
-    userData = JSON.parse(localStorage.getItem('userData'));
-}
-// guess distribution values
-const statsText = document.querySelectorAll(".value");
-const guessStats = document.querySelectorAll(".guess-value");
-// load user data
-function loadStats() {
-    document.querySelector('.games-played-value-p').textContent = userData.gamesPlayed.toString();
-    document.querySelector('.win-rate-value-p').textContent = userData.winRate.toString();
-    document.querySelector('.current-streak-value-p').textContent = userData.currentStreak.toString();
-    document.querySelector('.longest-streak-value-p').textContent = userData.longestStreak.toString();
-    for (let i = 0; i < TRIES; i++) {
-        guessStats[i].textContent = userData.guessDistribution[i].toString();
-    }
-}
-function updateGameStateGuesses(idx, val) {
-    gameState.guesses[idx] = val;
-    localStorage.setItem('gameState', JSON.stringify(gameState));
-}
-function updateStats(stat, val) {
-    if (stat === 'gamesPlayed') {
-        userData.gamesPlayed = val;
-    }
-    else if (stat === 'gamesWon') {
-        userData.gamesWon = val;
-    }
-    else if (stat === 'winRate') {
-        userData.winRate = val;
-    }
-    else if (stat === 'currentStreak') {
-        userData.currentStreak = val;
-    }
-    else if (stat === 'longestStreak') {
-        userData.longestStreak = val;
-    }
-    localStorage.setItem('userData', JSON.stringify(userData));
-}
-function updateGuessStats(idx) {
-    userData.guessDistribution[idx]++;
-    const guessNum = guessStats[idx];
-    guessNum.classList.add('added');
-    localStorage.setItem('userData', JSON.stringify(userData));
-}
-function showStats(show = true) {
-    if (show) {
-        // update stats in texts
-        loadStats();
-        if (userData.gamesPlayed > 0) {
-            for (let i = 0; i < guessStats.length; i++) {
-                let newWidth = ((userData.guessDistribution[i] / userData.gamesPlayed) * 100);
-                if (userData.guessDistribution[i] > 0 && newWidth <= parseFloat(guessStats[i].style.minWidth)) {
-                    newWidth += 1;
-                }
-                guessStats[i].style.width = `${newWidth}%`;
-            }
-        }
-        cover.classList.add('displayed');
-        statsContainer.classList.add('displayed');
-    }
-    else {
-        cover.classList.remove('displayed');
-        statsContainer.classList.remove('displayed');
-    }
-}
 // main containers
 const gridContainer = document.querySelector(".wordle-grid-container"); // container of all row cotainers containing letter boxes 
 const keyContainer = document.querySelector(".key-container");
 const statsContainer = document.querySelector(".stats-container");
-// objects
-const cover = document.querySelector(".cover");
-const statsIcon = document.querySelector(".stats-icon");
 // winner note
 const winnerNote = document.querySelector(".winner-note");
 const notes = ['First Try!', 'Hooray!', 'Nice!', 'You got it!', 'Fantastic!', 'Phew!'];
@@ -240,6 +198,34 @@ function evaluate(word) {
         }, (i * 250) + 250);
     }
 }
+// LOCAL STORAGE
+// initialization
+let gameState = JSON.parse(localStorage.getItem('gameState'));
+let userData;
+// guess distribution values
+const statsText = document.querySelectorAll(".value");
+const guessStats = document.querySelectorAll(".guess-value");
+if (gameState == null) {
+    let newGameState = {
+        guesses: [],
+        wordToGuess: _WORD_TO_GUESS
+    };
+    let newUserData = {
+        gamesPlayed: 0,
+        gamesWon: 0,
+        winRate: 0,
+        currentStreak: 0,
+        longestStreak: 0,
+        guessDistribution: [0, 0, 0, 0, 0, 0]
+    };
+    localStorage.setItem('gameState', JSON.stringify(newGameState));
+    localStorage.setItem('userData', JSON.stringify(newUserData));
+    gameState = newGameState;
+    userData = newUserData;
+}
+else {
+    userData = JSON.parse(localStorage.getItem('userData'));
+}
 function loadGameState() {
     for (let i = 0; i < gameState.guesses.length; i++) {
         for (let j = 0; j < gameState.guesses[i].length; j++) {
@@ -250,54 +236,66 @@ function loadGameState() {
         currentRow++;
     }
 }
+function loadStats() {
+    document.querySelector('.games-played-value-p').textContent = userData.gamesPlayed.toString();
+    document.querySelector('.win-rate-value-p').textContent = userData.winRate.toString();
+    document.querySelector('.current-streak-value-p').textContent = userData.currentStreak.toString();
+    document.querySelector('.longest-streak-value-p').textContent = userData.longestStreak.toString();
+    for (let i = 0; i < TRIES; i++) {
+        guessStats[i].textContent = userData.guessDistribution[i].toString();
+    }
+}
+function updateGameStateGuesses(idx, val) {
+    gameState.guesses[idx] = val;
+    localStorage.setItem('gameState', JSON.stringify(gameState));
+}
+function updateStats(stat, val) {
+    if (stat === 'gamesPlayed') {
+        userData.gamesPlayed = val;
+    }
+    else if (stat === 'gamesWon') {
+        userData.gamesWon = val;
+    }
+    else if (stat === 'winRate') {
+        userData.winRate = val;
+    }
+    else if (stat === 'currentStreak') {
+        userData.currentStreak = val;
+    }
+    else if (stat === 'longestStreak') {
+        userData.longestStreak = val;
+    }
+    localStorage.setItem('userData', JSON.stringify(userData));
+}
+function updateGuessStats(idx) {
+    userData.guessDistribution[idx]++;
+    const guessNum = guessStats[idx];
+    guessNum.classList.add('added');
+    localStorage.setItem('userData', JSON.stringify(userData));
+}
+function showStats(show = true) {
+    if (show) {
+        // update stats in texts
+        loadStats();
+        if (userData.gamesPlayed > 0) {
+            for (let i = 0; i < guessStats.length; i++) {
+                let newWidth = ((userData.guessDistribution[i] / userData.gamesPlayed) * 100);
+                if (userData.guessDistribution[i] > 0 && newWidth <= parseFloat(guessStats[i].style.minWidth)) {
+                    newWidth += 1;
+                }
+                guessStats[i].style.width = `${newWidth}%`;
+            }
+        }
+        cover.classList.add('displayed');
+        statsContainer.classList.add('displayed');
+    }
+    else {
+        cover.classList.remove('displayed');
+        statsContainer.classList.remove('displayed');
+    }
+}
 initialize(WORD_LENGTH, TRIES, gridContainer);
 loadGameState();
-document.addEventListener("keydown", (event) => {
-    if (!gameOver && !isAnimating) {
-        if (isLetter(event.key) && (currentSquare <= WORD_LENGTH - 1)) {
-            const currentCell = getCell(currentRow, currentSquare); // get current cell to fill 
-            currentCell.firstElementChild.textContent = event.key; // change text content to the corresponding event key
-            currentCell.classList.add('popped');
-            currentCell.classList.add('filled'); // change the border color to white (filled cell)
-            currentCell.classList.remove('out');
-            // update the tracker variables
-            currentSquare++;
-        }
-        else if (event.key === 'Backspace') {
-            if (currentSquare !== 0) {
-                const currentCell = getCell(currentRow, currentSquare - 1);
-                currentCell.firstElementChild.textContent = "";
-                currentCell.classList.add('out');
-                currentCell.classList.remove('filled');
-                currentCell.classList.remove('popped');
-                currentSquare--;
-            }
-        }
-        else if (event.key === 'Enter') {
-            if (currentSquare === WORD_LENGTH) {
-                const word = getWord(currentRow);
-                if (isValid(word)) {
-                    evaluate(word);
-                    updateGameStateGuesses(currentRow, word);
-                    if (currentRow < TRIES - 1) {
-                        currentRow++;
-                        currentSquare = 0;
-                    }
-                    else {
-                        currentRow++;
-                        endGame();
-                    }
-                }
-            }
-        }
-    }
-});
-cover.addEventListener('click', () => {
-    showStats(false);
-});
-statsIcon.addEventListener('click', () => {
-    showStats();
-});
 // keypad
 const keys = document.querySelectorAll(".key");
 keys.forEach(key => {

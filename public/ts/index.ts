@@ -21,121 +21,10 @@ type UserData = {
 
 type Stats = 'gamesPlayed' | 'gamesWon' | 'winRate' | 'currentStreak' | 'longestStreak'
 
-// LOCAL STORAGE
-
-// initialization
-let gameState: GameState = JSON.parse(localStorage.getItem('gameState')) as GameState;
-let userData: UserData;
-
-console.log(gameState)
-
-if (gameState == null) {
-    let newGameState: GameState = {
-        guesses: [],
-        wordToGuess: _WORD_TO_GUESS
-    };
-
-    let newUserData: UserData = {
-        gamesPlayed: 0,
-        gamesWon: 0,
-        winRate: 0,
-        currentStreak: 0,
-        longestStreak: 0,
-        guessDistribution: [0, 0, 0, 0, 0, 0]
-    };
-
-    localStorage.setItem('gameState', JSON.stringify(newGameState));
-    localStorage.setItem('userData', JSON.stringify(newUserData));
-
-    gameState = newGameState;
-    userData = newUserData;
-
-} else {
-    userData = JSON.parse(localStorage.getItem('userData')) as UserData;
-}
-
-// guess distribution values
-const statsText = document.querySelectorAll<HTMLElement>(".value");
-const guessStats = document.querySelectorAll<HTMLElement>(".guess-value");
-
-// load user data
-
-function loadStats() {
-    document.querySelector<HTMLElement>('.games-played-value-p').textContent = userData.gamesPlayed.toString();
-    document.querySelector<HTMLElement>('.win-rate-value-p').textContent = userData.winRate.toString();
-    document.querySelector<HTMLElement>('.current-streak-value-p').textContent = userData.currentStreak.toString();
-    document.querySelector<HTMLElement>('.longest-streak-value-p').textContent = userData.longestStreak.toString();
-        
-    for (let i = 0; i < TRIES; i++) {
-        guessStats[i].textContent = userData.guessDistribution[i].toString();
-    }
-}
-
-function updateGameStateGuesses(idx, val) {
-    gameState.guesses[idx] = val;
-
-    localStorage.setItem('gameState', JSON.stringify(gameState));
-}
-
-function updateStats(stat: Stats, val) {
-    if (stat === 'gamesPlayed') {
-        userData.gamesPlayed = val;
-    } else if (stat === 'gamesWon') {
-        userData.gamesWon = val;
-    } else if (stat === 'winRate') {
-        userData.winRate = val;
-    } else if (stat === 'currentStreak') {
-        userData.currentStreak = val;
-    } else if (stat === 'longestStreak') {
-        userData.longestStreak = val;
-    }
-
-    localStorage.setItem('userData', JSON.stringify(userData));
-
-}
- 
-function updateGuessStats(idx) {
-    userData.guessDistribution[idx]++;
-    const guessNum = guessStats[idx];
-    guessNum.classList.add('added');
-
-    localStorage.setItem('userData', JSON.stringify(userData));
-}
-
-function showStats(show: boolean=true) {
-
-    if (show) {
-        // update stats in texts
-        loadStats();
-        
-        if (userData.gamesPlayed > 0) {
-            for (let i = 0; i < guessStats.length; i++) {
-
-                let newWidth = ((userData.guessDistribution[i] / userData.gamesPlayed) * 100);
-                
-                if (userData.guessDistribution[i] > 0 && newWidth <= parseFloat(guessStats[i].style.minWidth)) {
-                    newWidth += 1;
-                }
-                guessStats[i].style.width = `${newWidth}%`;
-            }
-        }
-
-        cover.classList.add('displayed');
-        statsContainer.classList.add('displayed');
-    } else {
-        cover.classList.remove('displayed');
-        statsContainer.classList.remove('displayed');
-    }
-}
-
 // main containers
 const gridContainer = document.querySelector<HTMLElement>(".wordle-grid-container") // container of all row cotainers containing letter boxes 
 const keyContainer = document.querySelector<HTMLElement>(".key-container");
 const statsContainer = document.querySelector<HTMLElement>(".stats-container");
-
-// objects
-const cover = document.querySelector<HTMLElement>(".cover");
-const statsIcon = document.querySelector<HTMLElement>(".stats-icon");
 
 // winner note
 const winnerNote = document.querySelector<HTMLElement>(".winner-note");
@@ -315,6 +204,41 @@ function evaluate(word: string) {
     }
 }
 
+// LOCAL STORAGE
+
+// initialization
+let gameState: GameState = JSON.parse(localStorage.getItem('gameState')) as GameState;
+let userData: UserData;
+
+// guess distribution values
+const statsText = document.querySelectorAll<HTMLElement>(".value");
+const guessStats = document.querySelectorAll<HTMLElement>(".guess-value");
+
+if (gameState == null) {
+    let newGameState: GameState = {
+        guesses: [],
+        wordToGuess: _WORD_TO_GUESS
+    };
+
+    let newUserData: UserData = {
+        gamesPlayed: 0,
+        gamesWon: 0,
+        winRate: 0,
+        currentStreak: 0,
+        longestStreak: 0,
+        guessDistribution: [0, 0, 0, 0, 0, 0]
+    };
+
+    localStorage.setItem('gameState', JSON.stringify(newGameState));
+    localStorage.setItem('userData', JSON.stringify(newUserData));
+
+    gameState = newGameState;
+    userData = newUserData;
+
+} else {
+    userData = JSON.parse(localStorage.getItem('userData')) as UserData;
+}
+
 function loadGameState() {
     for (let i = 0; i < gameState.guesses.length; i++) {
         for (let j = 0; j < gameState.guesses[i].length; j++) {
@@ -327,111 +251,76 @@ function loadGameState() {
     }
 }
 
+function loadStats() {
+    document.querySelector<HTMLElement>('.games-played-value-p').textContent = userData.gamesPlayed.toString();
+    document.querySelector<HTMLElement>('.win-rate-value-p').textContent = userData.winRate.toString();
+    document.querySelector<HTMLElement>('.current-streak-value-p').textContent = userData.currentStreak.toString();
+    document.querySelector<HTMLElement>('.longest-streak-value-p').textContent = userData.longestStreak.toString();
+        
+    for (let i = 0; i < TRIES; i++) {
+        guessStats[i].textContent = userData.guessDistribution[i].toString();
+    }
+}
+
+function updateGameStateGuesses(idx, val) {
+    gameState.guesses[idx] = val;
+
+    localStorage.setItem('gameState', JSON.stringify(gameState));
+}
+
+function updateStats(stat: Stats, val) {
+    if (stat === 'gamesPlayed') {
+        userData.gamesPlayed = val;
+    } else if (stat === 'gamesWon') {
+        userData.gamesWon = val;
+    } else if (stat === 'winRate') {
+        userData.winRate = val;
+    } else if (stat === 'currentStreak') {
+        userData.currentStreak = val;
+    } else if (stat === 'longestStreak') {
+        userData.longestStreak = val;
+    }
+
+    localStorage.setItem('userData', JSON.stringify(userData));
+
+}
+ 
+function updateGuessStats(idx) {
+    userData.guessDistribution[idx]++;
+    const guessNum = guessStats[idx];
+    guessNum.classList.add('added');
+
+    localStorage.setItem('userData', JSON.stringify(userData));
+}
+
+function showStats(show: boolean=true) {
+
+    if (show) {
+        // update stats in texts
+        loadStats();
+        
+        if (userData.gamesPlayed > 0) {
+            for (let i = 0; i < guessStats.length; i++) {
+
+                let newWidth = ((userData.guessDistribution[i] / userData.gamesPlayed) * 100);
+                
+                if (userData.guessDistribution[i] > 0 && newWidth <= parseFloat(guessStats[i].style.minWidth)) {
+                    newWidth += 1;
+                }
+                guessStats[i].style.width = `${newWidth}%`;
+            }
+        }
+
+        cover.classList.add('displayed');
+        statsContainer.classList.add('displayed');
+    } else {
+        cover.classList.remove('displayed');
+        statsContainer.classList.remove('displayed');
+    }
+}
+
 initialize(WORD_LENGTH, TRIES, gridContainer);
 loadGameState();
 
-document.addEventListener("keydown", (event) => {
 
-    if (!gameOver && !isAnimating) {
-
-        if (isLetter(event.key) && (currentSquare <= WORD_LENGTH - 1)) {
-            const currentCell = getCell(currentRow, currentSquare);     // get current cell to fill 
-            currentCell.firstElementChild.textContent = event.key;      // change text content to the corresponding event key
-            
-            currentCell.classList.add('popped');
-            currentCell.classList.add('filled');        // change the border color to white (filled cell)
-            currentCell.classList.remove('out');
-            // update the tracker variables
-            currentSquare++;
-        }
-
-        else if (event.key === 'Backspace') {
-            if (currentSquare !== 0) {
-                const currentCell = getCell(currentRow, currentSquare-1);
-                currentCell.firstElementChild.textContent = "";
-                currentCell.classList.add('out');
-                currentCell.classList.remove('filled');
-                currentCell.classList.remove('popped');
-
-                currentSquare--;
-            }
-        }
-
-        else if (event.key === 'Enter') {
-            if (currentSquare === WORD_LENGTH) {
-                const word = getWord(currentRow);
-
-                if (isValid(word)) {
-
-                    evaluate(word);
-                    updateGameStateGuesses(currentRow, word);
-
-                    if (currentRow < TRIES - 1) {
-                        currentRow++;
-                        currentSquare = 0;
-                    } else {
-                        currentRow++;
-                        endGame();
-                    }
-                }
-
-            }
-        }
-
-    }
-
-})
-
-
-cover.addEventListener('click', () => {
-    showStats(false);
-})
-
-statsIcon.addEventListener('click', () => {
-    showStats();
-})
-
-// keypad
-const keys = document.querySelectorAll<HTMLElement>(".key");
-keys.forEach(key => {
-
-    ['mousedown', 'touchstart'].forEach(event => {
-        key.addEventListener(event, () => {
-            key.classList.add('pressed');
-        })
-    });
-
-    ['mouseup', 'touchend'].forEach(event => {
-        key.addEventListener(event, () => {
-            key.classList.remove('pressed');
-        })
-    });
-
-    ['mouseleave', 'touchcancel'].forEach(event => {
-        key.addEventListener(event, () => {
-            if (key.classList.contains('pressed')) {
-                key.classList.remove('pressed');
-            }
-        })
-    })
-
-    key.addEventListener('click', () => {
-        key.classList.add('popped');
-        console.log("here")
-        setTimeout(() => {
-            key.classList.remove('popped');
-        }, 100);
-
-        // fire an event that simulates a keydown event
-        let keyCode = key.textContent;
-
-        if (key.textContent === 'Delete') {
-            keyCode = 'Backspace';
-        }
-
-        const keyEvent = new KeyboardEvent('keydown', {key: keyCode})
-        document.dispatchEvent(keyEvent);
-
-    })
-})
 
