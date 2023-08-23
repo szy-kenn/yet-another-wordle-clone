@@ -71,6 +71,12 @@ function loadStats() {
     }
 }
 
+function updateGameStateGuesses(idx, val) {
+    gameState.guesses[idx] = val;
+
+    localStorage.setItem('gameState', JSON.stringify(gameState));
+}
+
 function updateStats(stat: Stats, val) {
     if (stat === 'gamesPlayed') {
         userData.gamesPlayed = val;
@@ -104,7 +110,13 @@ function showStats(show: boolean=true) {
         
         if (userData.gamesPlayed > 0) {
             for (let i = 0; i < guessStats.length; i++) {
-                guessStats[i].style.width = `${Math.round((userData.guessDistribution[i] / userData.gamesPlayed) * 100)}%`;
+
+                let newWidth = ((userData.guessDistribution[i] / userData.gamesPlayed) * 100);
+                
+                if (userData.guessDistribution[i] > 0 && newWidth <= parseFloat(guessStats[i].style.minWidth)) {
+                    newWidth += 1;
+                }
+                guessStats[i].style.width = `${newWidth}%`;
             }
         }
 
@@ -241,6 +253,8 @@ function evaluate(word: string) {
 
     disableKeypad(true);
 
+    updateGameStateGuesses(currentRow, word);
+
     for (let i = 0; i < word.length; i++) {
 
         // get current cell to evaluate
@@ -303,7 +317,17 @@ function evaluate(word: string) {
     }
 }
 
+function loadGameState() {
+    for (let i = 0; i < gameState.guesses.length; i++) {
+        for (let j = 0; j < gameState.guesses[i].length; j++) {
+            squares[i * WORD_LENGTH + j].firstElementChild.textContent = gameState.guesses[i][j];
+        }
+    }
+    currentRow = gameState.guesses.length;
+}
+
 initialize(WORD_LENGTH, TRIES, gridContainer);
+loadGameState();
 
 document.addEventListener("keydown", (event) => {
 
