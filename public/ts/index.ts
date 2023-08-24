@@ -320,7 +320,7 @@ function showStats(show: boolean=true) {
 }
 
 initialize(WORD_LENGTH, TRIES, gridContainer);
-loadGameState();
+// loadGameState();
 
 
 
