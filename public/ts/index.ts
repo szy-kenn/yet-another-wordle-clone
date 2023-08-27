@@ -137,11 +137,14 @@ function isValid(word: string) {
 }
 
 function evaluate(word: string) {
-
     let correctLetters = 0; 
 
     disableKeypad(true);
 
+    
+    /**TODO: this should not handle animations, the function should only return the
+                evaluation of the word (ex. C-C-M-W-W)
+    **/
     for (let i = 0; i < word.length; i++) {
 
         // get current cell to evaluate

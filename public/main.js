@@ -295,7 +295,7 @@ function showStats(show = true) {
     }
 }
 initialize(WORD_LENGTH, TRIES, gridContainer);
-loadGameState();
+// loadGameState();
 // keypad
 const keys = document.querySelectorAll(".key");
 keys.forEach(key => {
