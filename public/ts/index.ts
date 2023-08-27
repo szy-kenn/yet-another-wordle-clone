@@ -12,12 +12,13 @@ type GameState = {
 
 type UserData = {
     gamesPlayed: number;
-    gamesWon: number,
+    gamesWon: number;
     winRate: number;
     currentStreak: number;
     longestStreak: number;
     guessDistribution: number[];
 }
+
 
 type Stats = 'gamesPlayed' | 'gamesWon' | 'winRate' | 'currentStreak' | 'longestStreak'
 
@@ -137,73 +138,108 @@ function isValid(word: string) {
 }
 
 function evaluate(word: string) {
-    let correctLetters = 0; 
 
-    disableKeypad(true);
+    const evaluation = {
+        result: [],
 
-    
+        get correctLetters(): number {
+            let count = 0;
+            this.result.forEach(res => {
+                if (res === 'Correct') {
+                    count++;
+                }
+            });
+
+            return count;
+        }
+    }
+
     /**TODO: this should not handle animations, the function should only return the
                 evaluation of the word (ex. C-C-M-W-W)
     **/
+
     for (let i = 0; i < word.length; i++) {
 
-        // get current cell to evaluate
-        const cellToEvaluate = getCell(currentRow, i);
+        if (word[i].toLowerCase() === gameState.wordToGuess[i].toLowerCase()) {
+            evaluation.result.push('Correct')
+        } else if (gameState.wordToGuess.toLowerCase().includes(word[i].toLowerCase())) {
+            evaluation.result.push('Misplaced');
+        } else {
+            evaluation.result.push('Wrong');
+        }
+    }
+
+    return evaluation;
+}
+
+function animateResult(row: number, result: string[], animSpeed = 500, animDelay = 250, handleKeypad: boolean = true) {
+
+    if (handleKeypad) {
+        disableKeypad(true);
+    }
+
+    for (let i = 0; i < result.length; i++) {
+        const cellToEvaluate = getCell(row, i);
 
         setTimeout(() => {
             cellToEvaluate.classList.add('flipped');
-        }, i * 250);
-        
+        }, i * animDelay);
+
         setTimeout(() => {
-            if (word[i].toLowerCase() === _WORD_TO_GUESS[i].toLowerCase()) {
+            if (result[i] === 'Correct') {
                 cellToEvaluate.classList.add('correct');
-                correctLetters++;
-            } else if (_WORD_TO_GUESS.includes(word[i].toUpperCase())) {
+            } else if (result[i] === 'Misplaced') {
                 cellToEvaluate.classList.add('misplaced');
             } else {
                 cellToEvaluate.classList.add('wrong');
             }
 
-            if (i === word.length - 1) {
-
-                // if the player guessed the word 
-                if (correctLetters === WORD_LENGTH) {
-                    isWinner = true;
-                    endGame();  // ends the game
-                    winnerNote.firstElementChild.textContent = notes[currentRow-1];
-
-                    // animate the row
-                    setTimeout(() => {
-
-                        // lower opacity of squares not in the correct row
-                        for (let s = 0; s < squares.length; s++) {
-                            if (s >= (currentRow-1) * WORD_LENGTH + WORD_LENGTH ||
-                                s < (currentRow-1) * WORD_LENGTH) {
-                                    squares[s].style.opacity = '0.1';
-                                }
-                        }
-
-                        for (let k = 0; k < WORD_LENGTH; k++) {
-                            const currentCell = getCell(currentRow-1, k);
-                            currentCell.style.opacity = `1`;
-                            setTimeout(() => {
-                                currentCell.classList.add('jumped');
-                            }, k * 100);
-                        }
-                    }, 250);
-
-                    displayNote();
-                } 
-                
-                else {
-                    // if not, the keypad will be enabled again
-                    setTimeout(() => {
-                        disableKeypad(false);
-                    }, 500);
+            if (i === result.length - 1) {
+                if (handleKeypad) {
+                    disableKeypad(false);
                 }
             }
 
-        }, (i * 250) + 250);
+            // if (i === result.length - 1) {
+
+            //     // if the player guessed the word 
+            //     if (correctLetters === WORD_LENGTH) {
+            //         isWinner = true;
+            //         endGame();  // ends the game
+            //         winnerNote.firstElementChild.textContent = notes[currentRow-1];
+
+            //         // animate the row
+            //         setTimeout(() => {
+
+            //             // lower opacity of squares not in the correct row
+            //             for (let s = 0; s < squares.length; s++) {
+            //                 if (s >= (currentRow-1) * WORD_LENGTH + WORD_LENGTH ||
+            //                     s < (currentRow-1) * WORD_LENGTH) {
+            //                         squares[s].style.opacity = '0.1';
+            //                     }
+            //             }
+
+            //             for (let k = 0; k < WORD_LENGTH; k++) {
+            //                 const currentCell = getCell(currentRow-1, k);
+            //                 currentCell.style.opacity = `1`;
+            //                 setTimeout(() => {
+            //                     currentCell.classList.add('jumped');
+            //                 }, k * 100);
+            //             }
+            //         }, 250);
+
+            //         displayNote();
+            //     } 
+                
+            //     else {
+            //         // if not, the keypad will be enabled again
+            //         setTimeout(() => {
+            //             disableKeypad(false);
+            //         }, 500);
+            //     }
+            // }
+
+        }, (i * animDelay) + animDelay);
     }
 }
 
@@ -216,6 +252,10 @@ let userData: UserData;
 // guess distribution values
 const statsText = document.querySelectorAll<HTMLElement>(".value");
 const guessStats = document.querySelectorAll<HTMLElement>(".guess-value");
+
+// objects
+const cover = document.querySelector<HTMLElement>(".cover");
+const statsIcon = document.querySelector<HTMLElement>(".stats-icon");
 
 if (gameState == null) {
     let newGameState: GameState = {
@@ -248,8 +288,8 @@ function loadGameState() {
             squares[i * WORD_LENGTH + j].firstElementChild.textContent = gameState.guesses[i][j];
         }
 
-        const word = getWord(i);
-        evaluate(word);
+        const word: string = getWord(i);    // get current word
+        const evalScore = evaluate(word);      // evaluate the current word
         currentRow++;
     }
 }
@@ -321,6 +361,68 @@ function showStats(show: boolean=true) {
         statsContainer.classList.remove('displayed');
     }
 }
+
+document.addEventListener("keydown", (event) => {
+
+    if (!gameOver && !isAnimating) {
+
+        if (isLetter(event.key) && (currentSquare <= WORD_LENGTH - 1)) {
+            const currentCell = getCell(currentRow, currentSquare);     // get current cell to fill 
+            currentCell.firstElementChild.textContent = event.key;      // change text content to the corresponding event key
+            
+            currentCell.classList.add('popped');
+            currentCell.classList.add('filled');        // change the border color to white (filled cell)
+            currentCell.classList.remove('out');
+            // update the tracker variables
+            currentSquare++;
+        }
+
+        else if (event.key === 'Backspace') {
+            if (currentSquare !== 0) {
+                const currentCell = getCell(currentRow, currentSquare-1);
+                currentCell.firstElementChild.textContent = "";
+                currentCell.classList.add('out');
+                currentCell.classList.remove('filled');
+                currentCell.classList.remove('popped');
+
+                currentSquare--;
+            }
+        }
+
+        else if (event.key === 'Enter') {
+            if (currentSquare === WORD_LENGTH) {
+                const word = getWord(currentRow);
+
+                if (isValid(word)) {
+
+                    const evalScore = evaluate(word); // get evaluation of the current word
+                    
+                    animateResult(currentRow, evalScore.result, 250, 500, true);
+                    updateGameStateGuesses(currentRow, word);
+
+                    if (currentRow < TRIES - 1) {
+                        currentRow++;
+                        currentSquare = 0;
+                    } else {
+                        currentRow++;
+                        endGame();
+                    }
+                }
+
+            }
+        }
+
+    }
+
+})
+
+cover.addEventListener('click', () => {
+    showStats(false);
+})
+
+statsIcon.addEventListener('click', () => {
+    showStats();
+})
 
 initialize(WORD_LENGTH, TRIES, gridContainer);
 // loadGameState();
