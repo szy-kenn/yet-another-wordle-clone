@@ -318,6 +318,23 @@ body {
     z-index: inherit;
     user-select: none;
 
+    &.wrong {
+        opacity: 0.5;
+        background-color: $wrong;
+    }
+
+    &.misplaced {
+        background-color: $misplaced;
+        color: $background-color;
+        border-color: rgba($background-color, 0.5);
+    }
+
+    &.correct {
+        background-color: $correct;
+        color: $background-color;
+        border-color: rgba($background-color, 0.5);
+    }
+
     &.pressed {
         background-color: $filled-color;
         color: $background-color;

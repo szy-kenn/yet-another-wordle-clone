@@ -119,10 +119,13 @@ export async function animateResult(row: number, evaluation: Evaluation, animSpe
             setTimeout(async() => {
                 if (evaluation.result[i] === 'Correct') {
                     cellToEvaluate.classList.add('correct');
+                    document.querySelector(`.keycode-${evaluation.word[i].toLowerCase()}`).classList.add('correct');
                 } else if (evaluation.result[i] === 'Misplaced') {
                     cellToEvaluate.classList.add('misplaced');
+                    document.querySelector(`.keycode-${evaluation.word[i].toLowerCase()}`).classList.add('misplaced');
                 } else {
                     cellToEvaluate.classList.add('wrong');
+                    document.querySelector(`.keycode-${evaluation.word[i].toLowerCase()}`).classList.add('wrong');
                 }
 
                 if (i === evaluation.result.length - 1) {

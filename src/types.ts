@@ -17,6 +17,7 @@ export type UserData = {
 export type Stats = 'gamesPlayed' | 'gamesWon' | 'winRate' | 'currentStreak' | 'longestStreak';
 
 export type Evaluation = {
+    word: string;
     result: string[];
     correctLetters: () => number;
 }

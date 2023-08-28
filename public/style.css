@@ -259,6 +259,20 @@ body {
   z-index: inherit;
   user-select: none;
 }
+.key.wrong {
+  opacity: 0.5;
+  background-color: #423b3d;
+}
+.key.misplaced {
+  background-color: #dd9384;
+  color: #1C191A;
+  border-color: rgba(28, 25, 26, 0.5);
+}
+.key.correct {
+  background-color: #5993eb;
+  color: #1C191A;
+  border-color: rgba(28, 25, 26, 0.5);
+}
 .key.pressed {
   background-color: #E9A1B9;
   color: #1C191A;

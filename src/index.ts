@@ -97,8 +97,9 @@ function evaluate(word1: string, word2: string): Evaluation {
 
     // creates a new object containing the result that will be returned
     const evaluation: Evaluation = {
-        result: [],
 
+        word: word1,
+        result: [],
         correctLetters(): number {
             let count = 0;
             this.result.forEach(res => {
