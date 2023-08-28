@@ -1,3 +1,26 @@
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	// The require scope
+/******/ 	var __webpack_require__ = {};
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+/*!**********************!*\
+  !*** ./src/index.ts ***!
+  \**********************/
+__webpack_require__.r(__webpack_exports__);
 // global variables
 const WORD_LENGTH = 5; // length of the word to be guessed
 const TRIES = 6; // maximum number of guesses
@@ -329,39 +352,8 @@ statsIcon.addEventListener('click', () => {
     showStats();
 });
 initialize(WORD_LENGTH, TRIES, gridContainer);
+
 // loadGameState();
-// keypad
-const keys = document.querySelectorAll(".key");
-keys.forEach(key => {
-    ['mousedown', 'touchstart'].forEach(event => {
-        key.addEventListener(event, () => {
-            key.classList.add('pressed');
-        });
-    });
-    ['mouseup', 'touchend'].forEach(event => {
-        key.addEventListener(event, () => {
-            key.classList.remove('pressed');
-        });
-    });
-    ['mouseleave', 'touchcancel'].forEach(event => {
-        key.addEventListener(event, () => {
-            if (key.classList.contains('pressed')) {
-                key.classList.remove('pressed');
-            }
-        });
-    });
-    key.addEventListener('click', () => {
-        key.classList.add('popped');
-        console.log("here");
-        setTimeout(() => {
-            key.classList.remove('popped');
-        }, 100);
-        // fire an event that simulates a keydown event
-        let keyCode = key.textContent;
-        if (key.textContent === 'Delete') {
-            keyCode = 'Backspace';
-        }
-        const keyEvent = new KeyboardEvent('keydown', { key: keyCode });
-        document.dispatchEvent(keyEvent);
-    });
-});
+
+/******/ })()
+;

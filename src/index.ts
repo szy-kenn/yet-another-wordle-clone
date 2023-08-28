@@ -1,26 +1,11 @@
+import * as types from "./types";
+
+
 // global variables
 const WORD_LENGTH = 5;        // length of the word to be guessed
 const TRIES = 6;              // maximum number of guesses
 const _WORD_TO_GUESS = 'LUCKY';
 const ALL_STATS = ['gamesPlayed', 'gamesWon', 'winRate', 'currentStreak', 'longestStreak']
-
-// custom types 
-type GameState = {
-    guesses?: string[];
-    wordToGuess: string;
-};
-
-type UserData = {
-    gamesPlayed: number;
-    gamesWon: number;
-    winRate: number;
-    currentStreak: number;
-    longestStreak: number;
-    guessDistribution: number[];
-}
-
-
-type Stats = 'gamesPlayed' | 'gamesWon' | 'winRate' | 'currentStreak' | 'longestStreak'
 
 // main containers
 const gridContainer = document.querySelector<HTMLElement>(".wordle-grid-container") // container of all row cotainers containing letter boxes 
@@ -246,8 +231,8 @@ function animateResult(row: number, result: string[], animSpeed = 500, animDelay
 // LOCAL STORAGE
 
 // initialization
-let gameState: GameState = JSON.parse(localStorage.getItem('gameState')) as GameState;
-let userData: UserData;
+let gameState: types.GameState = JSON.parse(localStorage.getItem('gameState')) as types.GameState;
+let userData: types.UserData;
 
 // guess distribution values
 const statsText = document.querySelectorAll<HTMLElement>(".value");
@@ -258,12 +243,12 @@ const cover = document.querySelector<HTMLElement>(".cover");
 const statsIcon = document.querySelector<HTMLElement>(".stats-icon");
 
 if (gameState == null) {
-    let newGameState: GameState = {
+    let newGameState: types.GameState = {
         guesses: [],
         wordToGuess: _WORD_TO_GUESS
     };
 
-    let newUserData: UserData = {
+    let newUserData: types.UserData = {
         gamesPlayed: 0,
         gamesWon: 0,
         winRate: 0,
@@ -279,7 +264,7 @@ if (gameState == null) {
     userData = newUserData;
 
 } else {
-    userData = JSON.parse(localStorage.getItem('userData')) as UserData;
+    userData = JSON.parse(localStorage.getItem('userData')) as types.UserData;
 }
 
 function loadGameState() {
@@ -311,7 +296,7 @@ function updateGameStateGuesses(idx, val) {
     localStorage.setItem('gameState', JSON.stringify(gameState));
 }
 
-function updateStats(stat: Stats, val) {
+function updateStats(stat: types.Stats, val) {
     if (stat === 'gamesPlayed') {
         userData.gamesPlayed = val;
     } else if (stat === 'gamesWon') {

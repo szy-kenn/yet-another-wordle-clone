@@ -1,8 +1,6 @@
 {
     "compilerOptions": {
         "target": "ES6",
-        "lib": ["ESNext", "DOM"],
-        "rootDir": "public",
-        "outFile": "public/main.js"
+        "lib": ["ESNext", "DOM"]
     }
 }

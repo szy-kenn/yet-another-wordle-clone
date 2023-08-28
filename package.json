@@ -1,0 +1,20 @@
+{
+  "name": "wordle-clone-2",
+  "version": "1.0.0",
+  "description": "Using vanilla **Typescript**, **Sass**, and **Firebase** as a BaaS, this project aims to recreate the popular online word game, Wordle, in its much _sweeter_ version.",
+  "main": "./src/index.ts",
+  "scripts": {
+    "build": "webpack",
+    "build:watch": "webpack --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-loader": "^9.4.4",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  }
+}
