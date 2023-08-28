@@ -1,4 +1,4 @@
-import { GameState, UserData } from "./types";
+import { Evaluation } from "./types";
 
 const config = require('./game.config');
 
@@ -45,51 +45,53 @@ export function disableKeypad(disable:boolean = true) {
     // isAnimating = disable;   
 }
 
-export function displayNote() {
+export async function displayNote(note: string) {
 
-    // displays the winner note
-    setTimeout(() => {
-        winnerNote.classList.add('displayed');
-    }, (config.config.word_length * 100) + 500);
+    return new Promise<void>((resolve, reject) => {
+        // set text to the passed argument
+        setText(winnerNote.firstElementChild, note);
 
-    setTimeout(() => {
-        winnerNote.classList.remove('displayed');
-        squares.forEach(square => {
-            square.style.opacity = '1';
-        })
+        // displays the winner note
+        setTimeout(() => {
+            winnerNote.classList.add('displayed');
+        }, (config.word_length * 100) + 500);
 
-        // TODO: should not handle showStats()
-        // showStats();
+        setTimeout(() => {
+            winnerNote.classList.remove('displayed');
+            squares.forEach(square => {
+                square.style.opacity = '1';
+            })
 
-    }, (config.word_length * 100) + 2000); 
+            resolve();
+        }, (config.word_length * 100) + 2000); 
+    })
+
 }
 
-export function endGame(isOver: boolean = true) {
+export function endGame(isWinner: boolean) {
 
-    // gameOver = isOver;
+    if (isWinner) {
+        // updateGuessStats(currentRow-1);
+        // updateStats("gamesWon", userData.gamesWon+1);
+        // updateStats("currentStreak", userData.currentStreak+1);
 
-    // updateStats("gamesPlayed", userData.gamesPlayed+1);
+        // if (userData.currentStreak > userData.longestStreak) {
+        //     updateStats("longestStreak", userData.currentStreak);
+        // }
+    } else {
+        // 
 
-    // if (isWinner) {
-    //     updateGuessStats(currentRow-1);
-    //     updateStats("gamesWon", userData.gamesWon+1);
-    //     updateStats("currentStreak", userData.currentStreak+1);
 
-    //     if (userData.currentStreak > userData.longestStreak) {
-    //         updateStats("longestStreak", userData.currentStreak);
-    //     }
-    // } else {
-    //     updateStats("currentStreak", 0);
-
-    //     winnerNote.firstElementChild.textContent = 'Unlucky...';
-
-    //     setTimeout(() => {
-    //         displayNote();
-    //     }, 250);
-    // }
+    }
 
     // updateStats("winRate", Math.round((userData.gamesWon / userData.gamesPlayed) * 100));
-    // disableKeypad(true);
+    disableKeypad(true);
+}
+
+export function isLetter(str: string) {
+    let letterRegex = /^[a-zA-Z]$/; // check from start to end if it matches with any letters ranging from a-Z
+    return letterRegex.test(str) && str.length == 1; 
+    // returns true if it matches with the regex AND if it is a single character
 }
 
 export function getCell(row: number, squareIdx: number): HTMLElement {
@@ -114,74 +116,63 @@ export function isValid(word: string) {
     return true;
 }
 
-export function animateResult(row: number, result: string[], animSpeed = 500, animDelay = 250, handleKeypad: boolean = true) {
+export async function animateResult(row: number, evaluation: Evaluation, animSpeed = 500, animDelay = 250, animateWin: boolean) {
 
-    if (handleKeypad) {
-        disableKeypad(true);
-    }
+    return new Promise<void>((resolve, reject) => {
 
-    for (let i = 0; i < result.length; i++) {
-        const cellToEvaluate = getCell(row, i);
+        for (let i = 0; i < evaluation.result.length; i++) {
+            const cellToEvaluate = getCell(row, i);
 
-        setTimeout(() => {
-            cellToEvaluate.classList.add('flipped');
-        }, i * animDelay);
+            setTimeout(() => {
+                cellToEvaluate.classList.add('flipped');
+            }, i * animDelay);
 
-        setTimeout(() => {
-            if (result[i] === 'Correct') {
-                cellToEvaluate.classList.add('correct');
-            } else if (result[i] === 'Misplaced') {
-                cellToEvaluate.classList.add('misplaced');
-            } else {
-                cellToEvaluate.classList.add('wrong');
-            }
-
-            if (i === result.length - 1) {
-                if (handleKeypad) {
-                    disableKeypad(false);
+            setTimeout(async() => {
+                if (evaluation.result[i] === 'Correct') {
+                    cellToEvaluate.classList.add('correct');
+                } else if (evaluation.result[i] === 'Misplaced') {
+                    cellToEvaluate.classList.add('misplaced');
+                } else {
+                    cellToEvaluate.classList.add('wrong');
                 }
-            }
 
-            // if (i === result.length - 1) {
-
-            //     // if the player guessed the word 
-            //     if (correctLetters === config.word_length) {
-            //         isWinner = true;
-            //         endGame();  // ends the game
-            //         winnerNote.firstElementChild.textContent = notes[currentRow-1];
-
-            //         // animate the row
-            //         setTimeout(() => {
-
-            //             // lower opacity of squares not in the correct row
-            //             for (let s = 0; s < squares.length; s++) {
-            //                 if (s >= (currentRow-1) * config.word_length + config.word_length ||
-            //                     s < (currentRow-1) * config.word_length) {
-            //                         squares[s].style.opacity = '0.1';
-            //                     }
-            //             }
-
-            //             for (let k = 0; k < config.word_length; k++) {
-            //                 const currentCell = getCell(currentRow-1, k);
-            //                 currentCell.style.opacity = `1`;
-            //                 setTimeout(() => {
-            //                     currentCell.classList.add('jumped');
-            //                 }, k * 100);
-            //             }
-            //         }, 250);
-
-            //         displayNote();
-            //     } 
-                
-            //     else {
-            //         // if not, the keypad will be enabled again
-            //         setTimeout(() => {
-            //             disableKeypad(false);
-            //         }, 500);
-            //     }
-            // }
-
-        }, (i * animDelay) + animDelay);
-    }
+                if (i === evaluation.result.length - 1) {
+                    if (animateWin && (evaluation.correctLetters() === evaluation.result.length)) {
+                        await animateWinResult(row);
+                    }
+                    resolve();
+                } 
+            }, (i * animDelay) + animDelay);
+        }
+    })
 }
 
+export async function animateWinResult(row: number) {
+    
+    return new Promise<void>((resolve, reject) => {
+        // animate the row
+        setTimeout(() => {
+            // lower opacity of squares not in the correct row
+            for (let s = 0; s < squares.length; s++) {
+                if (s >= row * config.word_length + config.word_length ||
+                    s < row * config.word_length) {
+                        squares[s].style.opacity = '0.1';
+                    }
+            }
+
+            for (let k = 0; k < config.word_length; k++) {
+                const currentCell = getCell(row, k);
+                currentCell.style.opacity = `1`;
+                
+                setTimeout(() => {
+                    currentCell.classList.add('jumped');
+                
+                    if (k === config.word_length - 1) {
+                        resolve();
+                    }
+                
+                }, k * 100);
+            }
+        }, 250);
+    })
+}

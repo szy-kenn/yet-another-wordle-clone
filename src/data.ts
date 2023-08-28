@@ -44,7 +44,6 @@ export function getGameState(): GameState {
 
 export function updateGameStateGuesses(idx, val) {
     gameState.guesses[idx] = val;
-
     localStorage.setItem('gameState', JSON.stringify(gameState));
 }
 

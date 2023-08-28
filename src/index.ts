@@ -1,6 +1,6 @@
-import { GameState, UserData, Stats } from "./types";
-import { initializeUI, animateResult, isValid, getCell, getWord, setText, endGame } from "./ui";
-import { initializeGameData, updateGameStateGuesses, getUserData, getGameState } from "./data";
+import { GameState, UserData, Stats, Evaluation } from "./types";
+import { initializeUI, animateResult, isLetter, isValid, getCell, getWord, setText, displayNote, endGame, disableKeypad } from "./ui";
+import { initializeGameData, updateGameStateGuesses, getUserData, getGameState, updateStats, updateGuessStats } from "./data";
 
 const config = require('./game.config');
 
@@ -20,18 +20,43 @@ let gameOver = false;
 let isWinner = false;
 let isAnimating = false;
 
-function isLetter(str: string) {
-    let letterRegex = /^[a-zA-Z]$/; // check from start to end if it matches with any letters ranging from a-Z
-    return letterRegex.test(str) && str.length == 1; 
-    // returns true if it matches with the regex AND if it is a single character
+function start() {
+    // start the game
+    initializeUI();
+    initializeGameData();
+}
+
+async function end(isWinner: boolean) {
+
+    gameOver = true;
+    disableKeypad(true);
+    updateStats("gamesPlayed", getUserData().gamesPlayed+1);
+
+    if (isWinner) {
+        updateGuessStats(currentRow-1);
+        updateStats("gamesWon", getUserData().gamesWon+1);
+        updateStats("currentStreak", getUserData().currentStreak+1);
+
+        if (getUserData().currentStreak > getUserData().longestStreak) {
+            updateStats("longestStreak", getUserData().currentStreak);
+        }
+        await displayNote('You got it!');
+    } else {
+        updateStats("currentStreak", 0);    // make the currentStreak zero
+        await displayNote('Unlucky...');    // display the popping note
+    }
+
+    updateStats("winRate", Math.round((getUserData().gamesWon / getUserData().gamesPlayed) * 100));
+    showStats(true, getUserData());     // show stats after
 }
 
 function evaluate(word1: string, word2: string) {
 
-    const evaluation = {
+    // creates a new object containing the result that will be returned
+    const evaluation: Evaluation = {
         result: [],
 
-        get correctLetters(): number {
+        correctLetters(): number {
             let count = 0;
             this.result.forEach(res => {
                 if (res === 'Correct') {
@@ -43,8 +68,8 @@ function evaluate(word1: string, word2: string) {
         }
     }
 
+    // check every letters if it is correct, misplaced, or wrong
     for (let i = 0; i < word1.length; i++) {
-
         if (word1[i].toLowerCase() === word2[i].toLowerCase()) {
             evaluation.result.push('Correct')
         } else if (word2.toLowerCase().includes(word1[i].toLowerCase())) {
@@ -67,7 +92,7 @@ function showStats(show: boolean=true, userData: UserData) {
         document.querySelector<HTMLElement>('.longest-streak-value-p').textContent = userData.longestStreak.toString();
             
         for (let i = 0; i < config.tries; i++) {
-            guessStats[i].textContent = userData.guessDistribution[i].toString();
+            setText(guessStats[i], userData.guessDistribution[i].toString());
         }
         
         if (userData.gamesPlayed > 0) {
@@ -104,7 +129,7 @@ function loadGameState(gameState: GameState) {
     }
 }
 
-document.addEventListener("keydown", (event) => {
+document.addEventListener("keydown", async (event) => {
 
     if (!gameOver && !isAnimating) {
 
@@ -140,15 +165,29 @@ document.addEventListener("keydown", (event) => {
 
                     const evalScore = evaluate(word, config.word_to_guess); // get evaluation of the current word
                     
-                    animateResult(currentRow, evalScore.result, 250, 250, true);
+                    // flip the row and show the result based on evalScore
+                    disableKeypad(true);
+                    await animateResult(currentRow, evalScore, 250, 250, true);
+                    disableKeypad(false);
+                    
+                    // save the inputted word in the current game state
                     updateGameStateGuesses(currentRow, word);
 
-                    if (currentRow < config.tries - 1) {
+                    // if the player got all correct scores in evalScore
+                    if (evalScore.correctLetters() === config.word_length) {
+                        currentRow++;
+                        isWinner = true;
+                        end(isWinner);
+                    }
+
+                    else if (currentRow < config.tries - 1) {
+                        // if there is still any remaining tries
                         currentRow++;
                         currentSquare = 0;
                     } else {
+                        // if there are no more remaining tries left
                         currentRow++;
-                        endGame();
+                        end(isWinner);
                     }
                 }
             }
@@ -157,15 +196,15 @@ document.addEventListener("keydown", (event) => {
 })
 
 cover.addEventListener('click', () => {
+    // if the cover is displayed, clicking it should close the stats
     showStats(false, getUserData());
-})
+});
 
 statsIcon.addEventListener('click', () => {
     showStats(true, getUserData());
 })
 
-initializeUI();
-initializeGameData();
+start();
 // loadGameState();
 
 
