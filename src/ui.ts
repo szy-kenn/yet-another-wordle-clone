@@ -220,8 +220,6 @@ export function animateResult(row: number, result: string[], animSpeed = 500, an
     }
 }
 
-
-
 cover.addEventListener('click', () => {
     // showStats(false);
 })

@@ -444,7 +444,7 @@ document.addEventListener("keydown", (event) => {
                 const word = (0,_ui__WEBPACK_IMPORTED_MODULE_0__.getWord)(currentRow);
                 if ((0,_ui__WEBPACK_IMPORTED_MODULE_0__.isValid)(word)) {
                     const evalScore = evaluate(word, config.word_to_guess); // get evaluation of the current word
-                    (0,_ui__WEBPACK_IMPORTED_MODULE_0__.animateResult)(currentRow, evalScore.result, 250, 500, true);
+                    (0,_ui__WEBPACK_IMPORTED_MODULE_0__.animateResult)(currentRow, evalScore.result, 250, 250, true);
                     (0,_data__WEBPACK_IMPORTED_MODULE_1__.updateGameStateGuesses)(currentRow, word);
                     if (currentRow < config.tries - 1) {
                         currentRow++;

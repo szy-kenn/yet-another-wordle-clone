@@ -98,7 +98,7 @@ document.addEventListener("keydown", (event) => {
 
                     const evalScore = evaluate(word, config.word_to_guess); // get evaluation of the current word
                     
-                    animateResult(currentRow, evalScore.result, 250, 500, true);
+                    animateResult(currentRow, evalScore.result, 250, 250, true);
                     updateGameStateGuesses(currentRow, word);
 
                     if (currentRow < config.tries - 1) {
