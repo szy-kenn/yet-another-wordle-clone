@@ -2,6 +2,7 @@
 export type GameState = {
     guesses?: string[];
     wordToGuess: string;
+    ttl: number; // time-to-live / expiry
 };
 
 export type UserData = {

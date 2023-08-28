@@ -90,13 +90,13 @@ body {
 .winner-note {
     position: absolute;
     background-color: white;
-    padding: 0.25rem;
+    padding: 0.25rem 1rem;
     border-radius: 10px;
     top: 5%;
     opacity: 0;
     right: 50%;
     transform: translate(50%, 50%);
-    width: max(7.5vw, 12.5vh);
+    // width: max(7.5vw, 12.5vh);
     height: 5vh;
     display: flex;
     align-items: center;
@@ -362,6 +362,14 @@ body {
 
     &.shake {
         animation: 0.1s shake ease;
+
+        .square {
+            border-color: #df1256;
+
+            p {
+                color: #df1256;
+            }
+        }
     }
 }
 
@@ -394,10 +402,6 @@ body {
 
     &.filled {
         border-color: $filled-color;
-
-        p {
-            // text-shadow: 1px 1px 1px rgba($background-color, 0.5);
-        }
     }
 
     &.correct {

@@ -1,4 +1,6 @@
 import { Evaluation } from "./types";
+import { WORD_LENGTH, TRIES } from "./game.config";
+import { wordlist } from "./wordlist";
 
 const config = require('./game.config');
 
@@ -13,7 +15,7 @@ const notes = ['First Try!', 'Hooray!', 'Nice!', 'You got it!', 'Fantastic!', 'P
 // array of ALL HTML elements of squares in the grid
 let squares: HTMLElement[] = [];
 
-export function initializeUI(length: number = config.word_length, tries: number = config.tries, container: Element = gridContainer) {
+export function initializeUI(length: number = WORD_LENGTH, tries: number = TRIES, container: Element = gridContainer) {
     for (let i = 0; i < tries; i++) {
         // create a new row 
         const row = document.createElement("div");
@@ -54,7 +56,7 @@ export async function displayNote(note: string) {
         // displays the winner note
         setTimeout(() => {
             winnerNote.classList.add('displayed');
-        }, (config.word_length * 100) + 500);
+        }, (WORD_LENGTH * 100) + 500);
 
         setTimeout(() => {
             winnerNote.classList.remove('displayed');
@@ -63,7 +65,7 @@ export async function displayNote(note: string) {
             })
 
             resolve();
-        }, (config.word_length * 100) + 2000); 
+        }, (WORD_LENGTH * 100) + 2000); 
     })
 
 }
@@ -76,12 +78,17 @@ export function isLetter(str: string) {
 
 export function getCell(row: number, squareIdx: number): HTMLElement {
     // return the HTML ELEMENT of the square in a specific row
-    return squares[(row * config.word_length) + squareIdx];
+    return squares[(row * WORD_LENGTH) + squareIdx];
+}
+
+export function getRow(row: number): HTMLElement {
+    // +1 since the childNodes has 'text' Element as its first child element
+    return gridContainer.childNodes[row+1] as HTMLElement;
 }
 
 export function getWord(row: number) {
     // get the substring of the current row from the entire array of squares
-    const fullRow = squares.slice((row * config.word_length), row * config.word_length + config.word_length);
+    const fullRow = squares.slice((row * WORD_LENGTH), row * WORD_LENGTH + WORD_LENGTH);
     let word: string = "";
     // get each character from the square
     fullRow.forEach(square => word += square.firstElementChild.textContent);
@@ -93,7 +100,8 @@ export function setText(cell: Element, text: string) {
 }
 
 export function isValid(word: string) {
-    return true;
+    // return true;
+    return wordlist.includes(word.toLowerCase());
 }
 
 export async function animateResult(row: number, evaluation: Evaluation, animSpeed = 500, animDelay = 250, animateWin: boolean) {
@@ -136,20 +144,20 @@ export async function animateWinResult(row: number) {
         setTimeout(() => {
             // lower opacity of squares not in the correct row
             for (let s = 0; s < squares.length; s++) {
-                if (s >= row * config.word_length + config.word_length ||
-                    s < row * config.word_length) {
+                if (s >= row * WORD_LENGTH + WORD_LENGTH ||
+                    s < row * WORD_LENGTH) {
                         squares[s].style.opacity = '0.1';
                     }
             }
 
-            for (let k = 0; k < config.word_length; k++) {
+            for (let k = 0; k < WORD_LENGTH; k++) {
                 const currentCell = getCell(row, k);
                 currentCell.style.opacity = `1`;
                 
                 setTimeout(() => {
                     currentCell.classList.add('jumped');
                 
-                    if (k === config.word_length - 1) {
+                    if (k === WORD_LENGTH - 1) {
                         setTimeout(() => {
                             resolve();
                         }, 500);

@@ -1,16 +1,30 @@
 import { GameState, UserData, Stats } from "./types";
+import { wordlist } from "./wordlist"
 
-const config = require("./game.config");
+const wordlistLength = wordlist.length;
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.ceil(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function getRandomWord() {
+    return wordlist[getRandomInt(0, wordlistLength)];
+}
 
 let gameState: GameState = JSON.parse(localStorage.getItem('gameState')) as GameState;
 let userData: UserData;
+
+const ttl = 60000;
 
 export function initializeGameData() {
 
     if (gameState == null) {
         let newGameState: GameState = {
             guesses: [],
-            wordToGuess: config.word_to_guess
+            wordToGuess: getRandomWord(),
+            ttl: new Date().getTime() + ttl
         };
     
         let newUserData: UserData = {
@@ -40,6 +54,15 @@ export function getUserData(): UserData {
 
 export function getGameState(): GameState {
     return gameState;
+}
+
+export function newGameState() {
+    let newGameState: GameState = {
+        guesses: [],
+        wordToGuess: getRandomWord(),
+        ttl: new Date().getTime() + ttl
+    };
+    gameState = newGameState;
 }
 
 export function updateGameStateGuesses(idx, val) {

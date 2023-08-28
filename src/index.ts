@@ -1,13 +1,11 @@
 import { GameState, UserData, Stats, Evaluation } from "./types";
+import { WORD_LENGTH, TRIES } from "./game.config";
 
-import { initializeUI, animateResult, isLetter, 
-        isValid, getCell, getWord, setText, displayNote, disableKeypad } from "./ui";
+import { initializeUI, animateResult, isLetter, isValid, 
+    getCell, getRow, getWord, setText, displayNote, disableKeypad } from "./ui";
 
 import { initializeGameData, updateGameStateGuesses, 
-        getUserData, getGameState, updateStats, updateGuessStats } from "./data";
-
-// holds the configuration data for the game (word length, tries, word to guess)
-const config = require('./game.config');
+        getUserData, getGameState, updateStats, updateGuessStats, newGameState } from "./data";
 
 // ========================== HTML Elements =========================================
 
@@ -38,7 +36,6 @@ function start() {
     initializeUI();
     initializeGameData();
 }
-
 
 /**
  * Ends the game, sets the trackers, disables input, and updates stats if desired
@@ -150,7 +147,7 @@ function showStats(show: boolean=true, userData: UserData) {
         document.querySelector<HTMLElement>('.current-streak-value-p').textContent = userData.currentStreak.toString();
         document.querySelector<HTMLElement>('.longest-streak-value-p').textContent = userData.longestStreak.toString();
         
-        for (let i = 0; i < config.tries; i++) {
+        for (let i = 0; i < TRIES; i++) {
             setText(guessStats[i], userData.guessDistribution[i].toString());
         }
         
@@ -184,37 +181,44 @@ function showStats(show: boolean=true, userData: UserData) {
 async function loadGameState(gameState: GameState) {
 
     return new Promise<void>(async(resolve, reject) => {
-        for (let i = 0; i < gameState.guesses.length; i++) {
-            for (let j = 0; j < gameState.guesses[i].length; j++) {
-                // get current cell in row i and square index j to get the p element and load the text in gameState
-                // TODO: make a function in data.ts to retrieve the inputted guessed in gameState to separate it in this section
-                setText(getCell(i, j).firstElementChild, gameState.guesses[i][j]);
-            }
 
-            const word: string = getWord(i); // get current word
-            const evalScore = evaluate(word, config.word_to_guess); // evaluate the current word
-            
-            // show the result of evaluated word
-            isAnimating = true;
-            await animateResult(i, evalScore, 0, 0, true);  
-            isAnimating = false;
-
-            currentRow++;
-
-            if (evalScore.correctLetters() === config.word_length) {
-                //  if the user has already input the correct word
-                isWinner = true;
-                end(isWinner, false, false);
-                resolve();
-                break;
-            } else if (currentRow === config.word_length + 1) {
-                end(isWinner, false, false);
-                resolve();
-                break;
-            }
-            
-            if (i === gameState.guesses.length - 1) {
-                resolve();
+        if (gameState.ttl < new Date().getTime()) {
+            console.log(gameState.ttl)
+            newGameState();
+            displayNote("New word loaded!");
+        } else {
+            for (let i = 0; i < gameState.guesses.length; i++) {
+                for (let j = 0; j < gameState.guesses[i].length; j++) {
+                    // get current cell in row i and square index j to get the p element and load the text in gameState
+                    // TODO: make a function in data.ts to retrieve the inputted guessed in gameState to separate it in this section
+                    setText(getCell(i, j).firstElementChild, gameState.guesses[i][j]);
+                }
+    
+                const word: string = getWord(i); // get current word
+                const evalScore = evaluate(word, getGameState().wordToGuess); // evaluate the current word
+                
+                // show the result of evaluated word
+                isAnimating = true;
+                await animateResult(i, evalScore, 0, 0, true);  
+                isAnimating = false;
+    
+                currentRow++;
+    
+                if (evalScore.correctLetters() === WORD_LENGTH) {
+                    //  if the user has already input the correct word
+                    isWinner = true;
+                    end(isWinner, false, false);
+                    resolve();
+                    break;
+                } else if (currentRow === WORD_LENGTH + 1) {
+                    end(isWinner, false, false);
+                    resolve();
+                    break;
+                }
+                
+                if (i === gameState.guesses.length - 1) {
+                    resolve();
+                }
             }
         }
     })
@@ -276,7 +280,7 @@ document.addEventListener("keydown", async (event) => {
 
     if (!gameOver && !isAnimating) {
 
-        if (isLetter(event.key) && (currentSquare <= config.word_length - 1)) {
+        if (isLetter(event.key) && (currentSquare <= WORD_LENGTH - 1)) {
             const currentCell = getCell(currentRow, currentSquare);     // get current cell to fill 
             setText(currentCell.firstElementChild, event.key);          // change text content to the corresponding event key 
             
@@ -300,13 +304,13 @@ document.addEventListener("keydown", async (event) => {
         }
 
         else if (event.key === 'Enter') {
-            if (currentSquare === config.word_length) {
+            if (currentSquare === WORD_LENGTH) {
 
                 const word = getWord(currentRow);
 
                 if (isValid(word)) {
 
-                    const evalScore = evaluate(word, config.word_to_guess); // get evaluation of the current word
+                    const evalScore = evaluate(word, getGameState().wordToGuess); // get evaluation of the current word
                     
                     // flip the row and show the result based on evalScore
                     disableKeypad(true);
@@ -319,13 +323,13 @@ document.addEventListener("keydown", async (event) => {
                     updateGameStateGuesses(currentRow, word);
 
                     // if the player got all correct scores in evalScore
-                    if (evalScore.correctLetters() === config.word_length) {
+                    if (evalScore.correctLetters() === WORD_LENGTH) {
                         currentRow++;
                         isWinner = true;
                         end(isWinner, true, true);
                     }
 
-                    else if (currentRow < config.tries - 1) {
+                    else if (currentRow < TRIES - 1) {
                         // if there is still any remaining tries
                         currentRow++;
                         currentSquare = 0;
@@ -334,6 +338,12 @@ document.addEventListener("keydown", async (event) => {
                         currentRow++;
                         end(isWinner, true, true);
                     }
+                } else {
+                    const wrongRow = getRow(currentRow);
+                    wrongRow.classList.add('shake');
+                    setTimeout(() => {
+                        wrongRow.classList.remove('shake');
+                    }, 100);
                 }
             }
         }
