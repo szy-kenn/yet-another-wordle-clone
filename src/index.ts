@@ -41,6 +41,7 @@ function start() {
 
 
 /**
+ * Ends the game, sets the trackers, disables input, and updates stats if desired
  * 
  * @param {boolean} isWinner - the winner status at the end of the game
  * @param {boolean} showNote - determines whether to show note before showing the stats or not
@@ -89,6 +90,7 @@ async function end(isWinner: boolean, showNote: boolean, update: boolean) {
 }
 
 /**
+ * Evaluates every letter in the inputted word (Correct, Misplaced, or Wrong)
  * 
  * @param word1 - word input by the player
  * @param word2 - word to be guessed
@@ -126,6 +128,12 @@ function evaluate(word1: string, word2: string): Evaluation {
     return evaluation;
 }
 
+/**
+ * show/hide the data passed
+ * 
+ * @param {boolean} show - whether to show the stats container or not 
+ * @param {boolean} userData - the data that will be displayed
+ */
 function showStats(show: boolean=true, userData: UserData) {
 
     if (show) {
@@ -146,6 +154,7 @@ function showStats(show: boolean=true, userData: UserData) {
             setText(guessStats[i], userData.guessDistribution[i].toString());
         }
         
+        // if the player has played any games, every guess percentage width will now be based on its value
         if (userData.gamesPlayed > 0) {
             for (let i = 0; i < guessStats.length; i++) {
 
@@ -166,6 +175,12 @@ function showStats(show: boolean=true, userData: UserData) {
     }
 }
 
+/**
+ * Loads an existing game state to the browser
+ * 
+ * @param {GameState} gameState - the game state object to be loaded
+ * @returns {Promise} - returns a new Promise that will be resolved after loading the game state
+ */
 async function loadGameState(gameState: GameState) {
 
     return new Promise<void>(async(resolve, reject) => {
@@ -325,7 +340,7 @@ document.addEventListener("keydown", async (event) => {
     }
 })
 
-
+// Starts the game
 start();
 loadGameState(getGameState());
 

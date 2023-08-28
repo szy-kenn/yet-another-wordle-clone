@@ -365,6 +365,7 @@ function start() {
     (0,_data__WEBPACK_IMPORTED_MODULE_1__.initializeGameData)();
 }
 /**
+ * Ends the game, sets the trackers, disables input, and updates stats if desired
  *
  * @param {boolean} isWinner - the winner status at the end of the game
  * @param {boolean} showNote - determines whether to show note before showing the stats or not
@@ -407,6 +408,7 @@ function end(isWinner, showNote, update) {
     });
 }
 /**
+ * Evaluates every letter in the inputted word (Correct, Misplaced, or Wrong)
  *
  * @param word1 - word input by the player
  * @param word2 - word to be guessed
@@ -440,6 +442,12 @@ function evaluate(word1, word2) {
     }
     return evaluation;
 }
+/**
+ * show/hide the data passed
+ *
+ * @param {boolean} show - whether to show the stats container or not
+ * @param {boolean} userData - the data that will be displayed
+ */
 function showStats(show = true, userData) {
     if (show) {
         if (isWinner) {
@@ -455,6 +463,7 @@ function showStats(show = true, userData) {
         for (let i = 0; i < config.tries; i++) {
             (0,_ui__WEBPACK_IMPORTED_MODULE_0__.setText)(guessStats[i], userData.guessDistribution[i].toString());
         }
+        // if the player has played any games, every guess percentage width will now be based on its value
         if (userData.gamesPlayed > 0) {
             for (let i = 0; i < guessStats.length; i++) {
                 let newWidth = ((userData.guessDistribution[i] / userData.gamesPlayed) * 100);
@@ -472,6 +481,12 @@ function showStats(show = true, userData) {
         statsContainer.classList.remove('displayed');
     }
 }
+/**
+ * Loads an existing game state to the browser
+ *
+ * @param {GameState} gameState - the game state object to be loaded
+ * @returns {Promise} - returns a new Promise that will be resolved after loading the game state
+ */
 function loadGameState(gameState) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
@@ -603,6 +618,7 @@ document.addEventListener("keydown", (event) => __awaiter(void 0, void 0, void 0
         }
     }
 }));
+// Starts the game
 start();
 loadGameState((0,_data__WEBPACK_IMPORTED_MODULE_1__.getGameState)());
 
