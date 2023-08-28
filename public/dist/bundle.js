@@ -10,8 +10,9 @@
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getGameState: () => (/* binding */ getGameState),
+/* harmony export */   getUserData: () => (/* binding */ getUserData),
 /* harmony export */   initializeGameData: () => (/* binding */ initializeGameData),
-/* harmony export */   loadStats: () => (/* binding */ loadStats),
 /* harmony export */   updateGameStateGuesses: () => (/* binding */ updateGameStateGuesses),
 /* harmony export */   updateGuessStats: () => (/* binding */ updateGuessStats),
 /* harmony export */   updateStats: () => (/* binding */ updateStats)
@@ -42,14 +43,11 @@ function initializeGameData() {
         userData = JSON.parse(localStorage.getItem('userData'));
     }
 }
-function loadStats() {
-    document.querySelector('.games-played-value-p').textContent = userData.gamesPlayed.toString();
-    document.querySelector('.win-rate-value-p').textContent = userData.winRate.toString();
-    document.querySelector('.current-streak-value-p').textContent = userData.currentStreak.toString();
-    document.querySelector('.longest-streak-value-p').textContent = userData.longestStreak.toString();
-    // for (let i = 0; i < config.tries; i++) {
-    //     guessStats[i].textContent = userData.guessDistribution[i].toString();
-    // }
+function getUserData() {
+    return userData;
+}
+function getGameState() {
+    return gameState;
 }
 function updateGameStateGuesses(idx, val) {
     gameState.guesses[idx] = val;
@@ -121,16 +119,9 @@ const config = __webpack_require__(/*! ./game.config */ "./src/game.config.ts");
 // main containers
 const gridContainer = document.querySelector(".wordle-grid-container"); // container of all row cotainers containing letter boxes 
 const keyContainer = document.querySelector(".key-container");
-const statsContainer = document.querySelector(".stats-container");
 // winner note
 const winnerNote = document.querySelector(".winner-note");
 const notes = ['First Try!', 'Hooray!', 'Nice!', 'You got it!', 'Fantastic!', 'Phew!'];
-// guess distribution values
-const statsText = document.querySelectorAll(".value");
-const guessStats = document.querySelectorAll(".guess-value");
-// objects
-const cover = document.querySelector(".cover");
-const statsIcon = document.querySelector(".stats-icon");
 // array of ALL HTML elements of squares in the grid
 let squares = [];
 function initializeUI(length = config.word_length, tries = config.tries, container = gridContainer) {
@@ -193,26 +184,6 @@ function endGame(isOver = true) {
     // updateStats("winRate", Math.round((userData.gamesWon / userData.gamesPlayed) * 100));
     // disableKeypad(true);
 }
-// export function showStats(show: boolean=true) {
-//     if (show) {
-//         // update stats in texts
-//         loadStats();
-//         if (userData.gamesPlayed > 0) {
-//             for (let i = 0; i < guessStats.length; i++) {
-//                 let newWidth = ((userData.guessDistribution[i] / userData.gamesPlayed) * 100);
-//                 if (userData.guessDistribution[i] > 0 && newWidth <= parseFloat(guessStats[i].style.minWidth)) {
-//                     newWidth += 1;
-//                 }
-//                 guessStats[i].style.width = `${newWidth}%`;
-//             }
-//         }
-//         cover.classList.add('displayed');
-//         statsContainer.classList.add('displayed');
-//     } else {
-//         cover.classList.remove('displayed');
-//         statsContainer.classList.remove('displayed');
-//     }
-// }
 function getCell(row, squareIdx) {
     // return the HTML ELEMENT of the square in a specific row
     return squares[(row * config.word_length) + squareIdx];
@@ -290,12 +261,6 @@ function animateResult(row, result, animSpeed = 500, animDelay = 250, handleKeyp
         }, (i * animDelay) + animDelay);
     }
 }
-cover.addEventListener('click', () => {
-    // showStats(false);
-});
-statsIcon.addEventListener('click', () => {
-    // showStats();
-});
 
 
 /***/ })
@@ -369,6 +334,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const config = __webpack_require__(/*! ./game.config */ "./src/game.config.ts");
+// guess distribution values
+const statsContainer = document.querySelector(".stats-container");
+const statsText = document.querySelectorAll(".value");
+const guessStats = document.querySelectorAll(".guess-value");
+// objects
+const cover = document.querySelector(".cover");
+const statsIcon = document.querySelector(".stats-icon");
 // tracker
 let currentRow = 0;
 let currentSquare = 0;
@@ -405,6 +377,33 @@ function evaluate(word1, word2) {
         }
     }
     return evaluation;
+}
+function showStats(show = true, userData) {
+    if (show) {
+        // update stats in texts
+        document.querySelector('.games-played-value-p').textContent = userData.gamesPlayed.toString();
+        document.querySelector('.win-rate-value-p').textContent = userData.winRate.toString();
+        document.querySelector('.current-streak-value-p').textContent = userData.currentStreak.toString();
+        document.querySelector('.longest-streak-value-p').textContent = userData.longestStreak.toString();
+        for (let i = 0; i < config.tries; i++) {
+            guessStats[i].textContent = userData.guessDistribution[i].toString();
+        }
+        if (userData.gamesPlayed > 0) {
+            for (let i = 0; i < guessStats.length; i++) {
+                let newWidth = ((userData.guessDistribution[i] / userData.gamesPlayed) * 100);
+                if (userData.guessDistribution[i] > 0 && newWidth <= parseFloat(guessStats[i].style.minWidth)) {
+                    newWidth += 1;
+                }
+                guessStats[i].style.width = `${newWidth}%`;
+            }
+        }
+        cover.classList.add('displayed');
+        statsContainer.classList.add('displayed');
+    }
+    else {
+        cover.classList.remove('displayed');
+        statsContainer.classList.remove('displayed');
+    }
 }
 function loadGameState(gameState) {
     for (let i = 0; i < gameState.guesses.length; i++) {
@@ -459,7 +458,14 @@ document.addEventListener("keydown", (event) => {
         }
     }
 });
+cover.addEventListener('click', () => {
+    showStats(false, (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)());
+});
+statsIcon.addEventListener('click', () => {
+    showStats(true, (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)());
+});
 (0,_ui__WEBPACK_IMPORTED_MODULE_0__.initializeUI)();
+(0,_data__WEBPACK_IMPORTED_MODULE_1__.initializeGameData)();
 // loadGameState();
 
 })();

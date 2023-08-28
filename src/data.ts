@@ -34,15 +34,12 @@ export function initializeGameData() {
 
 }
 
-export function loadStats() {
-    document.querySelector<HTMLElement>('.games-played-value-p').textContent = userData.gamesPlayed.toString();
-    document.querySelector<HTMLElement>('.win-rate-value-p').textContent = userData.winRate.toString();
-    document.querySelector<HTMLElement>('.current-streak-value-p').textContent = userData.currentStreak.toString();
-    document.querySelector<HTMLElement>('.longest-streak-value-p').textContent = userData.longestStreak.toString();
-        
-    // for (let i = 0; i < config.tries; i++) {
-    //     guessStats[i].textContent = userData.guessDistribution[i].toString();
-    // }
+export function getUserData(): UserData {
+    return userData;
+}
+
+export function getGameState(): GameState {
+    return gameState;
 }
 
 export function updateGameStateGuesses(idx, val) {

@@ -1,8 +1,17 @@
 import { GameState, UserData, Stats } from "./types";
 import { initializeUI, animateResult, isValid, getCell, getWord, setText, endGame } from "./ui";
-import { initializeGameData, loadStats, updateGameStateGuesses, updateStats, updateGuessStats } from "./data";
+import { initializeGameData, updateGameStateGuesses, getUserData, getGameState } from "./data";
 
 const config = require('./game.config');
+
+// guess distribution values
+const statsContainer = document.querySelector<HTMLElement>(".stats-container");
+const statsText = document.querySelectorAll<HTMLElement>(".value");
+const guessStats = document.querySelectorAll<HTMLElement>(".guess-value");
+
+// objects
+const cover = document.querySelector<HTMLElement>(".cover");
+const statsIcon = document.querySelector<HTMLElement>(".stats-icon");
 
 // tracker
 let currentRow = 0;
@@ -46,6 +55,39 @@ function evaluate(word1: string, word2: string) {
     }
 
     return evaluation;
+}
+
+function showStats(show: boolean=true, userData: UserData) {
+
+    if (show) {
+        // update stats in texts
+        document.querySelector<HTMLElement>('.games-played-value-p').textContent = userData.gamesPlayed.toString();
+        document.querySelector<HTMLElement>('.win-rate-value-p').textContent = userData.winRate.toString();
+        document.querySelector<HTMLElement>('.current-streak-value-p').textContent = userData.currentStreak.toString();
+        document.querySelector<HTMLElement>('.longest-streak-value-p').textContent = userData.longestStreak.toString();
+            
+        for (let i = 0; i < config.tries; i++) {
+            guessStats[i].textContent = userData.guessDistribution[i].toString();
+        }
+        
+        if (userData.gamesPlayed > 0) {
+            for (let i = 0; i < guessStats.length; i++) {
+
+                let newWidth = ((userData.guessDistribution[i] / userData.gamesPlayed) * 100);
+                
+                if (userData.guessDistribution[i] > 0 && newWidth <= parseFloat(guessStats[i].style.minWidth)) {
+                    newWidth += 1;
+                }
+                guessStats[i].style.width = `${newWidth}%`;
+            }
+        }
+
+        cover.classList.add('displayed');
+        statsContainer.classList.add('displayed');
+    } else {
+        cover.classList.remove('displayed');
+        statsContainer.classList.remove('displayed');
+    }
 }
 
 function loadGameState(gameState: GameState) {
@@ -109,15 +151,21 @@ document.addEventListener("keydown", (event) => {
                         endGame();
                     }
                 }
-
             }
         }
-
     }
+})
 
+cover.addEventListener('click', () => {
+    showStats(false, getUserData());
+})
+
+statsIcon.addEventListener('click', () => {
+    showStats(true, getUserData());
 })
 
 initializeUI();
+initializeGameData();
 // loadGameState();
 
 

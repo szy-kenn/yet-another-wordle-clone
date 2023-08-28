@@ -1,23 +1,14 @@
-import { GameState } from "./types";
+import { GameState, UserData } from "./types";
 
 const config = require('./game.config');
 
 // main containers
 const gridContainer = document.querySelector<HTMLElement>(".wordle-grid-container") // container of all row cotainers containing letter boxes 
 const keyContainer = document.querySelector<HTMLElement>(".key-container");
-const statsContainer = document.querySelector<HTMLElement>(".stats-container");
 
 // winner note
 const winnerNote = document.querySelector<HTMLElement>(".winner-note");
 const notes = ['First Try!', 'Hooray!', 'Nice!', 'You got it!', 'Fantastic!', 'Phew!'];
-
-// guess distribution values
-const statsText = document.querySelectorAll<HTMLElement>(".value");
-const guessStats = document.querySelectorAll<HTMLElement>(".guess-value");
-
-// objects
-const cover = document.querySelector<HTMLElement>(".cover");
-const statsIcon = document.querySelector<HTMLElement>(".stats-icon");
 
 // array of ALL HTML elements of squares in the grid
 let squares: HTMLElement[] = [];
@@ -100,32 +91,6 @@ export function endGame(isOver: boolean = true) {
     // updateStats("winRate", Math.round((userData.gamesWon / userData.gamesPlayed) * 100));
     // disableKeypad(true);
 }
-
-// export function showStats(show: boolean=true) {
-
-//     if (show) {
-//         // update stats in texts
-//         loadStats();
-        
-//         if (userData.gamesPlayed > 0) {
-//             for (let i = 0; i < guessStats.length; i++) {
-
-//                 let newWidth = ((userData.guessDistribution[i] / userData.gamesPlayed) * 100);
-                
-//                 if (userData.guessDistribution[i] > 0 && newWidth <= parseFloat(guessStats[i].style.minWidth)) {
-//                     newWidth += 1;
-//                 }
-//                 guessStats[i].style.width = `${newWidth}%`;
-//             }
-//         }
-
-//         cover.classList.add('displayed');
-//         statsContainer.classList.add('displayed');
-//     } else {
-//         cover.classList.remove('displayed');
-//         statsContainer.classList.remove('displayed');
-//     }
-// }
 
 export function getCell(row: number, squareIdx: number): HTMLElement {
     // return the HTML ELEMENT of the square in a specific row
@@ -220,10 +185,3 @@ export function animateResult(row: number, result: string[], animSpeed = 500, an
     }
 }
 
-cover.addEventListener('click', () => {
-    // showStats(false);
-})
-
-statsIcon.addEventListener('click', () => {
-    // showStats();
-})
