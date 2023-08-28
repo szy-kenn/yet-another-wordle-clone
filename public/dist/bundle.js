@@ -339,7 +339,9 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 };
 
 
+// holds the configuration data for the game (word length, tries, word to guess)
 const config = __webpack_require__(/*! ./game.config */ "./src/game.config.ts");
+// ========================== HTML Elements =========================================
 // guess distribution values
 const statsContainer = document.querySelector(".stats-container");
 const statsText = document.querySelectorAll(".value");
@@ -348,43 +350,68 @@ const guessStats = document.querySelectorAll(".guess-value");
 const cover = document.querySelector(".cover");
 const statsIcon = document.querySelector(".stats-icon");
 const keys = document.querySelectorAll(".key");
-// tracker
+// =================================================================================
+// ======== TRACKER ========
 let currentRow = 0;
 let currentSquare = 0;
 let gameOver = false;
 let isWinner = false;
 let isAnimating = false;
+/**
+ * the initial function to call to start the game (initializes UI and game data)
+ */
 function start() {
-    // start the game
     (0,_ui__WEBPACK_IMPORTED_MODULE_0__.initializeUI)();
     (0,_data__WEBPACK_IMPORTED_MODULE_1__.initializeGameData)();
 }
-function end(isWinner) {
+/**
+ *
+ * @param {boolean} isWinner - the winner status at the end of the game
+ * @param {boolean} showNote - determines whether to show note before showing the stats or not
+ * @param {boolean} update - determines whether to update the game stats or not (useful for loading game state to avoid duplicating the data)
+ */
+function end(isWinner, showNote, update) {
     return __awaiter(this, void 0, void 0, function* () {
         gameOver = true;
         (0,_ui__WEBPACK_IMPORTED_MODULE_0__.disableKeypad)(true);
-        (0,_data__WEBPACK_IMPORTED_MODULE_1__.updateStats)("gamesPlayed", (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)().gamesPlayed + 1);
+        if (update) {
+            (0,_data__WEBPACK_IMPORTED_MODULE_1__.updateStats)("gamesPlayed", (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)().gamesPlayed + 1);
+        }
         if (isWinner) {
-            // highlight the guess number
-            const guessNum = guessStats[currentRow - 1];
-            guessNum.classList.add('added');
             // update all stats
-            (0,_data__WEBPACK_IMPORTED_MODULE_1__.updateGuessStats)(currentRow - 1);
-            (0,_data__WEBPACK_IMPORTED_MODULE_1__.updateStats)("gamesWon", (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)().gamesWon + 1);
-            (0,_data__WEBPACK_IMPORTED_MODULE_1__.updateStats)("currentStreak", (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)().currentStreak + 1);
-            if ((0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)().currentStreak > (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)().longestStreak) {
-                (0,_data__WEBPACK_IMPORTED_MODULE_1__.updateStats)("longestStreak", (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)().currentStreak);
+            if (update) {
+                (0,_data__WEBPACK_IMPORTED_MODULE_1__.updateGuessStats)(currentRow - 1);
+                (0,_data__WEBPACK_IMPORTED_MODULE_1__.updateStats)("gamesWon", (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)().gamesWon + 1);
+                (0,_data__WEBPACK_IMPORTED_MODULE_1__.updateStats)("currentStreak", (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)().currentStreak + 1);
+                // change longest streak if current streak is already higher
+                if ((0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)().currentStreak > (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)().longestStreak) {
+                    (0,_data__WEBPACK_IMPORTED_MODULE_1__.updateStats)("longestStreak", (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)().currentStreak);
+                }
             }
-            yield (0,_ui__WEBPACK_IMPORTED_MODULE_0__.displayNote)('You got it!');
+            if (showNote) {
+                yield (0,_ui__WEBPACK_IMPORTED_MODULE_0__.displayNote)('You got it!');
+            }
         }
         else {
-            (0,_data__WEBPACK_IMPORTED_MODULE_1__.updateStats)("currentStreak", 0); // make the currentStreak zero
-            yield (0,_ui__WEBPACK_IMPORTED_MODULE_0__.displayNote)('Unlucky...'); // display the popping note
+            if (update) {
+                (0,_data__WEBPACK_IMPORTED_MODULE_1__.updateStats)("currentStreak", 0); // make the currentStreak zero
+            }
+            if (showNote) {
+                yield (0,_ui__WEBPACK_IMPORTED_MODULE_0__.displayNote)('Unlucky...'); // display the popping note
+            }
         }
-        (0,_data__WEBPACK_IMPORTED_MODULE_1__.updateStats)("winRate", Math.round(((0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)().gamesWon / (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)().gamesPlayed) * 100));
+        if (update) {
+            (0,_data__WEBPACK_IMPORTED_MODULE_1__.updateStats)("winRate", Math.round(((0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)().gamesWon / (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)().gamesPlayed) * 100));
+        }
         showStats(true, (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)()); // show stats after
     });
 }
+/**
+ *
+ * @param word1 - word input by the player
+ * @param word2 - word to be guessed
+ * @returns {Evaluation} containing array of results and a function to get number of correct letters
+ */
 function evaluate(word1, word2) {
     // creates a new object containing the result that will be returned
     const evaluation = {
@@ -415,6 +442,11 @@ function evaluate(word1, word2) {
 }
 function showStats(show = true, userData) {
     if (show) {
+        if (isWinner) {
+            // highlight the guess number
+            const guessNum = guessStats[currentRow - 1];
+            guessNum.classList.add('added');
+        }
         // update stats in texts
         document.querySelector('.games-played-value-p').textContent = userData.gamesPlayed.toString();
         document.querySelector('.win-rate-value-p').textContent = userData.winRate.toString();
@@ -451,13 +483,24 @@ function loadGameState(gameState) {
                 }
                 const word = (0,_ui__WEBPACK_IMPORTED_MODULE_0__.getWord)(i); // get current word
                 const evalScore = evaluate(word, config.word_to_guess); // evaluate the current word
+                // show the result of evaluated word
+                isAnimating = true;
                 yield (0,_ui__WEBPACK_IMPORTED_MODULE_0__.animateResult)(i, evalScore, 0, 0, true);
+                isAnimating = false;
+                currentRow++;
                 if (evalScore.correctLetters() === config.word_length) {
-                    showStats(true, (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)());
+                    //  if the user has already input the correct word
+                    isWinner = true;
+                    end(isWinner, false, false);
                     resolve();
+                    break;
                 }
-                else {
-                    currentRow++;
+                else if (currentRow === config.word_length + 1) {
+                    end(isWinner, false, false);
+                    resolve();
+                    break;
+                }
+                if (i === gameState.guesses.length - 1) {
                     resolve();
                 }
             }
@@ -533,15 +576,17 @@ document.addEventListener("keydown", (event) => __awaiter(void 0, void 0, void 0
                     const evalScore = evaluate(word, config.word_to_guess); // get evaluation of the current word
                     // flip the row and show the result based on evalScore
                     (0,_ui__WEBPACK_IMPORTED_MODULE_0__.disableKeypad)(true);
+                    isAnimating = true;
                     yield (0,_ui__WEBPACK_IMPORTED_MODULE_0__.animateResult)(currentRow, evalScore, 200, 250, true);
                     (0,_ui__WEBPACK_IMPORTED_MODULE_0__.disableKeypad)(false);
+                    isAnimating = false;
                     // save the inputted word in the current game state
                     (0,_data__WEBPACK_IMPORTED_MODULE_1__.updateGameStateGuesses)(currentRow, word);
                     // if the player got all correct scores in evalScore
                     if (evalScore.correctLetters() === config.word_length) {
                         currentRow++;
                         isWinner = true;
-                        end(isWinner);
+                        end(isWinner, true, true);
                     }
                     else if (currentRow < config.tries - 1) {
                         // if there is still any remaining tries
@@ -551,7 +596,7 @@ document.addEventListener("keydown", (event) => __awaiter(void 0, void 0, void 0
                     else {
                         // if there are no more remaining tries left
                         currentRow++;
-                        end(isWinner);
+                        end(isWinner, true, true);
                     }
                 }
             }

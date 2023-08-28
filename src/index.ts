@@ -1,8 +1,15 @@
 import { GameState, UserData, Stats, Evaluation } from "./types";
-import { initializeUI, animateResult, isLetter, isValid, getCell, getWord, setText, displayNote, disableKeypad } from "./ui";
-import { initializeGameData, updateGameStateGuesses, getUserData, getGameState, updateStats, updateGuessStats } from "./data";
 
+import { initializeUI, animateResult, isLetter, 
+        isValid, getCell, getWord, setText, displayNote, disableKeypad } from "./ui";
+
+import { initializeGameData, updateGameStateGuesses, 
+        getUserData, getGameState, updateStats, updateGuessStats } from "./data";
+
+// holds the configuration data for the game (word length, tries, word to guess)
 const config = require('./game.config');
+
+// ========================== HTML Elements =========================================
 
 // guess distribution values
 const statsContainer = document.querySelector<HTMLElement>(".stats-container");
@@ -15,49 +22,79 @@ const statsIcon = document.querySelector<HTMLElement>(".stats-icon");
 
 const keys = document.querySelectorAll<HTMLElement>(".key");
 
-// tracker
+// =================================================================================
+
+// ======== TRACKER ========
 let currentRow = 0;
 let currentSquare = 0;
 let gameOver = false;
 let isWinner = false;
 let isAnimating = false;
 
+/**
+ * the initial function to call to start the game (initializes UI and game data)
+ */
 function start() {
-    // start the game
     initializeUI();
     initializeGameData();
 }
 
-async function end(isWinner: boolean) {
+
+/**
+ * 
+ * @param {boolean} isWinner - the winner status at the end of the game
+ * @param {boolean} showNote - determines whether to show note before showing the stats or not
+ * @param {boolean} update - determines whether to update the game stats or not (useful for loading game state to avoid duplicating the data)
+ */
+async function end(isWinner: boolean, showNote: boolean, update: boolean) {
 
     gameOver = true;
     disableKeypad(true);
-    updateStats("gamesPlayed", getUserData().gamesPlayed+1);
 
-    if (isWinner) {
-        // highlight the guess number
-        const guessNum = guessStats[currentRow-1];
-        guessNum.classList.add('added');
-
-        // update all stats
-        updateGuessStats(currentRow-1);
-        updateStats("gamesWon", getUserData().gamesWon+1);
-        updateStats("currentStreak", getUserData().currentStreak+1);
-
-        if (getUserData().currentStreak > getUserData().longestStreak) {
-            updateStats("longestStreak", getUserData().currentStreak);
-        }
-        await displayNote('You got it!');
-    } else {
-        updateStats("currentStreak", 0);    // make the currentStreak zero
-        await displayNote('Unlucky...');    // display the popping note
+    if (update) {
+        updateStats("gamesPlayed", getUserData().gamesPlayed+1);
     }
 
-    updateStats("winRate", Math.round((getUserData().gamesWon / getUserData().gamesPlayed) * 100));
+    if (isWinner) {
+        // update all stats
+        if (update) {
+            updateGuessStats(currentRow-1);
+            updateStats("gamesWon", getUserData().gamesWon+1);
+            updateStats("currentStreak", getUserData().currentStreak+1);
+            
+            // change longest streak if current streak is already higher
+            if (getUserData().currentStreak > getUserData().longestStreak) {
+                updateStats("longestStreak", getUserData().currentStreak);
+            }
+        }
+        
+        if (showNote) {
+            await displayNote('You got it!');
+        }
+
+    } else {
+        if (update) {
+            updateStats("currentStreak", 0);    // make the currentStreak zero
+        }
+        if (showNote) {
+            await displayNote('Unlucky...');    // display the popping note
+        }
+    }
+
+    if (update) {
+        updateStats("winRate", Math.round((getUserData().gamesWon / getUserData().gamesPlayed) * 100));
+    }
+
     showStats(true, getUserData());     // show stats after
 }
 
-function evaluate(word1: string, word2: string) {
+/**
+ * 
+ * @param word1 - word input by the player
+ * @param word2 - word to be guessed
+ * @returns {Evaluation} containing array of results and a function to get number of correct letters
+ */
+function evaluate(word1: string, word2: string): Evaluation {
 
     // creates a new object containing the result that will be returned
     const evaluation: Evaluation = {
@@ -92,12 +129,19 @@ function evaluate(word1: string, word2: string) {
 function showStats(show: boolean=true, userData: UserData) {
 
     if (show) {
+
+        if (isWinner) {
+            // highlight the guess number
+            const guessNum = guessStats[currentRow-1];
+            guessNum.classList.add('added');
+        }
+
         // update stats in texts
         document.querySelector<HTMLElement>('.games-played-value-p').textContent = userData.gamesPlayed.toString();
         document.querySelector<HTMLElement>('.win-rate-value-p').textContent = userData.winRate.toString();
         document.querySelector<HTMLElement>('.current-streak-value-p').textContent = userData.currentStreak.toString();
         document.querySelector<HTMLElement>('.longest-streak-value-p').textContent = userData.longestStreak.toString();
-            
+        
         for (let i = 0; i < config.tries; i++) {
             setText(guessStats[i], userData.guessDistribution[i].toString());
         }
@@ -123,6 +167,7 @@ function showStats(show: boolean=true, userData: UserData) {
 }
 
 async function loadGameState(gameState: GameState) {
+
     return new Promise<void>(async(resolve, reject) => {
         for (let i = 0; i < gameState.guesses.length; i++) {
             for (let j = 0; j < gameState.guesses[i].length; j++) {
@@ -131,15 +176,29 @@ async function loadGameState(gameState: GameState) {
                 setText(getCell(i, j).firstElementChild, gameState.guesses[i][j]);
             }
 
-            const word: string = getWord(i);    // get current word
-            const evalScore = evaluate(word, config.word_to_guess);      // evaluate the current word
+            const word: string = getWord(i); // get current word
+            const evalScore = evaluate(word, config.word_to_guess); // evaluate the current word
             
-            await animateResult(i, evalScore, 0, 0, true);
+            // show the result of evaluated word
+            isAnimating = true;
+            await animateResult(i, evalScore, 0, 0, true);  
+            isAnimating = false;
+
+            currentRow++;
+
             if (evalScore.correctLetters() === config.word_length) {
-                showStats(true, getUserData());
+                //  if the user has already input the correct word
+                isWinner = true;
+                end(isWinner, false, false);
                 resolve();
-            } else {
-                currentRow++;
+                break;
+            } else if (currentRow === config.word_length + 1) {
+                end(isWinner, false, false);
+                resolve();
+                break;
+            }
+            
+            if (i === gameState.guesses.length - 1) {
                 resolve();
             }
         }
@@ -236,8 +295,10 @@ document.addEventListener("keydown", async (event) => {
                     
                     // flip the row and show the result based on evalScore
                     disableKeypad(true);
+                    isAnimating = true;
                     await animateResult(currentRow, evalScore, 200, 250, true);
                     disableKeypad(false);
+                    isAnimating = false;
                     
                     // save the inputted word in the current game state
                     updateGameStateGuesses(currentRow, word);
@@ -246,7 +307,7 @@ document.addEventListener("keydown", async (event) => {
                     if (evalScore.correctLetters() === config.word_length) {
                         currentRow++;
                         isWinner = true;
-                        end(isWinner);
+                        end(isWinner, true, true);
                     }
 
                     else if (currentRow < config.tries - 1) {
@@ -256,7 +317,7 @@ document.addEventListener("keydown", async (event) => {
                     } else {
                         // if there are no more remaining tries left
                         currentRow++;
-                        end(isWinner);
+                        end(isWinner, true, true);
                     }
                 }
             }
