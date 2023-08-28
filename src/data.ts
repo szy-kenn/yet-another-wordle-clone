@@ -66,8 +66,5 @@ export function updateStats(stat: Stats, val) {
  
 export function updateGuessStats(idx) {
     userData.guessDistribution[idx]++;
-    // const guessNum = guessStats[idx];
-    // guessNum.classList.add('added');
-
     localStorage.setItem('userData', JSON.stringify(userData));
 }

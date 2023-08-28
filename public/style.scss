@@ -374,6 +374,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    --flip-anim-speed: 0.5s;
 
     &.popped {
         animation: 0.1s pop ease-out;
@@ -384,7 +385,7 @@ body {
     }
 
     &.flipped {
-        animation: 0.5s flip ease;
+        animation: var(--flip-anim-speed) flip ease;
     }
 
     &.jumped {

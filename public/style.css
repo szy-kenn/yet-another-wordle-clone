@@ -307,6 +307,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  --flip-anim-speed: 0.5s;
 }
 .square.popped {
   animation: 0.1s pop ease-out;
@@ -315,7 +316,7 @@ body {
   animation: 0.1s out ease-out;
 }
 .square.flipped {
-  animation: 0.5s flip ease;
+  animation: var(--flip-anim-speed) flip ease;
 }
 .square.jumped {
   animation: 0.2s jump ease-out;

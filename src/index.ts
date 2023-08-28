@@ -1,5 +1,5 @@
 import { GameState, UserData, Stats, Evaluation } from "./types";
-import { initializeUI, animateResult, isLetter, isValid, getCell, getWord, setText, displayNote, endGame, disableKeypad } from "./ui";
+import { initializeUI, animateResult, isLetter, isValid, getCell, getWord, setText, displayNote, disableKeypad } from "./ui";
 import { initializeGameData, updateGameStateGuesses, getUserData, getGameState, updateStats, updateGuessStats } from "./data";
 
 const config = require('./game.config');
@@ -35,6 +35,11 @@ async function end(isWinner: boolean) {
     updateStats("gamesPlayed", getUserData().gamesPlayed+1);
 
     if (isWinner) {
+        // highlight the guess number
+        const guessNum = guessStats[currentRow-1];
+        guessNum.classList.add('added');
+
+        // update all stats
         updateGuessStats(currentRow-1);
         updateStats("gamesWon", getUserData().gamesWon+1);
         updateStats("currentStreak", getUserData().currentStreak+1);
@@ -117,18 +122,28 @@ function showStats(show: boolean=true, userData: UserData) {
     }
 }
 
-function loadGameState(gameState: GameState) {
-    for (let i = 0; i < gameState.guesses.length; i++) {
-        for (let j = 0; j < gameState.guesses[i].length; j++) {
-            // get current cell in row i and square index j to get the p element and load the text in gameState
-            //TODO: make a function in data.ts to retrieve the inputted guessed in gameState to separate it in this section
-            setText(getCell(i, j).firstElementChild, gameState.guesses[i][j]);
-        }
+async function loadGameState(gameState: GameState) {
+    return new Promise<void>(async(resolve, reject) => {
+        for (let i = 0; i < gameState.guesses.length; i++) {
+            for (let j = 0; j < gameState.guesses[i].length; j++) {
+                // get current cell in row i and square index j to get the p element and load the text in gameState
+                // TODO: make a function in data.ts to retrieve the inputted guessed in gameState to separate it in this section
+                setText(getCell(i, j).firstElementChild, gameState.guesses[i][j]);
+            }
 
-        const word: string = getWord(i);    // get current word
-        const evalScore = evaluate(word, config.word_to_guess);      // evaluate the current word
-        currentRow++;
-    }
+            const word: string = getWord(i);    // get current word
+            const evalScore = evaluate(word, config.word_to_guess);      // evaluate the current word
+            
+            await animateResult(i, evalScore, 0, 0, true);
+            if (evalScore.correctLetters() === config.word_length) {
+                showStats(true, getUserData());
+                resolve();
+            } else {
+                currentRow++;
+                resolve();
+            }
+        }
+    })
 }
 
 cover.addEventListener('click', () => {
@@ -221,7 +236,7 @@ document.addEventListener("keydown", async (event) => {
                     
                     // flip the row and show the result based on evalScore
                     disableKeypad(true);
-                    await animateResult(currentRow, evalScore, 250, 250, true);
+                    await animateResult(currentRow, evalScore, 200, 250, true);
                     disableKeypad(false);
                     
                     // save the inputted word in the current game state
@@ -249,8 +264,11 @@ document.addEventListener("keydown", async (event) => {
     }
 })
 
+
 start();
-// loadGameState();
+loadGameState(getGameState());
+
+
 
 
 

@@ -73,8 +73,6 @@ function updateStats(stat, val) {
 }
 function updateGuessStats(idx) {
     userData.guessDistribution[idx]++;
-    // const guessNum = guessStats[idx];
-    // guessNum.classList.add('added');
     localStorage.setItem('userData', JSON.stringify(userData));
 }
 
@@ -109,7 +107,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   animateWinResult: () => (/* binding */ animateWinResult),
 /* harmony export */   disableKeypad: () => (/* binding */ disableKeypad),
 /* harmony export */   displayNote: () => (/* binding */ displayNote),
-/* harmony export */   endGame: () => (/* binding */ endGame),
 /* harmony export */   getCell: () => (/* binding */ getCell),
 /* harmony export */   getWord: () => (/* binding */ getWord),
 /* harmony export */   initializeUI: () => (/* binding */ initializeUI),
@@ -180,21 +177,6 @@ function displayNote(note) {
         });
     });
 }
-function endGame(isWinner) {
-    if (isWinner) {
-        // updateGuessStats(currentRow-1);
-        // updateStats("gamesWon", userData.gamesWon+1);
-        // updateStats("currentStreak", userData.currentStreak+1);
-        // if (userData.currentStreak > userData.longestStreak) {
-        //     updateStats("longestStreak", userData.currentStreak);
-        // }
-    }
-    else {
-        // 
-    }
-    // updateStats("winRate", Math.round((userData.gamesWon / userData.gamesPlayed) * 100));
-    disableKeypad(true);
-}
 function isLetter(str) {
     let letterRegex = /^[a-zA-Z]$/; // check from start to end if it matches with any letters ranging from a-Z
     return letterRegex.test(str) && str.length == 1;
@@ -223,6 +205,7 @@ function animateResult(row, evaluation, animSpeed = 500, animDelay = 250, animat
         return new Promise((resolve, reject) => {
             for (let i = 0; i < evaluation.result.length; i++) {
                 const cellToEvaluate = getCell(row, i);
+                cellToEvaluate.style.setProperty('--flip-anim-speed', `${animSpeed / 1000}s`);
                 setTimeout(() => {
                     cellToEvaluate.classList.add('flipped');
                 }, i * animDelay);
@@ -242,7 +225,7 @@ function animateResult(row, evaluation, animSpeed = 500, animDelay = 250, animat
                         }
                         resolve();
                     }
-                }), (i * animDelay) + animDelay);
+                }), (i * animDelay) + (animSpeed / 2));
             }
         });
     });
@@ -265,7 +248,9 @@ function animateWinResult(row) {
                     setTimeout(() => {
                         currentCell.classList.add('jumped');
                         if (k === config.word_length - 1) {
-                            resolve();
+                            setTimeout(() => {
+                                resolve();
+                            }, 500);
                         }
                     }, k * 100);
                 }
@@ -380,6 +365,10 @@ function end(isWinner) {
         (0,_ui__WEBPACK_IMPORTED_MODULE_0__.disableKeypad)(true);
         (0,_data__WEBPACK_IMPORTED_MODULE_1__.updateStats)("gamesPlayed", (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)().gamesPlayed + 1);
         if (isWinner) {
+            // highlight the guess number
+            const guessNum = guessStats[currentRow - 1];
+            guessNum.classList.add('added');
+            // update all stats
             (0,_data__WEBPACK_IMPORTED_MODULE_1__.updateGuessStats)(currentRow - 1);
             (0,_data__WEBPACK_IMPORTED_MODULE_1__.updateStats)("gamesWon", (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)().gamesWon + 1);
             (0,_data__WEBPACK_IMPORTED_MODULE_1__.updateStats)("currentStreak", (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)().currentStreak + 1);
@@ -452,16 +441,28 @@ function showStats(show = true, userData) {
     }
 }
 function loadGameState(gameState) {
-    for (let i = 0; i < gameState.guesses.length; i++) {
-        for (let j = 0; j < gameState.guesses[i].length; j++) {
-            // get current cell in row i and square index j to get the p element and load the text in gameState
-            //TODO: make a function in data.ts to retrieve the inputted guessed in gameState to separate it in this section
-            (0,_ui__WEBPACK_IMPORTED_MODULE_0__.setText)((0,_ui__WEBPACK_IMPORTED_MODULE_0__.getCell)(i, j).firstElementChild, gameState.guesses[i][j]);
-        }
-        const word = (0,_ui__WEBPACK_IMPORTED_MODULE_0__.getWord)(i); // get current word
-        const evalScore = evaluate(word, config.word_to_guess); // evaluate the current word
-        currentRow++;
-    }
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+            for (let i = 0; i < gameState.guesses.length; i++) {
+                for (let j = 0; j < gameState.guesses[i].length; j++) {
+                    // get current cell in row i and square index j to get the p element and load the text in gameState
+                    // TODO: make a function in data.ts to retrieve the inputted guessed in gameState to separate it in this section
+                    (0,_ui__WEBPACK_IMPORTED_MODULE_0__.setText)((0,_ui__WEBPACK_IMPORTED_MODULE_0__.getCell)(i, j).firstElementChild, gameState.guesses[i][j]);
+                }
+                const word = (0,_ui__WEBPACK_IMPORTED_MODULE_0__.getWord)(i); // get current word
+                const evalScore = evaluate(word, config.word_to_guess); // evaluate the current word
+                yield (0,_ui__WEBPACK_IMPORTED_MODULE_0__.animateResult)(i, evalScore, 0, 0, true);
+                if (evalScore.correctLetters() === config.word_length) {
+                    showStats(true, (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)());
+                    resolve();
+                }
+                else {
+                    currentRow++;
+                    resolve();
+                }
+            }
+        }));
+    });
 }
 cover.addEventListener('click', () => {
     // if the cover is displayed, clicking it should close the stats
@@ -532,7 +533,7 @@ document.addEventListener("keydown", (event) => __awaiter(void 0, void 0, void 0
                     const evalScore = evaluate(word, config.word_to_guess); // get evaluation of the current word
                     // flip the row and show the result based on evalScore
                     (0,_ui__WEBPACK_IMPORTED_MODULE_0__.disableKeypad)(true);
-                    yield (0,_ui__WEBPACK_IMPORTED_MODULE_0__.animateResult)(currentRow, evalScore, 250, 250, true);
+                    yield (0,_ui__WEBPACK_IMPORTED_MODULE_0__.animateResult)(currentRow, evalScore, 200, 250, true);
                     (0,_ui__WEBPACK_IMPORTED_MODULE_0__.disableKeypad)(false);
                     // save the inputted word in the current game state
                     (0,_data__WEBPACK_IMPORTED_MODULE_1__.updateGameStateGuesses)(currentRow, word);
@@ -558,7 +559,7 @@ document.addEventListener("keydown", (event) => __awaiter(void 0, void 0, void 0
     }
 }));
 start();
-// loadGameState();
+loadGameState((0,_data__WEBPACK_IMPORTED_MODULE_1__.getGameState)());
 
 })();
 

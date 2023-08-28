@@ -68,26 +68,6 @@ export async function displayNote(note: string) {
 
 }
 
-export function endGame(isWinner: boolean) {
-
-    if (isWinner) {
-        // updateGuessStats(currentRow-1);
-        // updateStats("gamesWon", userData.gamesWon+1);
-        // updateStats("currentStreak", userData.currentStreak+1);
-
-        // if (userData.currentStreak > userData.longestStreak) {
-        //     updateStats("longestStreak", userData.currentStreak);
-        // }
-    } else {
-        // 
-
-
-    }
-
-    // updateStats("winRate", Math.round((userData.gamesWon / userData.gamesPlayed) * 100));
-    disableKeypad(true);
-}
-
 export function isLetter(str: string) {
     let letterRegex = /^[a-zA-Z]$/; // check from start to end if it matches with any letters ranging from a-Z
     return letterRegex.test(str) && str.length == 1; 
@@ -122,6 +102,7 @@ export async function animateResult(row: number, evaluation: Evaluation, animSpe
 
         for (let i = 0; i < evaluation.result.length; i++) {
             const cellToEvaluate = getCell(row, i);
+            cellToEvaluate.style.setProperty('--flip-anim-speed', `${animSpeed/1000}s`);
 
             setTimeout(() => {
                 cellToEvaluate.classList.add('flipped');
@@ -142,7 +123,8 @@ export async function animateResult(row: number, evaluation: Evaluation, animSpe
                     }
                     resolve();
                 } 
-            }, (i * animDelay) + animDelay);
+
+            }, (i * animDelay) + (animSpeed / 2));
         }
     })
 }
@@ -168,7 +150,9 @@ export async function animateWinResult(row: number) {
                     currentCell.classList.add('jumped');
                 
                     if (k === config.word_length - 1) {
-                        resolve();
+                        setTimeout(() => {
+                            resolve();
+                        }, 500);
                     }
                 
                 }, k * 100);
