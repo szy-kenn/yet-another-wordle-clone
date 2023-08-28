@@ -362,6 +362,7 @@ const guessStats = document.querySelectorAll(".guess-value");
 // objects
 const cover = document.querySelector(".cover");
 const statsIcon = document.querySelector(".stats-icon");
+const keys = document.querySelectorAll(".key");
 // tracker
 let currentRow = 0;
 let currentSquare = 0;
@@ -462,6 +463,47 @@ function loadGameState(gameState) {
         currentRow++;
     }
 }
+cover.addEventListener('click', () => {
+    // if the cover is displayed, clicking it should close the stats
+    showStats(false, (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)());
+});
+statsIcon.addEventListener('click', () => {
+    showStats(true, (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)());
+});
+// keypad
+keys.forEach(key => {
+    ['mousedown', 'touchstart'].forEach(event => {
+        key.addEventListener(event, () => {
+            key.classList.add('pressed');
+        });
+    });
+    ['mouseup', 'touchend'].forEach(event => {
+        key.addEventListener(event, () => {
+            key.classList.remove('pressed');
+        });
+    });
+    ['mouseleave', 'touchcancel'].forEach(event => {
+        key.addEventListener(event, () => {
+            if (key.classList.contains('pressed')) {
+                key.classList.remove('pressed');
+            }
+        });
+    });
+    key.addEventListener('click', () => {
+        key.classList.add('popped');
+        console.log("here");
+        setTimeout(() => {
+            key.classList.remove('popped');
+        }, 100);
+        // fire an event that simulates a keydown event
+        let keyCode = key.textContent;
+        if (key.textContent === 'Delete') {
+            keyCode = 'Backspace';
+        }
+        const keyEvent = new KeyboardEvent('keydown', { key: keyCode });
+        document.dispatchEvent(keyEvent);
+    });
+});
 document.addEventListener("keydown", (event) => __awaiter(void 0, void 0, void 0, function* () {
     if (!gameOver && !isAnimating) {
         if ((0,_ui__WEBPACK_IMPORTED_MODULE_0__.isLetter)(event.key) && (currentSquare <= config.word_length - 1)) {
@@ -515,13 +557,6 @@ document.addEventListener("keydown", (event) => __awaiter(void 0, void 0, void 0
         }
     }
 }));
-cover.addEventListener('click', () => {
-    // if the cover is displayed, clicking it should close the stats
-    showStats(false, (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)());
-});
-statsIcon.addEventListener('click', () => {
-    showStats(true, (0,_data__WEBPACK_IMPORTED_MODULE_1__.getUserData)());
-});
 start();
 // loadGameState();
 
