@@ -310,7 +310,6 @@ keys.forEach(key => {
 
     key.addEventListener('click', () => {
         key.classList.add('popped');
-        console.log("here")
         setTimeout(() => {
             key.classList.remove('popped');
         }, 100);
@@ -332,6 +331,8 @@ document.addEventListener("keydown", async (event) => {
 
     if (!gameOver && !isAnimating) {
 
+        let currentKey;
+
         if (isLetter(event.key) && (currentSquare <= WORD_LENGTH - 1)) {
             const currentCell = getCell(currentRow, currentSquare);     // get current cell to fill 
             setText(currentCell.firstElementChild, event.key);          // change text content to the corresponding event key 
@@ -339,6 +340,8 @@ document.addEventListener("keydown", async (event) => {
             currentCell.classList.add('popped');
             currentCell.classList.add('filled');        // change the border color to white (filled cell)
             currentCell.classList.remove('out');
+            
+            currentKey = document.querySelector<HTMLElement>(`.keycode-${event.key.toLowerCase()}`);
             // update the tracker variables
             currentSquare++;
         }
@@ -351,6 +354,8 @@ document.addEventListener("keydown", async (event) => {
                 currentCell.classList.remove('filled');
                 currentCell.classList.remove('popped');
 
+                currentKey = document.querySelector<HTMLElement>(`.delete`);
+
                 currentSquare--;
             }
         }
@@ -358,6 +363,7 @@ document.addEventListener("keydown", async (event) => {
         else if (event.key === 'Enter') {
             if (currentSquare === WORD_LENGTH) {
 
+                currentKey = document.querySelector<HTMLElement>(`.enter`);
                 const word = getWord(currentRow);
 
                 if (isValid(word)) {
@@ -399,6 +405,12 @@ document.addEventListener("keydown", async (event) => {
                 }
             }
         }
+
+        // make keypad press
+        currentKey.classList.add('pressed');
+        setTimeout(() => {
+            currentKey.classList.remove('pressed');
+        }, 50);
     }
 })
  
