@@ -106,7 +106,11 @@ export function isValid(word: string) {
 
 export async function animateResult(row: number, evaluation: Evaluation, animSpeed = 500, animDelay = 250, animateWin: boolean) {
 
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<void>(async(resolve, reject) => {
+
+        if ((evaluation.word.toLowerCase() === 'dixie') && animSpeed > 0) {
+             await displayNote('❤️❤️❤️');
+        }
 
         for (let i = 0; i < evaluation.result.length; i++) {
             const cellToEvaluate = getCell(row, i);
