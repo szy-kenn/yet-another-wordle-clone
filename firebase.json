@@ -7,7 +7,7 @@
       "**/node_modules/**"
     ],
     "headers": [
-        { "source":"**/*.css|**/*.js|**/*.html", "headers": [{"key": "Cache-Control", "value": "no-cache, no-store, must-revalidate"}] }
+        { "source":"**/*.css|**/*.scss|**/*.js|**/*.html", "headers": [{"key": "Cache-Control", "value": "no-cache, no-store, must-revalidate"}] }
       ]
   }, 
   "emulators": {

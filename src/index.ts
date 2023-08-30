@@ -4,7 +4,7 @@ import { WORD_LENGTH, TRIES } from "./game.config";
 import { initializeUI, animateResult, isLetter, isValid, 
     getCell, getRow, getWord, setText, displayNote, disableKeypad } from "./ui";
 
-import { initializeGameData, updateGameStateGuesses, 
+import { initializeGameData, updateGameStateGuesses, getTimeBeforeMidnight,
         getUserData, getGameState, updateStats, updateGuessStats, newGameState } from "./data";
 
 // ========================== HTML Elements =========================================
@@ -14,11 +14,20 @@ const statsContainer = document.querySelector<HTMLElement>(".stats-container");
 const statsText = document.querySelectorAll<HTMLElement>(".value");
 const guessStats = document.querySelectorAll<HTMLElement>(".guess-value");
 
-// objects
+// objects for statistics section
 const cover = document.querySelector<HTMLElement>(".cover");
 const statsIcon = document.querySelector<HTMLElement>(".stats-icon");   
 
+// keypad keys
 const keys = document.querySelectorAll<HTMLElement>(".key");
+
+// new word countdown
+const newWordContainer = document.querySelector<HTMLElement>(".next-word-container")
+const newWordTimeLeft = document.querySelector<HTMLElement>(".next-word-time-value");
+
+// reveal word sqrs
+const wordToGuessContainer = document.querySelector<HTMLElement>(".word-to-guess");
+const wordToGuessSqrs = document.querySelectorAll<HTMLElement>(".word-to-guess-sqr");
 
 // =================================================================================
 
@@ -35,6 +44,15 @@ let isAnimating = false;
 function start() {
     initializeUI();
     initializeGameData();
+
+    // get time before midnight to reload the page with a new word to guess
+    const timeBeforeMidnight = getTimeBeforeMidnight();
+    
+    // reload the page after `timeBeforeMidnight` milliseconds
+    setTimeout(() => {
+        newGameState();
+        location.reload();
+    }, timeBeforeMidnight);
 }
 
 /**
@@ -48,6 +66,31 @@ async function end(isWinner: boolean, showNote: boolean, update: boolean) {
 
     gameOver = true;
     disableKeypad(true);
+    
+    // show hidden containers (word reveal, new word timer)
+    wordToGuessContainer.classList.add('displayed');
+    newWordContainer.classList.add('displayed');
+    document.querySelector<HTMLElement>('.hr-one').style.display = 'block';
+
+    // set timer for new word
+    const newDate = new Date(getTimeBeforeMidnight());
+    const newTime = `${newDate.getUTCHours().toString().padStart(2, '0')}:${newDate.getUTCMinutes().toString().padStart(2, '0')}:${newDate.getUTCSeconds().toString().padStart(2, '0')}`;
+    setText(newWordTimeLeft as Element, newTime); 
+
+    setInterval(() => {
+        const newDate = new Date(getTimeBeforeMidnight());
+        const newTime = `${newDate.getUTCHours().toString().padStart(2, '0')}:${newDate.getUTCMinutes().toString().padStart(2, '0')}:${newDate.getUTCSeconds().toString().padStart(2, '0')}`;
+        setText(newWordTimeLeft as Element, newTime); 
+    }, 1000);
+
+    // reveal the word
+    const wordToGuess = getGameState().wordToGuess;
+    const lastEvalScore = evaluate(getWord(currentRow-1), wordToGuess);
+
+    for (let i = 0; i < wordToGuess.length; i++) {
+        wordToGuessSqrs[i].classList.add(lastEvalScore.result[i].toLowerCase());
+        setText(wordToGuessSqrs[i].firstElementChild, wordToGuess[i]);
+    }
 
     if (update) {
         updateStats("gamesPlayed", getUserData().gamesPlayed+1);
@@ -136,6 +179,20 @@ function showStats(show: boolean=true, userData: UserData) {
 
     if (show) {
 
+        // flip the squares containing the revealed word (if the game is already over)
+        if (gameOver) {
+            for (let i = 0; i < wordToGuessSqrs.length; i++) {
+
+                setTimeout(() => {
+                    wordToGuessSqrs[i].classList.add('flipped');
+                    setTimeout(() => {
+                        wordToGuessSqrs[i].classList.remove('flipped');
+                    }, 500);
+
+                }, i * 200);
+            }
+        }
+        
         if (isWinner) {
             // highlight the guess number
             const guessNum = guessStats[currentRow-1];
@@ -183,43 +240,37 @@ async function loadGameState(gameState: GameState) {
 
     return new Promise<void>(async(resolve, reject) => {
 
-        if (gameState.ttl < new Date().getTime()) {
-            console.log(gameState.ttl)
-            newGameState();
-            displayNote("New word loaded!");
-        } else {
-            for (let i = 0; i < gameState.guesses.length; i++) {
-                for (let j = 0; j < gameState.guesses[i].length; j++) {
-                    // get current cell in row i and square index j to get the p element and load the text in gameState
-                    // TODO: make a function in data.ts to retrieve the inputted guessed in gameState to separate it in this section
-                    setText(getCell(i, j).firstElementChild, gameState.guesses[i][j]);
-                }
-    
-                const word: string = getWord(i); // get current word
-                const evalScore = evaluate(word, getGameState().wordToGuess); // evaluate the current word
-                
-                // show the result of evaluated word
-                isAnimating = true;
-                await animateResult(i, evalScore, 0, 0, true);  
-                isAnimating = false;
-    
-                currentRow++;
-    
-                if (evalScore.correctLetters() === WORD_LENGTH) {
-                    //  if the user has already input the correct word
-                    isWinner = true;
-                    end(isWinner, false, false);
-                    resolve();
-                    break;
-                } else if (currentRow === WORD_LENGTH + 1) {
-                    end(isWinner, false, false);
-                    resolve();
-                    break;
-                }
-                
-                if (i === gameState.guesses.length - 1) {
-                    resolve();
-                }
+        for (let i = 0; i < gameState.guesses.length; i++) {
+            for (let j = 0; j < gameState.guesses[i].length; j++) {
+                // get current cell in row i and square index j to get the p element and load the text in gameState
+                // TODO: make a function in data.ts to retrieve the inputted guessed in gameState to separate it in this section
+                setText(getCell(i, j).firstElementChild, gameState.guesses[i][j]);
+            }
+
+            const word: string = getWord(i); // get current word
+            const evalScore = evaluate(word, getGameState().wordToGuess); // evaluate the current word
+            
+            // show the result of evaluated word
+            isAnimating = true;
+            await animateResult(i, evalScore, 0, 0, true);  
+            isAnimating = false;
+
+            currentRow++;
+
+            if (evalScore.correctLetters() === WORD_LENGTH) {
+                //  if the user has already input the correct word
+                isWinner = true;
+                end(isWinner, false, false);
+                resolve();
+                break;
+            } else if (currentRow === WORD_LENGTH + 1) {
+                end(isWinner, false, false);
+                resolve();
+                break;
+            }
+            
+            if (i === gameState.guesses.length - 1) {
+                resolve();
             }
         }
     })
@@ -350,7 +401,7 @@ document.addEventListener("keydown", async (event) => {
         }
     }
 })
-
+ 
 // Starts the game
 start();
 loadGameState(getGameState());

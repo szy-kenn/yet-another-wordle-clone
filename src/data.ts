@@ -3,6 +3,9 @@ import { wordlist } from "./wordlist"
 
 const wordlistLength = wordlist.length;
 
+let gameState: GameState = JSON.parse(localStorage.getItem('gameState')) as GameState;
+let userData: UserData;
+
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.ceil(max);
@@ -13,18 +16,21 @@ function getRandomWord() {
     return wordlist[getRandomInt(0, wordlistLength)];
 }
 
-let gameState: GameState = JSON.parse(localStorage.getItem('gameState')) as GameState;
-let userData: UserData;
+export function getTimeBeforeMidnight() {
+    // returns time before midnight in milliseconds
+    const now = new Date();
+    const mn = new Date(now);
+    mn.setHours(24, 0, 0, 0);
+    return mn.getTime() - now.getTime();
+}
 
-const ttl = 60000;
 
 export function initializeGameData() {
 
     if (gameState == null) {
         let newGameState: GameState = {
             guesses: [],
-            wordToGuess: getRandomWord(),
-            ttl: new Date().getTime() + ttl
+            wordToGuess: getRandomWord()
         };
     
         let newUserData: UserData = {
@@ -59,8 +65,7 @@ export function getGameState(): GameState {
 export function newGameState() {
     let newGameState: GameState = {
         guesses: [],
-        wordToGuess: getRandomWord(),
-        ttl: new Date().getTime() + ttl
+        wordToGuess: getRandomWord()
     };
     gameState = newGameState;
 }

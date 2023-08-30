@@ -185,6 +185,38 @@ body {
         font-weight: bold;
     }
 
+    .word-to-guess {
+        display: none;
+        justify-content: space-between;
+        align-items: center;
+
+        &.displayed {
+            display: flex;
+        }
+    }
+
+    .next-word-container {
+        color: white;
+        display: none;
+        justify-content: space-between;
+        align-items: center;
+
+        &.displayed {
+            display: flex;
+        }
+
+        .next-word-text {
+            font-size: 0.8em;
+            font-family: 'Poppins'; 
+        }
+
+        .next-word-time-value {
+            font-size: 0.8em;
+            font-weight: bold;
+            font-family: 'Poppins'; 
+        }
+    }
+
     .main-stats {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -400,6 +432,11 @@ body {
     align-items: center;
     justify-content: center;
     --flip-anim-speed: 0.5s;
+
+    &.word-to-guess-sqr {
+        width: max(2.25rem, 6.25%);
+        aspect-ratio: 1;    // to make this a square
+    }
 
     &.popped {
         animation: 0.1s pop ease-out;
