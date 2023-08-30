@@ -240,6 +240,10 @@ async function loadGameState(gameState: GameState) {
 
     return new Promise<void>(async(resolve, reject) => {
 
+        if (gameState.ttl == null || gameState.ttl < new Date().getTime()) {
+            newGameState();
+        }
+
         for (let i = 0; i < gameState.guesses.length; i++) {
             for (let j = 0; j < gameState.guesses[i].length; j++) {
                 // get current cell in row i and square index j to get the p element and load the text in gameState

@@ -16,21 +16,25 @@ function getRandomWord() {
     return wordlist[getRandomInt(0, wordlistLength)];
 }
 
-export function getTimeBeforeMidnight() {
-    // returns time before midnight in milliseconds
+function getMidnightTime() {
     const now = new Date();
     const mn = new Date(now);
     mn.setHours(24, 0, 0, 0);
-    return mn.getTime() - now.getTime();
+    return mn.getTime();
 }
 
+export function getTimeBeforeMidnight() {
+    // returns time before midnight in milliseconds
+    return getMidnightTime() - new Date().getTime();
+}
 
 export function initializeGameData() {
 
     if (gameState == null) {
         let newGameState: GameState = {
             guesses: [],
-            wordToGuess: getRandomWord()
+            wordToGuess: getRandomWord(),
+            ttl: getMidnightTime()
         };
     
         let newUserData: UserData = {
@@ -63,11 +67,14 @@ export function getGameState(): GameState {
 }
 
 export function newGameState() {
+    let newDate = new Date();
     let newGameState: GameState = {
         guesses: [],
-        wordToGuess: getRandomWord()
+        wordToGuess: getRandomWord(),
+        ttl: getMidnightTime()
     };
     gameState = newGameState;
+    localStorage.setItem('gameState', JSON.stringify(gameState));
 }
 
 export function updateGameStateGuesses(idx, val) {
