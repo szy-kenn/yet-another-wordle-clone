@@ -114,7 +114,7 @@ body {
   left: 50%;
   opacity: 0;
   width: clamp(320px, 25%, 25%);
-  max-width: 90%;
+  max-width: 100%;
   transition: all 0.3s ease;
   transform: translate(-50%, -50%);
   z-index: 999;
@@ -537,7 +537,6 @@ body {
     font-size: 0.5rem;
   }
   .container {
-    gap: 0.75rem;
-    padding: 1.5rem;
+    max-width: 80%;
   }
 }/*# sourceMappingURL=style.css.map */
