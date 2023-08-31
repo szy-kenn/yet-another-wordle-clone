@@ -2,6 +2,7 @@
 body {
   background-color: #1C191A;
   font-family: "Lilita One";
+  min-height: 100dvh;
 }
 
 .wrapper {
@@ -300,7 +301,7 @@ body {
   padding: 0.5rem;
   box-sizing: border-box;
   gap: 0.25rem;
-  width: clamp(360px, 35%, 50%);
+  width: clamp(480px, 35%, 50%);
   height: 100%;
   max-width: 100%;
   justify-self: center;
@@ -356,7 +357,7 @@ body {
 
 .wordle-grid-container {
   position: relative;
-  width: clamp(350px, 35%, 50%);
+  width: clamp(480px, 35%, 50%);
   max-width: 100%;
   max-height: 100%;
   padding: 1rem;
@@ -524,7 +525,12 @@ body {
     transform: translateY(-20px);
   }
 }
-@media screen and (max-width: 360px) {
+@media screen and (max-width: 480px) {
+  body {
+    position: fixed;
+    min-width: 100vw;
+    min-height: 100svh;
+  }
   .key-container {
     width: 100%;
     gap: 0.25rem;
