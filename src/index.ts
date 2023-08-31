@@ -11,12 +11,16 @@ import { initializeGameData, updateGameStateGuesses, getTimeBeforeMidnight,
 
 // guess distribution values
 const statsContainer = document.querySelector<HTMLElement>(".stats-container");
+const settingsContainer = document.querySelector<HTMLElement>(".settings-container");
+const infoContainer = document.querySelector<HTMLElement>(".info-container");
 const statsText = document.querySelectorAll<HTMLElement>(".value");
 const guessStats = document.querySelectorAll<HTMLElement>(".guess-value");
 
 // objects for statistics section
 const cover = document.querySelector<HTMLElement>(".cover");
 const statsIcon = document.querySelector<HTMLElement>(".stats-icon");   
+const settingsIcon = document.querySelector<HTMLElement>(".settings-icon");   
+const infoIcon = document.querySelector<HTMLElement>(".info-icon");   
 
 // keypad keys
 const keys = document.querySelectorAll<HTMLElement>(".key");
@@ -37,6 +41,7 @@ let currentSquare = 0;
 let gameOver = false;
 let isWinner = false;
 let isAnimating = false;
+let shownContainer = null;
 
 /**
  * the initial function to call to start the game (initializes UI and game data)
@@ -169,6 +174,21 @@ function evaluate(word1: string, word2: string): Evaluation {
     return evaluation;
 }
 
+function showContainer(container: HTMLElement) {
+    if (shownContainer != null) {
+        hideContainer(shownContainer);
+    }
+    container.classList.add('displayed');
+    cover.classList.add('displayed');
+    shownContainer = container;
+}
+
+function hideContainer(container: HTMLElement) {
+    container.classList.remove('displayed');
+    cover.classList.remove('displayed');
+    shownContainer = null;
+}
+
 /**
  * show/hide the data passed
  * 
@@ -222,11 +242,9 @@ function showStats(show: boolean=true, userData: UserData) {
             }
         }
 
-        cover.classList.add('displayed');
-        statsContainer.classList.add('displayed');
+        showContainer(statsContainer);
     } else {
-        cover.classList.remove('displayed');
-        statsContainer.classList.remove('displayed');
+        hideContainer(statsContainer);
     }
 }
 
@@ -282,11 +300,38 @@ async function loadGameState(gameState: GameState) {
 
 cover.addEventListener('click', () => {
     // if the cover is displayed, clicking it should close the stats
-    showStats(false, getUserData());
+    hideContainer(shownContainer);
 });
+
+infoIcon.addEventListener('click', () => {
+    showContainer(infoContainer);
+
+    // animate squares with evaluated colors
+    const flipSquares = [
+        document.querySelector<HTMLElement>(".square.tutorial-sqr.correct"), 
+        document.querySelector<HTMLElement>(".square.tutorial-sqr.misplaced"), 
+        document.querySelector<HTMLElement>(".square.tutorial-sqr.wrong")
+    ];
+
+    setInterval(() => {
+        for (let i = 0; i < flipSquares.length; i++) {
+            setTimeout(() => {
+                flipSquares[i].classList.add('flipped');
+            }, i * 250);
+    
+            setTimeout(() => {
+                flipSquares[i].classList.remove('flipped');
+            }, i * 250 + 500);
+        }
+    }, 2500);
+})
 
 statsIcon.addEventListener('click', () => {
     showStats(true, getUserData());
+})
+
+settingsIcon.addEventListener('click', () => {
+    showContainer(settingsContainer);
 })
 
 // keypad

@@ -25,22 +25,6 @@ body {
   padding: 0 1rem;
   box-sizing: border-box;
 }
-.navbar .title {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-grow: 1;
-}
-.navbar .title p {
-  color: white;
-  font-size: clamp(1.25em, 2vw, 2vw);
-}
-.navbar .title p .wordle {
-  color: #5993eb;
-}
-.navbar .title p .clone {
-  color: #dd9384;
-}
 .navbar .icon-group {
   display: flex;
   justify-content: right;
@@ -57,6 +41,23 @@ body {
 .navbar .icon svg {
   fill: white;
   width: clamp(1.15rem, 2vw, 2vw);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+.title p {
+  color: white;
+  font-size: clamp(1.25em, 2vw, 2vw);
+}
+.title p .wordle {
+  color: #5993eb;
+}
+.title p .clone {
+  color: #dd9384;
 }
 
 .winner-note {
@@ -105,7 +106,7 @@ body {
   pointer-events: all;
 }
 
-.stats-container {
+.container {
   position: absolute;
   top: 45%;
   left: 50%;
@@ -128,14 +129,14 @@ body {
   padding: 2rem;
   box-sizing: border-box;
 }
-.stats-container.displayed {
+.container.displayed {
   top: 50%;
   opacity: 1;
   transition: all 0.3s ease;
   user-select: none;
   pointer-events: all;
 }
-.stats-container .header {
+.container .header {
   display: flex;
   justify-content: left;
   align-items: center;
@@ -144,6 +145,53 @@ body {
   font-family: "Poppins";
   font-weight: bold;
 }
+
+.info-container .info-text {
+  color: white;
+  font-family: "Poppins";
+  font-size: 0.9em;
+}
+.info-container .info-text.heading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.info-container .info-text.footer {
+  font-size: 0.65em;
+}
+.info-container .info-text.footer a {
+  color: #5993eb;
+  text-decoration: none;
+}
+.info-container .how-to-play {
+  color: white;
+  text-transform: uppercase;
+}
+.info-container .tutorial-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  color: white;
+  gap: 1rem;
+}
+.info-container .tutorial-container .tutorial-step {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+.info-container .tutorial-container .tutorial-step .tutorial-text {
+  font-family: "Poppins";
+  font-size: 0.8em;
+}
+.info-container .tutorial-sqr-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .stats-container .word-to-guess {
   display: none;
   justify-content: space-between;
@@ -357,6 +405,13 @@ body {
 .square.word-to-guess-sqr {
   width: max(2.25rem, 6.25%);
   aspect-ratio: 1;
+}
+.square.tutorial-sqr {
+  width: max(2.25rem, 6.25%);
+  aspect-ratio: 1;
+}
+.square.tutorial-sqr p {
+  font-size: 1.25rem;
 }
 .square.popped {
   animation: 0.1s pop ease-out;

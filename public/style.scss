@@ -45,26 +45,6 @@ body {
     padding: 0 1rem;
     box-sizing: border-box;
 
-    .title {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-grow: 1;
-
-        p {
-            color: white;
-            font-size: clamp(1.25em, 2vw, 2vw);
-            
-            .wordle {
-                color: $correct;
-            }
-            
-            .clone {
-                color: $misplaced;
-            }
-        }
-    }
-
     .icon-group {
         display: flex;
         justify-content: right;
@@ -86,6 +66,27 @@ body {
     }
     
 }
+
+.title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+
+    p {
+        color: white;
+        font-size: clamp(1.25em, 2vw, 2vw);
+        
+        .wordle {
+            color: $correct;
+        }
+        
+        .clone {
+            color: $misplaced;
+        }
+    }
+}
+
 
 .winner-note {
     position: absolute;
@@ -138,12 +139,11 @@ body {
     }
 }
 
-.stats-container {
+.container {
     position: absolute;
     top: 45%;
     left: 50%;
     opacity: 0;
-    // height: 75%;   
     width: clamp(300px, 25%, 25%);
     max-width: 100%;
 
@@ -157,8 +157,8 @@ body {
     background-color: $background-color;
     border-radius: 10px;
     filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.5));
-    // border: 1px solid white;
 
+    // main display style
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -184,6 +184,68 @@ body {
         font-family: 'Poppins';
         font-weight: bold;
     }
+}
+
+.info-container {
+
+    .info-text {
+        color: white;
+        font-family: 'Poppins';
+        font-size: 0.9em;
+
+        &.heading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        &.footer {
+            font-size: 0.65em;
+
+            a {
+                color: $correct;
+                text-decoration: none;
+            }
+        }
+    }
+
+    .how-to-play {
+        color: white;
+        text-transform: uppercase;
+    }
+
+    .tutorial-container {
+        
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: stretch;
+        color: white;
+        gap: 1rem;
+
+        .tutorial-step {
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: stretch;
+            gap: 0.5rem;
+
+            .tutorial-text {
+                font-family: 'Poppins';
+                font-size: 0.8em;
+            }
+        }
+    }
+
+    .tutorial-sqr-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+.stats-container {
 
     .word-to-guess {
         display: none;
@@ -436,6 +498,14 @@ body {
     &.word-to-guess-sqr {
         width: max(2.25rem, 6.25%);
         aspect-ratio: 1;    // to make this a square
+    }
+
+    &.tutorial-sqr {
+        width: max(2.25rem, 6.25%);
+        aspect-ratio: 1;
+        p {
+            font-size: 1.25rem;
+        }
     }
 
     &.popped {
