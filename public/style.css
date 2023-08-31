@@ -409,6 +409,7 @@ body {
 .square.tutorial-sqr {
   width: max(2.25rem, 6.25%);
   aspect-ratio: 1;
+  border: 2px solid rgba(255, 221, 231, 0.25);
 }
 .square.tutorial-sqr p {
   font-size: 1.25rem;

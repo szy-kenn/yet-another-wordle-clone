@@ -503,6 +503,7 @@ body {
     &.tutorial-sqr {
         width: max(2.25rem, 6.25%);
         aspect-ratio: 1;
+        border: 2px solid rgba($square-border-color, 0.25);
         p {
             font-size: 1.25rem;
         }
