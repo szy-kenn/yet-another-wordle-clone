@@ -113,7 +113,7 @@ body {
   top: 45%;
   left: 50%;
   opacity: 0;
-  width: clamp(300px, 25%, 25%);
+  width: clamp(320px, 25%, 25%);
   max-width: 90%;
   transition: all 0.3s ease;
   transform: translate(-50%, -50%);
@@ -300,7 +300,7 @@ body {
   padding: 0.5rem;
   box-sizing: border-box;
   gap: 0.25rem;
-  width: clamp(320px, 35%, 35%);
+  width: clamp(360px, 35%, 50%);
   height: 100%;
   max-width: 100%;
   justify-self: center;
@@ -524,7 +524,7 @@ body {
     transform: translateY(-20px);
   }
 }
-@media screen and (max-width: 320px) {
+@media screen and (max-width: 360px) {
   .key-container {
     width: 100%;
     gap: 0.25rem;
