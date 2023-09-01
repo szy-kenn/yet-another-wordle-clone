@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
     mode: 'production',
-    entry: './src/index.ts',
+    entry: './src/ts/index.ts',
     module: {
         rules: [
             {
@@ -23,11 +23,11 @@ module.exports = {
 
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, "public", "dist"),
+        path: path.resolve(__dirname, "dist"),
     },
 
     devServer: {
-        static: path.join(__dirname, "public", "dist"),
+        static: path.join(__dirname, "dist"),
         compress: true,
         port: 4000,
     },
