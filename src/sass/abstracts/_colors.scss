@@ -7,16 +7,19 @@
     --dark-square-border-color: rgb(255, 221, 231);
     --dark-square-border-color-rgb: 255, 221, 231;
 
-    --dark-filled-color: rgb(233, 161, 185);
-    --dark-filled-color-rgb: 233, 161, 185;
+    // --dark-filled-color: rgb(233, 161, 185);
+    // --dark-filled-color-rgb: 233, 161, 185;
 
+    --dark-filled-color: rgb(235, 241, 248);
+    --dark-filled-color-rgb: 235, 241, 248;
+    
     // evaluated square colors
     --dark-correct: rgb(89, 147, 235);
     --dark-misplaced: rgb(221, 147, 132);
     --dark-wrong: rgb(66, 59, 61);
 
-    --dark-primary: rgb(0, 0, 0);
-    --dark-primary-rgb: 0, 0, 0;
+    --dark-primary: rgb(28, 25, 26);
+    --dark-primary-rgb: 28, 25, 26;
     --dark-secondary: rgb(255, 255, 255);
     --dark-secondary-rgb: 255, 255, 255;
 
@@ -27,17 +30,17 @@
     --light-square-border-color: rgb(0, 0, 0);
     --light-square-border-color-rgb: 0, 0, 0;
 
-    --light-filled-color: rgb(100, 59, 75);
-    --light-filled-color-rgb: 100, 59, 75;
+    --light-filled-color: rgb(42, 57, 78);
+    --light-filled-color-rgb: 42, 57, 78;
 
-    --light-correct: rgb(34, 113, 231);
-    --light-misplaced: rgb(212, 64, 34);
-    --light-wrong: rgb(214, 201, 205);
+    --light-correct: rgb(41, 118, 233);
+    --light-misplaced: rgb(238, 69, 36);
+    --light-wrong: rgb(230, 227, 230);
 
     --light-primary: rgb(255, 255, 255);
-    --light-secondary: rgb(0, 0, 0);
+    --light-secondary: rgb(28, 25, 26);
     --light-primary-rgb: 255, 255, 255;
-    --light-secondary-rgb: 0, 0, 0;
+    --light-secondary-rgb: 28, 25, 26;
 
     --background-color: var(--light-background-color);
     --background-color-rgb: var(--light-background-color-rgb);
