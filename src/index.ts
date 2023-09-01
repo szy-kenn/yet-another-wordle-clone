@@ -160,15 +160,17 @@ function evaluate(word1: string, word2: string): Evaluation {
         }
     }
 
-    const availableLetters = word2.split(''); // convert the string to array of characters
+    const availableLetters = word2.toLowerCase().split(''); // convert the string to array of characters
     console.log(availableLetters);
 
     // check every letters if it is correct, misplaced, or wrong
     for (let i = 0; i < word1.length; i++) {
-        if (word1[i].toLowerCase() === word2[i].toLowerCase()) {
+        if (word1[i].toLowerCase() === availableLetters[i].toLowerCase()) {
             evaluation.result.push('Correct')
-        } else if (word2.toLowerCase().includes(word1[i].toLowerCase())) {
+            availableLetters[i] = '0';
+        } else if (availableLetters.includes(word1[i].toLowerCase())) {
             evaluation.result.push('Misplaced');
+            availableLetters[availableLetters.indexOf(word1[1].toLowerCase())] = '0';
         } else {
             evaluation.result.push('Wrong');
         }
