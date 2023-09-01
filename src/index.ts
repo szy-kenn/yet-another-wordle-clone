@@ -238,7 +238,7 @@ function showStats(show: boolean=true, userData: UserData) {
         if (userData.gamesPlayed > 0) {
             for (let i = 0; i < guessStats.length; i++) {
 
-                let newWidth = ((userData.guessDistribution[i] / userData.gamesPlayed) * 100);
+                let newWidth = ((userData.guessDistribution[i] / userData.gamesWon) * 100);
                 
                 if (userData.guessDistribution[i] > 0 && newWidth <= parseFloat(guessStats[i].style.minWidth)) {
                     newWidth += 1;
