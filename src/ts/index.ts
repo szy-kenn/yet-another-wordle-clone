@@ -345,6 +345,10 @@ let theme = localStorage.getItem('theme');
 
 if (theme === 'dark') {
     enableDarkMode();
+    darkModeSwitchContainer.classList.add('on');
+} else {
+    disableDarkMode();
+    darkModeSwitchContainer.classList.remove('on');
 }
 
 cover.addEventListener('click', () => {
