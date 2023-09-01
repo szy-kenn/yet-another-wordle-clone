@@ -1,0 +1,23 @@
+@use "../abstracts/colors" as *;
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: var(--dark-background-color);
+        --background-color-rgb: var(--dark-background-color-rgb);
+
+        --square-border-color: var(--dark-square-border-color);
+        --square-border-color-rgb: var(--dark-square-border-color-rgb);
+
+        --filled-color: var(--dark-filled-color);
+        --filled-color-rgb: var(--dark-filled-color-rgb);
+
+        --correct: var(--dark-correct);
+        --misplaced: var(--dark-misplaced);
+        --wrong: var(--dark-wrong);
+
+        --primary: var(--dark-primary);
+        --secondary: var(--dark-secondary);
+        --primary-rgb: var(--dark-primary-rgb);
+        --secondary-rgb: var(--dark-secondary-rgb);
+    }
+}

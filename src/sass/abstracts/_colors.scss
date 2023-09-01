@@ -1,7 +1,59 @@
-$background-color: #1C191A; 
-$square-border-color: #FFDDE7;
-$filled-color: #E9A1B9;
+:root {
+    // dark mode colors 
+    // --dark-background-color: hexToRgb(#1C191A);
+    --dark-background-color: rgb(28, 25, 26);
+    --dark-background-color-rgb: 28, 25, 26;
 
-$correct: #5993eb;
-$misplaced: #dd9384;
-$wrong: #423b3d;
+    --dark-square-border-color: rgb(255, 221, 231);
+    --dark-square-border-color-rgb: 255, 221, 231;
+
+    --dark-filled-color: rgb(233, 161, 185);
+    --dark-filled-color-rgb: 233, 161, 185;
+
+    // evaluated square colors
+    --dark-correct: rgb(89, 147, 235);
+    --dark-misplaced: rgb(221, 147, 132);
+    --dark-wrong: rgb(66, 59, 61);
+
+    --dark-primary: rgb(0, 0, 0);
+    --dark-primary-rgb: 0, 0, 0;
+    --dark-secondary: rgb(255, 255, 255);
+    --dark-secondary-rgb: 255, 255, 255;
+
+    // light mode colors
+    --light-background-color: rgb(255, 255, 255);
+    --light-background-color-rgb: 255, 255, 255;
+
+    --light-square-border-color: rgb(0, 0, 0);
+    --light-square-border-color-rgb: 0, 0, 0;
+
+    --light-filled-color: rgb(100, 59, 75);
+    --light-filled-color-rgb: 100, 59, 75;
+
+    --light-correct: rgb(34, 113, 231);
+    --light-misplaced: rgb(212, 64, 34);
+    --light-wrong: rgb(214, 201, 205);
+
+    --light-primary: rgb(255, 255, 255);
+    --light-secondary: rgb(0, 0, 0);
+    --light-primary-rgb: 255, 255, 255;
+    --light-secondary-rgb: 0, 0, 0;
+
+    --background-color: var(--light-background-color);
+    --background-color-rgb: var(--light-background-color-rgb);
+
+    --square-border-color: var(--light-square-border-color);
+    --square-border-color-rgb: var(--light-square-border-color-rgb);
+
+    --filled-color: var(--light-filled-color);
+    --filled-color-rgb: var(--light-filled-color-rgb);
+    
+    --correct: var(--light-correct);
+    --misplaced: var(--light-misplaced);
+    --wrong: var(--light-wrong);
+
+    --primary: var(--light-primary);
+    --primary-rgb: var(--light-primary-rgb);
+    --secondary: var(--light-secondary); 
+    --secondary-rgb: var(--light-secondary-rgb);
+}

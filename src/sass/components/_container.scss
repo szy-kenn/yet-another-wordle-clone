@@ -15,7 +15,7 @@
     user-select: none;
     pointer-events: none;
 
-    background-color: $background-color;
+    background-color: var(--background-color);
     border-radius: 10px;
     filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.5));
 
@@ -40,7 +40,7 @@
         display: flex;
         justify-content: left;
         align-items: center;
-        color: white;
+        color: var(--secondary);
         text-transform: uppercase;
         font-family: 'Poppins';
         font-weight: bold;
@@ -51,7 +51,7 @@
 .info-container {
 
     .info-text {
-        color: white;
+        color: var(--secondary);
         font-family: 'Poppins';
         font-size: 0.9em;
 
@@ -65,14 +65,14 @@
             font-size: 0.65em;
 
             a {
-                color: $correct;
+                color: var(--correct);
                 text-decoration: none;
             }
         }
     }
 
     .how-to-play {
-        color: white;
+        color: var(--secondary);
         text-transform: uppercase;
     }
 
@@ -82,7 +82,7 @@
         flex-direction: column;
         justify-content: space-between;
         align-items: stretch;
-        color: white;
+        color: var(--secondary);
         gap: 1rem;
 
         .tutorial-step {
@@ -120,7 +120,7 @@
     }
 
     .next-word-container {
-        color: white;
+        color: var(--secondary);
         display: none;
         justify-content: space-between;
         align-items: center;
@@ -156,7 +156,7 @@
             grid-template-columns: 1fr;
             grid-template-rows: minmax(0, 1fr) minmax(0, auto-fit);
             gap: 0.25rem;
-            color: white;
+            color: var(--secondary);
             align-items: center;
             justify-content: center;
 
@@ -164,7 +164,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                color: $filled-color;
+                color: var(--filled-color);
                 font-size: 2rem;
             }
 
@@ -189,7 +189,7 @@
             display: grid;
             grid-template-columns: 1fr 19fr;
             grid-template-rows: 1fr;
-            color: white;
+            color: var(--secondary);
             gap: 0.25rem;
             align-items: center;
             justify-content: center;
@@ -205,7 +205,7 @@
                 font-size: 0.75em;
                 // border: 1px solid red;
                 border-radius: 5px;
-                background-color: $wrong;
+                background-color: var(--wrong);
                 padding: 0.25rem;
                 box-sizing: border-box;
                 width: fit-content;
@@ -216,9 +216,9 @@
                 }
 
                 &.added {
-                    color: $background-color;
+                    color: var(--background-color);
                     font-weight: bold;
-                    background-color: $filled-color;
+                    background-color: var(--filled-color);
                 }
             }
 
@@ -237,7 +237,7 @@
         gap: 0.25rem;
 
         p {
-            color: white;
+            color: var(--secondary);
             font-family: 'Poppins';
             flex: 75;
             font-size: clamp(0.95em, 1.275vw, 1.3vw);
@@ -255,7 +255,7 @@
             padding: 0.35rem;
             // box-sizing: border-box;
             border-radius: 999px;
-            background-color: $wrong;
+            background-color: var(--wrong);
             flex: 25;
             align-self: stretch;
             transition: all 0.5s cubic-bezier(0.77, 0, 0.175, 1);
@@ -272,7 +272,7 @@
             }
 
             &.on {
-                background-color: $filled-color;
+                background-color: var(--filled-color);
                 transition: all 0.5s ease;
 
                 .switch-handle {

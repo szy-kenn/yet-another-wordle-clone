@@ -27,8 +27,8 @@
     font-weight: bold;
     height: 100%;
     width: 100%;
-    color: $square-border-color;
-    background-color: $wrong;
+    color: var(--square-border-color);
+    background-color: var(--wrong);
     border: none;
     padding: 0;
     border-radius: 5px;
@@ -39,24 +39,24 @@
 
     &.wrong {
         opacity: 0.5;
-        background-color: $wrong;
+        background-color: var(--wrong);
     }
 
     &.misplaced {
-        background-color: $misplaced;
-        color: $background-color;
-        border-color: rgba($background-color, 0.5);
+        background-color: var(--misplaced);
+        color: var(--background-color);
+        border-color: rgba(var(--background-color-rgb), 0.5);
     }
 
     &.correct {
-        background-color: $correct;
-        color: $background-color;
-        border-color: rgba($background-color, 0.5);
+        background-color: var(--correct);
+        color: var(--background-color);
+        border-color: rgba(var(--background-color-rgb), 0.5);
     }
 
     &.pressed {
-        background-color: $filled-color;
-        color: $background-color;
+        background-color: var(--filled-color);
+        color: var(--background-color);
         transform: scale(1.1);
         transition: transform 0.1s ease;
         z-index: 999;

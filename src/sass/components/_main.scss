@@ -1,7 +1,7 @@
 @use "../abstracts/colors" as *;
 
 body {
-    background-color: $background-color;
+    background-color: var(--background-color);
     font-family: 'Lilita One';
     min-height: 100dvh;
 }
@@ -15,4 +15,9 @@ body {
     grid-template-rows: minmax(0, 1fr) minmax(0, 6.25fr) minmax(0, 2.75fr); // navbar grid keypad
     box-sizing: border-box;
     padding: 0 0 min(1%, 2rem) 0;
+}
+
+.separator {
+    width: 100%;
+    border-color: rgba(var(--secondary-rgb), 0.2);
 }

@@ -7,15 +7,15 @@
     flex-grow: 1;
 
     p {
-        color: white;
+        color: var(--secondary);
         font-size: clamp(1.25em, 2vw, 2vw);
         
         .wordle {
-            color: $correct;
+            color: var(--correct);
         }
         
         .clone {
-            color: $misplaced;
+            color: var(--misplaced);
         }
     }
 }
