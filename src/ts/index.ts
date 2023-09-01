@@ -307,6 +307,46 @@ async function loadGameState(gameState: GameState) {
     })
 }
 
+const enableDarkMode = () => {
+    document.documentElement.style.setProperty('--background-color', getComputedStyle(document.documentElement).getPropertyValue("--dark-background-color"));
+    document.documentElement.style.setProperty('--background-color-rgb', getComputedStyle(document.documentElement).getPropertyValue("--dark-background-color-rgb"));
+    document.documentElement.style.setProperty('--square-border-color', getComputedStyle(document.documentElement).getPropertyValue("--dark-square-border-color"));
+    document.documentElement.style.setProperty('--square-border-color-rgb', getComputedStyle(document.documentElement).getPropertyValue("--dark-square-border-color-rgb"));
+    document.documentElement.style.setProperty('--filled-color', getComputedStyle(document.documentElement).getPropertyValue("--dark-filled-color"));
+    document.documentElement.style.setProperty('--filled-color-rgb', getComputedStyle(document.documentElement).getPropertyValue("--dark-filled-color-rgb"));
+    document.documentElement.style.setProperty('--correct', getComputedStyle(document.documentElement).getPropertyValue("--dark-correct"));
+    document.documentElement.style.setProperty('--misplaced', getComputedStyle(document.documentElement).getPropertyValue("--dark-misplaced"));
+    document.documentElement.style.setProperty('--wrong', getComputedStyle(document.documentElement).getPropertyValue("--dark-wrong"));
+    document.documentElement.style.setProperty('--primary', getComputedStyle(document.documentElement).getPropertyValue("--dark-primary"));
+    document.documentElement.style.setProperty('--primary-rgb', getComputedStyle(document.documentElement).getPropertyValue("--dark-primary-rgb"));
+    document.documentElement.style.setProperty('--secondary', getComputedStyle(document.documentElement).getPropertyValue("--dark-secondary"));
+    document.documentElement.style.setProperty('--secondary-rgb', getComputedStyle(document.documentElement).getPropertyValue("--dark-secondary-rgb"));
+}
+
+const disableDarkMode = () => {
+    document.documentElement.style.setProperty('--background-color', getComputedStyle(document.documentElement).getPropertyValue("--light-background-color"));
+    document.documentElement.style.setProperty('--background-color-rgb', getComputedStyle(document.documentElement).getPropertyValue("--light-background-color-rgb"));
+    document.documentElement.style.setProperty('--square-border-color', getComputedStyle(document.documentElement).getPropertyValue("--light-square-border-color"));
+    document.documentElement.style.setProperty('--square-border-color-rgb', getComputedStyle(document.documentElement).getPropertyValue("--light-square-border-color-rgb"));
+    document.documentElement.style.setProperty('--filled-color', getComputedStyle(document.documentElement).getPropertyValue("--light-filled-color"));
+    document.documentElement.style.setProperty('--filled-color-rgb', getComputedStyle(document.documentElement).getPropertyValue("--light-filled-color-rgb"));
+    document.documentElement.style.setProperty('--correct', getComputedStyle(document.documentElement).getPropertyValue("--light-correct"));
+    document.documentElement.style.setProperty('--misplaced', getComputedStyle(document.documentElement).getPropertyValue("--light-misplaced"));
+    document.documentElement.style.setProperty('--wrong', getComputedStyle(document.documentElement).getPropertyValue("--light-wrong"));
+    document.documentElement.style.setProperty('--primary', getComputedStyle(document.documentElement).getPropertyValue("--light-primary"));
+    document.documentElement.style.setProperty('--primary-rgb', getComputedStyle(document.documentElement).getPropertyValue("--light-primary-rgb"));
+    document.documentElement.style.setProperty('--secondary', getComputedStyle(document.documentElement).getPropertyValue("--light-secondary"));
+    document.documentElement.style.setProperty('--secondary-rgb', getComputedStyle(document.documentElement).getPropertyValue("--light-secondary-rgb"));
+
+}
+
+// load theme
+let theme = localStorage.getItem('theme');
+
+if (theme === 'dark') {
+    enableDarkMode();
+}
+
 cover.addEventListener('click', () => {
     // if the cover is displayed, clicking it should close the stats
     hideContainer(shownContainer);
@@ -348,10 +388,13 @@ hardModeSwitchContainer.addEventListener('click', () => {
 
 darkModeSwitchContainer.addEventListener('click', () => {
     darkModeSwitchContainer.classList.toggle('on');
+    if (darkModeSwitchContainer.classList.contains('on')) {
+        enableDarkMode();
+    } else {
+        disableDarkMode();
+    }
+
 })
-
-
-console.log("hello");
 
 // keypad
 keys.forEach(key => {
