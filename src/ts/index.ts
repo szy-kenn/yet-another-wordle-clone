@@ -5,7 +5,8 @@ import { initializeUI, animateResult, isLetter, isValid,
     getCell, getRow, getWord, setText, displayNote, disableKeypad } from "./ui";
 
 import { initializeGameData, updateGameStateGuesses, getTimeBeforeMidnight,
-        getUserData, getGameState, updateStats, updateGuessStats, newGameState } from "./data";
+        getUserData, getGameState, getSettings, updateStats, updateGuessStats, 
+        updateTheme, updateMode, newGameState } from "./data";
 
 // ========================== HTML Elements =========================================
 
@@ -356,10 +357,7 @@ const disableDarkMode = () => {
 
 }
 
-// load theme
-let theme = localStorage.getItem('theme');
-
-if (theme === 'dark') {
+if (getSettings().theme === 'dark') {
     enableDarkMode();
     darkModeSwitchContainer.classList.add('on');
 } else {
@@ -404,16 +402,21 @@ settingsIcon.addEventListener('click', () => {
 
 hardModeSwitchContainer.addEventListener('click', () => {
     hardModeSwitchContainer.classList.toggle('on');
+    if (hardModeSwitchContainer.classList.contains('on')) {
+        updateMode("hard");
+    } else {
+        updateMode("normal");
+    }
 })
 
 darkModeSwitchContainer.addEventListener('click', () => {
     darkModeSwitchContainer.classList.toggle('on');
     if (darkModeSwitchContainer.classList.contains('on')) {
         enableDarkMode();
-        localStorage.setItem('theme', 'dark');
+        updateTheme("dark");
     } else {
         disableDarkMode();
-        localStorage.setItem('theme', 'light');
+        updateTheme("light");
     }
 
 })

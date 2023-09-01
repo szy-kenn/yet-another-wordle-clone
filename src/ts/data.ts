@@ -1,10 +1,11 @@
-import { GameState, UserData, Stats } from "./types";
+import { GameState, UserData, Stats, Settings, Theme, Mode } from "./types";
 import { wordlist } from "./wordlist"
 
 const wordlistLength = wordlist.length;
 
 let gameState: GameState = JSON.parse(localStorage.getItem('gameState')) as GameState;
 let userData: UserData;
+let settings: Settings;
 
 function getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -45,29 +46,46 @@ export function initializeGameData() {
             longestStreak: 0,
             guessDistribution: [0, 0, 0, 0, 0, 0]
         };
+
+        let newSettings: Settings = {
+            theme: 'light',
+            mode: 'normal'
+        };
     
         localStorage.setItem('gameState', JSON.stringify(newGameState));
         localStorage.setItem('userData', JSON.stringify(newUserData));
-    
+        localStorage.setItem('newSettings', JSON.stringify(newSettings));
+
         gameState = newGameState;
         userData = newUserData;
+        settings = newSettings;
     
     } else {
         userData = JSON.parse(localStorage.getItem('userData')) as UserData;
+        settings = JSON.parse(localStorage.getItem('settings')) as Settings;
+    }
+
+    if (settings == null || localStorage.getItem('theme') != null) {
+        if (localStorage.getItem('theme') != null) {
+            localStorage.removeItem('theme');
+        }
+
+        settings = {
+            theme: 'light',
+            mode: 'normal'
+        };
+
+        localStorage.setItem('settings', JSON.stringify(settings));
+
     }
 
 }
 
-export function getUserData(): UserData {
-    return userData;
-}
-
-export function getGameState(): GameState {
-    return gameState;
-}
+export const getUserData = () : UserData => { return JSON.parse(localStorage.getItem('userData')) as UserData };
+export const getGameState = () : GameState => { return JSON.parse(localStorage.getItem('gameState')) as GameState };
+export const getSettings = () : Settings => { return JSON.parse(localStorage.getItem('settings')) as Settings };
 
 export function newGameState() {
-    let newDate = new Date();
     let newGameState: GameState = {
         guesses: [],
         wordToGuess: getRandomWord(),
@@ -102,4 +120,14 @@ export function updateStats(stat: Stats, val) {
 export function updateGuessStats(idx) {
     userData.guessDistribution[idx]++;
     localStorage.setItem('userData', JSON.stringify(userData));
+}
+
+export function updateTheme(theme: Theme) {
+    settings.theme = theme;
+    localStorage.setItem('settings', JSON.stringify(settings));
+}
+
+export function updateMode(mode: Mode) {
+    settings.mode = mode;
+    localStorage.setItem('settings', JSON.stringify(settings));
 }

@@ -1,4 +1,8 @@
 // custom types 
+export type Stats = 'gamesPlayed' | 'gamesWon' | 'winRate' | 'currentStreak' | 'longestStreak';
+export type Theme = 'light' | 'dark';
+export type Mode = 'normal' | 'hard';
+
 export type GameState = {
     guesses?: string[];
     wordToGuess: string;
@@ -14,7 +18,10 @@ export type UserData = {
     guessDistribution: number[];
 }
 
-export type Stats = 'gamesPlayed' | 'gamesWon' | 'winRate' | 'currentStreak' | 'longestStreak';
+export type Settings = {
+    theme: Theme;
+    mode: Mode;
+}
 
 export type Evaluation = {
     word: string;
