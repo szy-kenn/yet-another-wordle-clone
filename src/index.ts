@@ -160,6 +160,9 @@ function evaluate(word1: string, word2: string): Evaluation {
         }
     }
 
+    const availableLetters = word2.split(''); // convert the string to array of characters
+    console.log(availableLetters);
+
     // check every letters if it is correct, misplaced, or wrong
     for (let i = 0; i < word1.length; i++) {
         if (word1[i].toLowerCase() === word2[i].toLowerCase()) {
@@ -313,17 +316,16 @@ infoIcon.addEventListener('click', () => {
         document.querySelector<HTMLElement>(".square.tutorial-sqr.wrong")
     ];
 
-    setInterval(() => {
-        for (let i = 0; i < flipSquares.length; i++) {
-            setTimeout(() => {
-                flipSquares[i].classList.add('flipped');
-            }, i * 250);
-    
-            setTimeout(() => {
-                flipSquares[i].classList.remove('flipped');
-            }, i * 250 + 500);
-        }
-    }, 2500);
+    // animate colored squares
+    for (let i = 0; i < flipSquares.length; i++) {
+        setTimeout(() => {
+            flipSquares[i].classList.add('flipped');
+        }, i * 250);
+
+        setTimeout(() => {
+            flipSquares[i].classList.remove('flipped');
+        }, i * 250 + 500);
+    }
 })
 
 statsIcon.addEventListener('click', () => {
@@ -396,6 +398,9 @@ document.addEventListener("keydown", async (event) => {
         }
 
         else if (event.key === 'Backspace') {
+
+            currentKey = document.querySelector<HTMLElement>(`.delete`);
+
             if (currentSquare !== 0) {
                 const currentCell = getCell(currentRow, currentSquare-1);
                 currentCell.firstElementChild.textContent = "";
@@ -403,16 +408,16 @@ document.addEventListener("keydown", async (event) => {
                 currentCell.classList.remove('filled');
                 currentCell.classList.remove('popped');
 
-                currentKey = document.querySelector<HTMLElement>(`.delete`);
-
                 currentSquare--;
             }
         }
 
         else if (event.key === 'Enter') {
+
+            currentKey = document.querySelector<HTMLElement>(`.enter`);
+
             if (currentSquare === WORD_LENGTH) {
 
-                currentKey = document.querySelector<HTMLElement>(`.enter`);
                 const word = getWord(currentRow);
 
                 if (isValid(word)) {
@@ -453,6 +458,8 @@ document.addEventListener("keydown", async (event) => {
                     }, 100);
                 }
             }
+        } else {
+            return;
         }
 
         // make keypad press
