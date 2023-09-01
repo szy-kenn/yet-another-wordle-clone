@@ -17,8 +17,9 @@
 
     "copy": "npm-run-all --parallel copy:*",
     "watch": "npm-run-all --parallel watch:*",
-    "serve": "browser-sync start --server public --files public",
-    "start": "npm-run-all copy --parallel watch serve",
+    "sync": "browser-sync start --server public --files public",
+    "start:emulator": "firebase emulators:start",
+    "start": "npm-run-all copy --parallel watch serve start:emulator",
     "build": "npm-run-all copy --parallel build:* postbuild",
     "test": "echo \"Error: no test specified\" && exit 1",
     "postbuild": "postcss public/css/*.css -u autoprefixer cssnano -r --no-map"
@@ -27,6 +28,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+
+    "firebase-tools": "^12.4.8",
     "ts-loader": "^9.4.4",
 
     "webpack": "^5.88.2",
