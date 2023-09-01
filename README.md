@@ -1,4 +1,4 @@
-# Yet Another Wordle Clone
+# Yet Another Wordle Clone (temporary name)
 
 Using vanilla **Typescript**, **Sass**, and **Firebase** as a BaaS, this project aims to recreate the popular online word game, Wordle, in its much _sweeter_ version.
 
@@ -12,3 +12,8 @@ Dark Mode
 Light Mode
 ![light](./src/assets/light.png)
 
+How To Play
+![how to play](./src/assets/how-to-play.png)
+
+Statistics
+![statistics](./src/assets/stats.png)
