@@ -33,6 +33,11 @@ const newWordTimeLeft = document.querySelector<HTMLElement>(".next-word-time-val
 const wordToGuessContainer = document.querySelector<HTMLElement>(".word-to-guess");
 const wordToGuessSqrs = document.querySelectorAll<HTMLElement>(".word-to-guess-sqr");
 
+// switch containers and handles
+const hardModeSwitchContainer = document.querySelector<HTMLElement>(".hard-mode-switch-container");
+const hardModeSwitchHandle = document.querySelector<HTMLElement>(".hard-mode-switch-handle");
+const darkModeSwitchContainer = document.querySelector<HTMLElement>(".dark-mode-switch-container");
+const darkModeSwitchHandle = document.querySelector<HTMLElement>(".dark-mode-switch-handle");
 // =================================================================================
 
 // ======== TRACKER ========
@@ -336,6 +341,14 @@ statsIcon.addEventListener('click', () => {
 
 settingsIcon.addEventListener('click', () => {
     showContainer(settingsContainer);
+})
+
+hardModeSwitchContainer.addEventListener('click', () => {
+    hardModeSwitchContainer.classList.toggle('on');
+})
+
+darkModeSwitchContainer.addEventListener('click', () => {
+    darkModeSwitchContainer.classList.toggle('on');
 })
 
 // keypad

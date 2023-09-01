@@ -114,7 +114,7 @@ body {
   top: 45%;
   left: 50%;
   opacity: 0;
-  width: clamp(320px, 25%, 25%);
+  width: clamp(320px, 20%, 20%);
   max-width: 100%;
   transition: all 0.3s ease;
   transform: translate(-50%, -50%);
@@ -292,6 +292,52 @@ body {
   color: #1C191A;
   font-weight: bold;
   background-color: #E9A1B9;
+}
+
+.settings-container .settings-option {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  gap: 0.25rem;
+}
+.settings-container .settings-option p {
+  color: white;
+  font-family: "Poppins";
+  flex: 75;
+  font-size: clamp(0.95em, 1.275vw, 1.3vw);
+}
+.settings-container .settings-option .switch-container {
+  position: relative;
+  display: flex;
+  height: 24px;
+  min-height: 24px;
+  max-width: 48px;
+  min-width: 48px;
+  padding: 0.35rem;
+  border-radius: 999px;
+  background-color: #423b3d;
+  flex: 25;
+  align-self: stretch;
+  transition: all 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+}
+.settings-container .settings-option .switch-container .switch-handle {
+  position: relative;
+  flex: 0.5;
+  aspect-ratio: 1;
+  background-color: white;
+  border-radius: 999px;
+  left: 0;
+  transition: all 0.2s ease-out;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.5);
+}
+.settings-container .settings-option .switch-container.on {
+  background-color: #E9A1B9;
+  transition: all 0.5s ease;
+}
+.settings-container .settings-option .switch-container.on .switch-handle {
+  left: 50%;
 }
 
 .key-container {
@@ -544,6 +590,7 @@ body {
     font-size: 0.5rem;
   }
   .container {
+    padding: 2rem 1.25rem;
     max-width: 80%;
   }
 }/*# sourceMappingURL=style.css.map */
