@@ -174,7 +174,7 @@ function evaluate(word1: string, word2: string): Evaluation {
             availableLetters[i] = '0';
         } else if (availableLetters.includes(word1[i].toLowerCase())) {
             evaluation.result.push('Misplaced');
-            availableLetters[availableLetters.indexOf(word1[1].toLowerCase())] = '0';
+            availableLetters[availableLetters.indexOf(word1[i].toLowerCase())] = '0';
         } else {
             evaluation.result.push('Wrong');
         }
@@ -390,8 +390,10 @@ darkModeSwitchContainer.addEventListener('click', () => {
     darkModeSwitchContainer.classList.toggle('on');
     if (darkModeSwitchContainer.classList.contains('on')) {
         enableDarkMode();
+        localStorage.setItem('theme', 'dark');
     } else {
         disableDarkMode();
+        localStorage.setItem('theme', 'light');
     }
 
 })
