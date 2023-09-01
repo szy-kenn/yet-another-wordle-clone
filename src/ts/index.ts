@@ -60,9 +60,27 @@ function start() {
     
     // reload the page after `timeBeforeMidnight` milliseconds
     setTimeout(() => {
-        newGameState();
+        hideWordToGuess();
         location.reload();
     }, timeBeforeMidnight);
+}
+
+/**
+ *  display the reveal words and next word timer section in stats container 
+ */
+function revealWordToGuess() {
+    wordToGuessContainer.classList.add('displayed');
+    newWordContainer.classList.add('displayed');
+    document.querySelector<HTMLElement>('.hr-one').style.display = 'block';
+}
+
+/**
+ *  hide the reveal words and next word timer section in stats container
+ */
+function hideWordToGuess() {
+    wordToGuessContainer.classList.remove('displayed');
+    newWordContainer.classList.remove('displayed');
+    document.querySelector<HTMLElement>('.hr-one').style.display = 'none';
 }
 
 /**
@@ -78,9 +96,7 @@ async function end(isWinner: boolean, showNote: boolean, update: boolean) {
     disableKeypad(true);
     
     // show hidden containers (word reveal, new word timer)
-    wordToGuessContainer.classList.add('displayed');
-    newWordContainer.classList.add('displayed');
-    document.querySelector<HTMLElement>('.hr-one').style.display = 'block';
+    revealWordToGuess();
 
     // set timer for new word
     const newDate = new Date(getTimeBeforeMidnight());
