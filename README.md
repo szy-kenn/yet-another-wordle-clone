@@ -7,8 +7,8 @@ This project is still under development, but you can try the current test versio
 ### Updates
 
 Dark Mode
-![dark](src\assets\dark.png)
+![dark](./src/assets/dark.png)
 
 Light Mode
-![light](src\assets\light.png)
+![light](./src/assets/light.png)
 
