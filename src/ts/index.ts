@@ -166,7 +166,6 @@ function evaluate(word1: string, word2: string): Evaluation {
     }
 
     const availableLetters = word2.toLowerCase().split(''); // convert the string to array of characters
-    console.log(availableLetters);
 
     // check every letters if it is correct, misplaced, or wrong
     for (let i = 0; i < word1.length; i++) {
@@ -350,6 +349,9 @@ hardModeSwitchContainer.addEventListener('click', () => {
 darkModeSwitchContainer.addEventListener('click', () => {
     darkModeSwitchContainer.classList.toggle('on');
 })
+
+
+console.log("hello");
 
 // keypad
 keys.forEach(key => {

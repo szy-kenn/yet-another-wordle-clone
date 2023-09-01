@@ -1,3 +1,4 @@
+const FileManagerPlugin = require('filemanager-webpack-plugin');
 const path = require('path');
 
 module.exports = {
@@ -31,4 +32,19 @@ module.exports = {
         compress: true,
         port: 4000,
     },
+
+    plugins: [
+        new FileManagerPlugin({
+            events: {
+                onEnd: {
+                    copy: [
+                        {
+                            source: path.resolve(__dirname, 'dist', '**', '*.js'),
+                            destination: path.resolve(__dirname, 'public', 'js')
+                        }
+                    ]
+                }
+            }
+        })
+    ]
 }
