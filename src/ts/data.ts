@@ -34,7 +34,8 @@ export function initializeGameData() {
     if (gameState == null) {
         let newGameState: GameState = {
             guesses: [],
-            wordToGuess: getRandomWord(),
+            // wordToGuess: getRandomWord(),
+            wordToGuess: 'hello',
             ttl: getMidnightTime()
         };
     
@@ -54,7 +55,7 @@ export function initializeGameData() {
     
         localStorage.setItem('gameState', JSON.stringify(newGameState));
         localStorage.setItem('userData', JSON.stringify(newUserData));
-        localStorage.setItem('newSettings', JSON.stringify(newSettings));
+        localStorage.setItem('settings', JSON.stringify(newSettings));
 
         gameState = newGameState;
         userData = newUserData;

@@ -44,6 +44,9 @@ const darkModeSwitchHandle = document.querySelector<HTMLElement>(".dark-mode-swi
 // ======== TRACKER ========
 let currentRow = 0;
 let currentSquare = 0;
+
+// letters that have already been evaluated (correct, misplaced, wrong)
+let revealedHintLetter = {};
 let gameOver = false;
 let isWinner = false;
 let isAnimating = false;
@@ -55,6 +58,22 @@ let shownContainer = null;
 function start() {
     initializeUI();
     initializeGameData();
+
+    // load theme
+    if (getSettings().theme === 'dark') {
+        enableDarkMode();
+        darkModeSwitchContainer.classList.add('on');
+    } else {
+        disableDarkMode();
+        darkModeSwitchContainer.classList.remove('on');
+    }    
+
+    // load mode
+    if (getSettings().mode === 'normal') {
+        hardModeSwitchContainer.classList.remove('on');
+    } else {
+        hardModeSwitchContainer.classList.add('on');
+    }
 
     // get time before midnight to reload the page with a new word to guess
     const timeBeforeMidnight = getTimeBeforeMidnight();
@@ -186,15 +205,24 @@ function evaluate(word1: string, word2: string): Evaluation {
 
     // check every letters if it is correct, misplaced, or wrong
     for (let i = 0; i < word1.length; i++) {
+
+        let res;
+
         if (word1[i].toLowerCase() === availableLetters[i].toLowerCase()) {
-            evaluation.result.push('Correct')
+            res = 'Correct';
             availableLetters[i] = '0';
         } else if (availableLetters.includes(word1[i].toLowerCase())) {
-            evaluation.result.push('Misplaced');
+            res = 'Misplaced';
             availableLetters[availableLetters.indexOf(word1[i].toLowerCase())] = '0';
         } else {
-            evaluation.result.push('Wrong');
+            res = 'Wrong';
         }
+
+        // update evaluation result array
+        evaluation.result.push(res);
+
+        // update revealedhintLetters
+        revealedHintLetter[word1[i]] = res.toLowerCase();
     }
 
     return evaluation;
@@ -357,14 +385,6 @@ const disableDarkMode = () => {
 
 }
 
-if (getSettings().theme === 'dark') {
-    enableDarkMode();
-    darkModeSwitchContainer.classList.add('on');
-} else {
-    disableDarkMode();
-    darkModeSwitchContainer.classList.remove('on');
-}
-
 cover.addEventListener('click', () => {
     // if the cover is displayed, clicking it should close the stats
     hideContainer(shownContainer);
@@ -461,7 +481,7 @@ keys.forEach(key => {
         document.dispatchEvent(keyEvent);
 
     })
-})
+});
 
 document.addEventListener("keydown", async (event) => {
 
@@ -470,6 +490,14 @@ document.addEventListener("keydown", async (event) => {
         let currentKey;
 
         if (isLetter(event.key) && (currentSquare <= WORD_LENGTH - 1)) {
+
+            // player should not be able to reuse letters that have already been marked as 'wrong' / incorrect
+            if (getSettings().mode === 'hard') {
+                if (document.querySelector<HTMLElement>(`.keycode-${event.key.toLowerCase()}`).classList.contains('wrong')) {
+                    return;
+                }
+            }
+
             const currentCell = getCell(currentRow, currentSquare);     // get current cell to fill 
             setText(currentCell.firstElementChild, event.key);          // change text content to the corresponding event key 
             
@@ -500,6 +528,11 @@ document.addEventListener("keydown", async (event) => {
         else if (event.key === 'Enter') {
 
             currentKey = document.querySelector<HTMLElement>(`.enter`);
+
+            if (getSettings().mode === 'hard') {
+                console.log(getWord(currentRow));
+                console.log(revealedHintLetter);
+            }
 
             if (currentSquare === WORD_LENGTH) {
 
