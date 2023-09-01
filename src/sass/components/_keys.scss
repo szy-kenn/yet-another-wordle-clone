@@ -1,0 +1,70 @@
+@use "../abstracts/colors" as *;
+
+.key-container {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, auto);
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+    padding: 0.5rem;
+    box-sizing: border-box;
+    gap: 0.25rem;
+
+    width: clamp(480px, 35%, 50%);
+    height: 100%;
+    max-width: 100%;
+    justify-self: center;
+    align-content: center;
+}
+
+.key-row {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.key {
+    position: relative;
+    font-size: clamp(0.7em, 1vw, 1vw);
+    font-weight: bold;
+    height: 100%;
+    width: 100%;
+    color: $square-border-color;
+    background-color: $wrong;
+    border: none;
+    padding: 0;
+    border-radius: 5px;
+    transform: scale(1);
+    transition: transform 0.1s ease;
+    z-index: inherit;
+    user-select: none;
+
+    &.wrong {
+        opacity: 0.5;
+        background-color: $wrong;
+    }
+
+    &.misplaced {
+        background-color: $misplaced;
+        color: $background-color;
+        border-color: rgba($background-color, 0.5);
+    }
+
+    &.correct {
+        background-color: $correct;
+        color: $background-color;
+        border-color: rgba($background-color, 0.5);
+    }
+
+    &.pressed {
+        background-color: $filled-color;
+        color: $background-color;
+        transform: scale(1.1);
+        transition: transform 0.1s ease;
+        z-index: 999;
+    }
+
+    &.enter, &.delete {
+        font-size: clamp(0.7em, 0.9vw, 0.9vw);
+        min-width: fit-content;
+    }
+
+}

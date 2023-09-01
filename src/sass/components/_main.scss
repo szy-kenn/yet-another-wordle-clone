@@ -1,0 +1,18 @@
+@use "../abstracts/colors" as *;
+
+body {
+    background-color: $background-color;
+    font-family: 'Lilita One';
+    min-height: 100dvh;
+}
+
+.wrapper {
+    position: relative;
+    height: 100dvh;
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: minmax(0, 1fr) minmax(0, 6.25fr) minmax(0, 2.75fr); // navbar grid keypad
+    box-sizing: border-box;
+    padding: 0 0 min(1%, 2rem) 0;
+}

@@ -1,0 +1,29 @@
+.navbar {
+    position: relative;
+    display: grid;
+    grid-template-columns: 2fr 6fr 2fr;
+    border-bottom: 2px solid rgba(white, 0.3);
+    padding: 0 1rem;
+    box-sizing: border-box;
+
+    .icon-group {
+        display: flex;
+        justify-content: right;
+        align-items: center;
+        gap: clamp(0.5rem, 1vw, 1vw);
+    }
+
+    .icon {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: left;
+        cursor: pointer;
+    
+        svg {
+            fill: white;
+            width: clamp(1.15rem, 2vw, 2vw);
+        }
+    }
+    
+}

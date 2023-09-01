@@ -1,0 +1,284 @@
+@use "../abstracts/colors" as *;
+
+.container {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    opacity: 0;
+    width: clamp(320px, 20%, 20%);
+    max-width: 100%;
+
+    transition: all 0.3s ease;
+
+    transform: translate(-50%, -50%);
+    z-index: 999;
+    user-select: none;
+    pointer-events: none;
+
+    background-color: $background-color;
+    border-radius: 10px;
+    filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.5));
+
+    // main display style
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: stretch;
+    gap: 1rem;
+    padding: 2rem;
+    box-sizing: border-box;
+
+    &.displayed {
+        top: 50%;
+        opacity: 1;
+        transition: all 0.3s ease;
+        user-select: none;
+        pointer-events: all;
+    }
+
+    .header {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        color: white;
+        text-transform: uppercase;
+        font-family: 'Poppins';
+        font-weight: bold;
+        font-size: clamp(0.75rem, 1.35vw, 1.35vw);
+    }
+}
+
+.info-container {
+
+    .info-text {
+        color: white;
+        font-family: 'Poppins';
+        font-size: 0.9em;
+
+        &.heading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        &.footer {
+            font-size: 0.65em;
+
+            a {
+                color: $correct;
+                text-decoration: none;
+            }
+        }
+    }
+
+    .how-to-play {
+        color: white;
+        text-transform: uppercase;
+    }
+
+    .tutorial-container {
+        
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: stretch;
+        color: white;
+        gap: 1rem;
+
+        .tutorial-step {
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: stretch;
+            gap: 0.5rem;
+
+            .tutorial-text {
+                font-family: 'Poppins';
+                font-size: 0.8em;
+            }
+        }
+    }
+
+    .tutorial-sqr-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+.stats-container {
+
+    .word-to-guess {
+        display: none;
+        justify-content: space-between;
+        align-items: center;
+
+        &.displayed {
+            display: flex;
+        }
+    }
+
+    .next-word-container {
+        color: white;
+        display: none;
+        justify-content: space-between;
+        align-items: center;
+
+        &.displayed {
+            display: flex;
+        }
+
+        .next-word-text {
+            font-size: 0.8em;
+            font-family: 'Poppins'; 
+        }
+
+        .next-word-time-value {
+            font-size: 0.8em;
+            font-weight: bold;
+            font-family: 'Poppins'; 
+        }
+    }
+
+    .main-stats {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows: repeat(2, minmax(0, 1fr));
+        position: relative;
+        align-self: stretch;
+        gap: 1rem;
+
+        &-sec {
+            display: grid;
+            position: relative;
+            // height: 100%;
+            grid-template-columns: 1fr;
+            grid-template-rows: minmax(0, 1fr) minmax(0, auto-fit);
+            gap: 0.25rem;
+            color: white;
+            align-items: center;
+            justify-content: center;
+
+            .value {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: $filled-color;
+                font-size: 2rem;
+            }
+
+            .stat-text {
+                display: flex;
+                align-self: flex-start;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.75em;
+                font-family: 'Poppins';    
+                text-align: center;
+            }
+        }
+    }
+
+    .guess-distrib-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+
+        .guess-container {
+            display: grid;
+            grid-template-columns: 1fr 19fr;
+            grid-template-rows: 1fr;
+            color: white;
+            gap: 0.25rem;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+
+            .guess-number {
+                font-size: 0.75em;
+                font-family: 'Poppins';
+            }
+
+            .guess-value {
+                font-family: 'Poppins';
+                font-size: 0.75em;
+                // border: 1px solid red;
+                border-radius: 5px;
+                background-color: $wrong;
+                padding: 0.25rem;
+                box-sizing: border-box;
+                width: fit-content;
+                min-width: fit-content;
+
+                p {
+                    text-align: right;
+                }
+
+                &.added {
+                    color: $background-color;
+                    font-weight: bold;
+                    background-color: $filled-color;
+                }
+            }
+
+        }
+    }
+}
+
+.settings-container {
+    
+    .settings-option {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 100%;
+        gap: 0.25rem;
+
+        p {
+            color: white;
+            font-family: 'Poppins';
+            flex: 75;
+            font-size: clamp(0.95em, 1.275vw, 1.3vw);
+        }
+
+        .switch-container {
+            position: relative;
+            display: flex;
+
+            height: 24px;
+            min-height: 24px;
+            max-width: 48px;
+            min-width: 48px;
+
+            padding: 0.35rem;
+            // box-sizing: border-box;
+            border-radius: 999px;
+            background-color: $wrong;
+            flex: 25;
+            align-self: stretch;
+            transition: all 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+
+            .switch-handle {
+                position: relative;
+                flex: 0.5;
+                aspect-ratio: 1;
+                background-color: white;
+                border-radius: 999px;
+                left: 0;
+                transition: all 0.2s ease-out;
+                box-shadow: 0px 2px 10px rgba(black, 0.5);
+            }
+
+            &.on {
+                background-color: $filled-color;
+                transition: all 0.5s ease;
+
+                .switch-handle {
+                    left: 50%;
+                }
+            }
+        }
+    }
+}

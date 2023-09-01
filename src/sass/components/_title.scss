@@ -1,0 +1,21 @@
+@use "../abstracts/colors" as *;
+
+.title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+
+    p {
+        color: white;
+        font-size: clamp(1.25em, 2vw, 2vw);
+        
+        .wordle {
+            color: $correct;
+        }
+        
+        .clone {
+            color: $misplaced;
+        }
+    }
+}

@@ -1,0 +1,119 @@
+@use "../abstracts/colors" as *;
+
+.wordle-grid-container {
+
+    position: relative;
+
+    width: clamp(480px, 35%, 50%);
+    max-width: 100%;
+    max-height: 100%;
+
+    padding: 1rem;
+    box-sizing: border-box;
+    
+    align-self: center;
+    justify-self: center;
+
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(6, 1fr);
+    gap: clamp(0.25rem, 0.35vw, 0.35vw);
+}
+
+.row-container {
+    position: relative;
+    display: flex;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.25rem, 0.35vw, 0.35vw);
+
+    &.shake {
+        animation: 0.1s shake ease;
+
+        .square {
+            border-color: #df1256;
+
+            p {
+                color: #df1256;
+            }
+        }
+    }
+}
+
+.square {
+    position: relative;
+    width: max(3rem, 7.5%);
+    aspect-ratio: 1;    // to make this a square
+    border-radius: 5px;
+    border: 3px solid rgba($square-border-color, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    --flip-anim-speed: 0.5s;
+
+    &.word-to-guess-sqr {
+        width: max(2.25rem, 6.25%);
+        aspect-ratio: 1;    // to make this a square
+    }
+
+    &.tutorial-sqr {
+        width: max(2.25rem, 6.25%);
+        aspect-ratio: 1;
+        border: 2px solid rgba($square-border-color, 0.25);
+        p {
+            font-size: 1.25rem;
+        }
+    }
+
+    &.popped {
+        animation: 0.1s pop ease-out;
+    }
+
+    &.out {
+        animation: 0.1s out ease-out;
+    }
+
+    &.flipped {
+        animation: var(--flip-anim-speed) flip ease;
+    }
+
+    &.jumped {
+        animation: 0.2s jump ease-out;
+    }
+
+    &.filled {
+        border-color: $filled-color;
+    }
+
+    &.correct {
+        border-color: $correct;
+        background-color: $correct;
+
+        p {
+            color: $background-color;
+        }
+    }
+
+    &.misplaced {
+        border-color: $misplaced;
+        background-color: $misplaced;
+
+        p {
+            color: $background-color;
+        }
+    }
+
+    &.wrong {
+        border-color: $wrong;
+        background-color: $wrong;
+    }
+
+    p {
+        color: $filled-color;
+        font-size: 1.5em;
+        text-transform: uppercase;
+        text-align: center;
+        // font-weight: bold;
+    }
+}
