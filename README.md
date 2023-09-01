@@ -4,16 +4,11 @@ Using vanilla **Typescript**, **Sass**, and **Firebase** as a BaaS, this project
 
 This project is still under development, but you can try the current test version [here.](https://yet-another-wordle-clone.web.app) Please be mindful that your statistics may frequently reset or be cleared whenever changes are made that affect them.
 
-### Updates
+### Run Locally
 
-Dark Mode
-![dark](./src/assets/dark.png)
+You can run the project locally by cloning this repository and entering the following in the command line:
 
-Light Mode
-![light](./src/assets/light.png)
-
-How To Play
-![how to play](./src/assets/how-to-play.png)
-
-Statistics
-![statistics](./src/assets/stats.png)
+```
+npm install
+npm run start
+```
