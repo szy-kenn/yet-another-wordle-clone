@@ -4,6 +4,8 @@ Using vanilla **Typescript**, **Sass**, and **Firebase** as a BaaS, this project
 
 # Updates
 
+This project reached its completion with some modifications and improvements to be done.
+
 **[Try the game here!](https://yet-another-wordle-clone.web.app/)**
 
 # Change Log
