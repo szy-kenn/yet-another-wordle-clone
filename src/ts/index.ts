@@ -46,7 +46,14 @@ let currentRow = 0;
 let currentSquare = 0;
 
 // letters that have already been evaluated (correct, misplaced, wrong)
-let revealedHintLetter = {};
+
+let revealedHints = {
+    correct: new Array(WORD_LENGTH),
+    misplaced: []
+};
+
+let usedMisplacedLetters = [];
+
 let gameOver = false;
 let isWinner = false;
 let isAnimating = false;
@@ -103,6 +110,14 @@ function hideWordToGuess() {
     document.querySelector<HTMLElement>('.hr-one').style.display = 'none';
 }
 
+function addCorrectLetter(i, letter) {
+    revealedHints.correct[i] = letter;
+}
+
+function addMisplacedLetter(letter) {
+    revealedHints.misplaced.push(letter);
+}
+
 /**
  * Ends the game, sets the trackers, disables input, and updates stats if desired
  * 
@@ -156,15 +171,17 @@ async function end(isWinner: boolean, showNote: boolean, update: boolean) {
         }
         
         if (showNote) {
-            await displayNote('You got it!');
+            await displayNote('You got it!', (WORD_LENGTH * 100) + 500,  1500, "message");
         }
 
     } else {
         if (update) {
-            updateStats("currentStreak", 0);    // make the currentStreak zero
+            // make the currentStreak zero
+            updateStats("currentStreak", 0);    
         }
         if (showNote) {
-            await displayNote('Unlucky...');    // display the popping note
+            // display the popping note
+            await displayNote('Unlucky...', (WORD_LENGTH * 100) + 500,  1500, "message");    
         }
     }
 
@@ -172,7 +189,8 @@ async function end(isWinner: boolean, showNote: boolean, update: boolean) {
         updateStats("winRate", Math.round((getUserData().gamesWon / getUserData().gamesPlayed) * 100));
     }
 
-    showStats(true, getUserData());     // show stats after
+    // show stats after
+    showStats(true, getUserData());     
 }
 
 /**
@@ -188,7 +206,7 @@ function evaluate(word1: string, word2: string): Evaluation {
     const evaluation: Evaluation = {
 
         word: word1,
-        result: [],
+        result: new Array(WORD_LENGTH),
         correctLetters(): number {
             let count = 0;
             this.result.forEach(res => {
@@ -201,28 +219,32 @@ function evaluate(word1: string, word2: string): Evaluation {
         }
     }
 
-    const availableLetters = word2.toLowerCase().split(''); // convert the string to array of characters
+    // convert the string to array of characters
+    const availableLetters = word2.toLowerCase().split(''); 
 
-    // check every letters if it is correct, misplaced, or wrong
+    // check the correct letters in the correct positions first
     for (let i = 0; i < word1.length; i++) {
-
-        let res;
-
-        if (word1[i].toLowerCase() === availableLetters[i].toLowerCase()) {
-            res = 'Correct';
+        if (word1[i].toLowerCase() === word2[i].toLowerCase()) {
+            evaluation.result[i] = 'Correct';
             availableLetters[i] = '0';
-        } else if (availableLetters.includes(word1[i].toLowerCase())) {
-            res = 'Misplaced';
-            availableLetters[availableLetters.indexOf(word1[i].toLowerCase())] = '0';
-        } else {
-            res = 'Wrong';
+            addCorrectLetter(i, word1[i].toLowerCase());
         }
+    }
 
-        // update evaluation result array
-        evaluation.result.push(res);
+    // check for misplaced
+    for (let i = 0; i < word1.length; i++) {
+        if (availableLetters.includes(word1[i].toLowerCase())) {
+            evaluation.result[i] = 'Misplaced';
+            availableLetters[availableLetters.indexOf(word1[i].toLowerCase())] = '0';
+            addMisplacedLetter(word1[i]);
+        }
+    }
 
-        // update revealedhintLetters
-        revealedHintLetter[word1[i]] = res.toLowerCase();
+    // make all undefined elements wrong
+    for (let i = 0; i < WORD_LENGTH; i++) {
+        if (evaluation.result[i] === undefined) {
+            evaluation.result[i] = 'Wrong';
+        }
     }
 
     return evaluation;
@@ -331,16 +353,20 @@ async function loadGameState(gameState: GameState) {
             await animateResult(i, evalScore, 0, 0, true);  
             isAnimating = false;
 
+            if (currentRow === 0) {
+                hardModeSwitchContainer.classList.add('disabled');
+            }
+
             currentRow++;
 
             if (evalScore.correctLetters() === WORD_LENGTH) {
                 //  if the user has already input the correct word
                 isWinner = true;
-                end(isWinner, false, false);
+                end(isWinner, true, false);
                 resolve();
                 break;
             } else if (currentRow === WORD_LENGTH + 1) {
-                end(isWinner, false, false);
+                end(isWinner, true, false);
                 resolve();
                 break;
             }
@@ -421,11 +447,19 @@ settingsIcon.addEventListener('click', () => {
 })
 
 hardModeSwitchContainer.addEventListener('click', () => {
-    hardModeSwitchContainer.classList.toggle('on');
-    if (hardModeSwitchContainer.classList.contains('on')) {
-        updateMode("hard");
+    if (currentRow === 0) {
+        hardModeSwitchContainer.classList.toggle('on');
+        if (hardModeSwitchContainer.classList.contains('on')) {
+            updateMode("hard");
+        } else {
+            updateMode("normal");
+        }
     } else {
-        updateMode("normal");
+        if (hardModeSwitchContainer.classList.contains('on')) {
+            displayNote('Hard mode can only be disabled at the start of the round.', 0, 1500, "error");
+        } else {
+            displayNote('Hard mode can only be enabled at the start of the round.', 0, 1500, "error");
+        }
     }
 })
 
@@ -496,6 +530,16 @@ document.addEventListener("keydown", async (event) => {
                 if (document.querySelector<HTMLElement>(`.keycode-${event.key.toLowerCase()}`).classList.contains('wrong')) {
                     return;
                 }
+
+                if (revealedHints.correct[currentSquare] !== undefined && revealedHints.correct[currentSquare] !== event.key.toLowerCase()) {
+                    displayNote('Hard mode is enabled. Revealed hints must be used.', 0, 1000, "error");
+                    return;
+                } 
+
+                if (revealedHints.misplaced.includes(event.key.toLowerCase()) && revealedHints.correct[currentSquare] !== event.key.toLowerCase()) {
+                    let used = revealedHints.misplaced.splice(revealedHints.misplaced.indexOf(event.key.toLowerCase()), 1);
+                    usedMisplacedLetters = usedMisplacedLetters.concat(used);
+                }
             }
 
             const currentCell = getCell(currentRow, currentSquare);     // get current cell to fill 
@@ -516,6 +560,14 @@ document.addEventListener("keydown", async (event) => {
 
             if (currentSquare !== 0) {
                 const currentCell = getCell(currentRow, currentSquare-1);
+
+                if (getSettings().mode === 'hard') {
+                    if (usedMisplacedLetters.includes(currentCell.firstElementChild.textContent.toLowerCase())) {
+                        usedMisplacedLetters.splice(usedMisplacedLetters.indexOf(currentCell.firstElementChild.textContent.toLowerCase()), 1);
+                        addMisplacedLetter(currentCell.firstElementChild.textContent.toLowerCase());
+                    }
+                }
+
                 currentCell.firstElementChild.textContent = "";
                 currentCell.classList.add('out');
                 currentCell.classList.remove('filled');
@@ -529,16 +581,22 @@ document.addEventListener("keydown", async (event) => {
 
             currentKey = document.querySelector<HTMLElement>(`.enter`);
 
-            if (getSettings().mode === 'hard') {
-                console.log(getWord(currentRow));
-                console.log(revealedHintLetter);
-            }
-
             if (currentSquare === WORD_LENGTH) {
 
                 const word = getWord(currentRow);
 
                 if (isValid(word)) {
+
+                    if (currentRow === 0) {
+                        hardModeSwitchContainer.classList.add('disabled');
+                    }
+
+                    if (getSettings().mode === 'hard') {
+                        if (revealedHints.misplaced.length > 0) {
+                            displayNote("All revealed hints must be used.", 0, 1000, "error");
+                            return;
+                        }
+                    }
 
                     const evalScore = evaluate(word, getGameState().wordToGuess); // get evaluation of the current word
                     

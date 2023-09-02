@@ -1,6 +1,7 @@
-import { Evaluation } from "./types";
+import { Evaluation, NoteType } from "./types";
 import { WORD_LENGTH, TRIES } from "./game.config";
 import { wordlist } from "./wordlist";
+import { validWords } from "./valid_words";
 
 const config = require('./game.config');
 
@@ -47,26 +48,36 @@ export function disableKeypad(disable:boolean = true) {
     // isAnimating = disable;   
 }
 
-export async function displayNote(note: string) {
+export async function displayNote(note: string, delay: number, duration: number, type: NoteType) {
 
     return new Promise<void>((resolve, reject) => {
         // set text to the passed argument
         setText(winnerNote.firstElementChild, note);
+        
+        winnerNote.classList.add(type.toString());
 
-        // displays the winner note
+        // display the note
         setTimeout(() => {
             winnerNote.classList.add('displayed');
-        }, (WORD_LENGTH * 100) + 500);
+        }, delay);
 
         setTimeout(() => {
             winnerNote.classList.remove('displayed');
+
+            // to prevent showing the styles getting removed
+            setTimeout(() => {
+                if (!winnerNote.classList.contains('displayed')) {
+                    winnerNote.classList.remove(type.toString());
+                }
+            }, 250);
+
             squares.forEach(square => {
                 square.style.opacity = '1';
             })
 
             resolve();
-        }, (WORD_LENGTH * 100) + 2000); 
-    })
+        }, duration + delay);
+    });
 
 }
 
@@ -100,8 +111,7 @@ export function setText(cell: Element, text: string) {
 }
 
 export function isValid(word: string) {
-    // return true;
-    return wordlist.includes(word.toLowerCase());
+    return validWords.includes(word.toLowerCase());
 }
 
 export async function animateResult(row: number, evaluation: Evaluation, animSpeed = 500, animDelay = 250, animateWin: boolean) {
@@ -109,7 +119,7 @@ export async function animateResult(row: number, evaluation: Evaluation, animSpe
     return new Promise<void>(async(resolve, reject) => {
 
         if ((evaluation.word.toLowerCase() === 'dixie') && animSpeed > 0) {
-             await displayNote('❤️❤️❤️');
+             await displayNote('❤️❤️❤️', 0, 1500, "message");
         }
 
         for (let i = 0; i < evaluation.result.length; i++) {
@@ -121,15 +131,19 @@ export async function animateResult(row: number, evaluation: Evaluation, animSpe
             }, i * animDelay);
 
             setTimeout(async() => {
+
+                let key = document.querySelector(`.keycode-${evaluation.word[i].toLowerCase()}`);
                 if (evaluation.result[i] === 'Correct') {
                     cellToEvaluate.classList.add('correct');
-                    document.querySelector(`.keycode-${evaluation.word[i].toLowerCase()}`).classList.add('correct');
+                    key.classList.add('correct');
                 } else if (evaluation.result[i] === 'Misplaced') {
                     cellToEvaluate.classList.add('misplaced');
-                    document.querySelector(`.keycode-${evaluation.word[i].toLowerCase()}`).classList.add('misplaced');
+                    key.classList.add('misplaced');
                 } else {
                     cellToEvaluate.classList.add('wrong');
-                    document.querySelector(`.keycode-${evaluation.word[i].toLowerCase()}`).classList.add('wrong');
+                    if (!key.classList.contains('correct') && !key.classList.contains('misplaced')) {
+                        key.classList.add('wrong');
+                    }
                 }
 
                 if (i === evaluation.result.length - 1) {

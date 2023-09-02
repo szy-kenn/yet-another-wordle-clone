@@ -34,8 +34,8 @@ export function initializeGameData() {
     if (gameState == null) {
         let newGameState: GameState = {
             guesses: [],
-            // wordToGuess: getRandomWord(),
             wordToGuess: 'hello',
+            // wordToGuess: getRandomWord(),
             ttl: getMidnightTime()
         };
     

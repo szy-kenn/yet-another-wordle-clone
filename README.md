@@ -23,7 +23,7 @@ This project is still under development, but you can try the current test versio
 #### Fixed
 
 - Initializes the size of the guess distribution graph to only fit the content
-- Repeating letter evaluation will now only be evaluated once if there is only a single letter in the word, the remaining letters will be evaluated as incorrect
+- Repeating letter evaluation will now only be evaluated once if there is only a single letter existing in the word, the remaining letters will be evaluated as incorrect
 
 
 

@@ -271,6 +271,9 @@
 .settings-container .settings-option .switch-container.on .switch-handle {
   left: 50%;
 }
+.settings-container .settings-option .switch-container.disabled {
+  opacity: 0.5;
+}
 
 .cover {
   position: absolute;
@@ -430,6 +433,24 @@ body {
   top: min(10%, 10vh);
   opacity: 1;
   transition: all 0.2s ease;
+}
+.winner-note.message {
+  background-color: var(--primary);
+  color: var(--secondary);
+}
+.winner-note.error {
+  background-color: #ff3333;
+}
+.winner-note.error p {
+  color: #fff;
+}
+.winner-note.warning {
+  background-color: rgb(250, 250, 50);
+  color: black;
+}
+.winner-note.system {
+  background-color: rgb(89, 245, 89);
+  color: black;
 }
 
 .title {

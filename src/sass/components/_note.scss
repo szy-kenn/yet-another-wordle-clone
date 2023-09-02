@@ -30,4 +30,27 @@
         transition: all 0.2s ease;
     }
 
+    &.message {
+        background-color: var(--primary);
+        color: var(--secondary);
+    }
+
+    &.error {
+        background-color: #ff3333;
+        
+        p {
+            color: #fff;
+        }
+    }
+
+    &.warning {
+        background-color: rgb(250, 250, 50);
+        color: black;
+    }
+
+    &.system {
+        background-color: rgb(89, 245, 89);
+        color: black;
+    }
+
 }

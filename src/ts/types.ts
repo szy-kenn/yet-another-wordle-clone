@@ -2,6 +2,7 @@
 export type Stats = 'gamesPlayed' | 'gamesWon' | 'winRate' | 'currentStreak' | 'longestStreak';
 export type Theme = 'light' | 'dark';
 export type Mode = 'normal' | 'hard';
+export type NoteType = 'info' | 'message' | 'error' | 'warning' | 'system';
 
 export type GameState = {
     guesses?: string[];
