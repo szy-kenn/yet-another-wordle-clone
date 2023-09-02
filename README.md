@@ -4,7 +4,7 @@ Using vanilla **Typescript**, **Sass**, and **Firebase** as a BaaS, this project
 
 # Updates
 
-This project is still under development, but you can try the current test version **[here.](https://yet-another-wordle-clone.web.app)** Please be mindful that your statistics may frequently reset or be cleared whenever changes are made that affect them.
+**[Try the game here!](https://yet-another-wordle-clone.web.app/)**
 
 # Change Log
 
