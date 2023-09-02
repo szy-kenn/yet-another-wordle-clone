@@ -413,9 +413,14 @@ body {
   padding: 0.25rem 1rem;
   border-radius: 10px;
   top: 5%;
+  right: 0;
+  left: 0;
+  margin-right: auto;
+  margin-left: auto;
   opacity: 0;
-  right: 50%;
-  transform: translate(50%, 50%);
+  min-height: 5vh;
+  max-width: 80%;
+  width: fit-content;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -426,7 +431,7 @@ body {
 .winner-note p {
   color: var(--secondary);
   font-weight: normal;
-  font-size: clamp(1em, 1.15vw, 1.15vw);
+  font-size: clamp(0.75em, 1.1vw, 1.1vw);
 }
 .winner-note.displayed {
   top: min(10%, 10vh);
