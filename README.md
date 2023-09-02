@@ -8,19 +8,34 @@ This project is still under development, but you can try the current test versio
 
 # Change Log
 
-### [x.x.x] 2023-09-02
+## 2023-09-02
 
-#### Added
+### Added
+
+- Hard Mode has been implemented in the game
+
+### Changed
+
+- The game will now check the word's validity in a bigger wordlist
+- The wordlist for valid inputs and random daily words has been separated
+
+### Fixed
+
+- In case of repeating letters, the game's evaluation process will now prioritize checking if the letter is in the correct position before assessing any misplaced letters.
+
+## 2023-09-01
+
+### Added
 
 - Added toggle switches in settings
 - New key-value pair to store settings (mode, theme) in local storage
 - Light and Dark Mode toggle
 
-#### Changed
+### Changed
 
 - Reduced the size of the wordlist (removing extremely hard words)
 
-#### Fixed
+### Fixed
 
 - Initializes the size of the guess distribution graph to only fit the content
 - Repeating letter evaluation will now only be evaluated once if there is only a single letter existing in the word, the remaining letters will be evaluated as incorrect
