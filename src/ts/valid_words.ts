@@ -14852,4 +14852,4 @@ zuzim
 zygal
 zygon
 zymes
-zymic`;
+zymic`.split('\n');
