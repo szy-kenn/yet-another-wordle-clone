@@ -233,6 +233,9 @@ function evaluate(word1: string, word2: string): Evaluation {
 
     // check for misplaced
     for (let i = 0; i < word1.length; i++) {
+        if (evaluation.result[i] !== undefined) {
+            continue;
+        }
         if (availableLetters.includes(word1[i].toLowerCase())) {
             evaluation.result[i] = 'Misplaced';
             availableLetters[availableLetters.indexOf(word1[i].toLowerCase())] = '0';
@@ -343,11 +346,19 @@ async function loadGameState(gameState: GameState) {
                 // get current cell in row i and square index j to get the p element and load the text in gameState
                 // TODO: make a function in data.ts to retrieve the inputted guessed in gameState to separate it in this section
                 setText(getCell(i, j).firstElementChild, gameState.guesses[i][j]);
+
+                // set stricter checking when in hard mode
+                if (getSettings().mode === 'hard') {
+                    let used = revealedHints.misplaced.splice(revealedHints.misplaced.indexOf(gameState.guesses[i][j]), 1);
+                    usedMisplacedLetters = usedMisplacedLetters.concat(used);    
+                }
             }
 
             const word: string = getWord(i); // get current word
             const evalScore = evaluate(word, getGameState().wordToGuess); // evaluate the current word
             
+            usedMisplacedLetters = [];
+
             // show the result of evaluated word
             isAnimating = true;
             await animateResult(i, evalScore, 0, 0, true);  
@@ -595,8 +606,10 @@ document.addEventListener("keydown", async (event) => {
                         if (revealedHints.misplaced.length > 0) {
                             displayNote("All revealed hints must be used.", 0, 1000, "error");
                             return;
+                        } else {
+                            usedMisplacedLetters = [];
                         }
-                    }
+                    } 
 
                     const evalScore = evaluate(word, getGameState().wordToGuess); // get evaluation of the current word
                     
@@ -637,6 +650,9 @@ document.addEventListener("keydown", async (event) => {
         } else {
             return;
         }
+
+        console.log(revealedHints.misplaced);
+        console.log(usedMisplacedLetters);
 
         // make keypad press
         currentKey.classList.add('pressed');
