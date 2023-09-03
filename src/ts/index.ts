@@ -239,7 +239,7 @@ function evaluate(word1: string, word2: string): Evaluation {
         if (availableLetters.includes(word1[i].toLowerCase())) {
             evaluation.result[i] = 'Misplaced';
             availableLetters[availableLetters.indexOf(word1[i].toLowerCase())] = '0';
-            addMisplacedLetter(word1[i]);
+            addMisplacedLetter(word1[i].toLowerCase());
         }
     }
 
