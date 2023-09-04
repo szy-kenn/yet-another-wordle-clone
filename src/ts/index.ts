@@ -339,6 +339,8 @@ async function loadGameState(gameState: GameState) {
 
         if (gameState.ttl == null || gameState.ttl < new Date().getTime()) {
             newGameState();
+            hideWordToGuess();
+            location.reload();
         }
 
         for (let i = 0; i < gameState.guesses.length; i++) {
@@ -661,7 +663,7 @@ document.addEventListener("keydown", async (event) => {
         }, 50);
     }
 })
- 
+
 // Starts the game
 start();
 loadGameState(getGameState());
