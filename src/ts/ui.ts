@@ -170,6 +170,7 @@ export async function animateResult(
                     if (!key.classList.contains("correct")) {
                         key.classList.add("misplaced");
                     }
+                    key.classList.remove("wrong");
                 } else {
                     cellToEvaluate.classList.add("wrong");
                     if (
