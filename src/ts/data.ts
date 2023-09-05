@@ -1,9 +1,11 @@
 import { GameState, UserData, Stats, Settings, Theme, Mode } from "./types";
-import { wordlist } from "./wordlist"
+import { wordlist } from "./wordlist";
 
 const wordlistLength = wordlist.length;
 
-let gameState: GameState = JSON.parse(localStorage.getItem('gameState')) as GameState;
+let gameState: GameState = JSON.parse(
+    localStorage.getItem("gameState")
+) as GameState;
 let userData: UserData;
 let settings: Settings;
 
@@ -30,105 +32,106 @@ export function getTimeBeforeMidnight() {
 }
 
 export function initializeGameData() {
-
     if (gameState == null) {
         let newGameState: GameState = {
             guesses: [],
             // wordToGuess: 'hello',
             wordToGuess: getRandomWord(),
-            ttl: getMidnightTime()
+            ttl: getMidnightTime(),
         };
-    
+
         let newUserData: UserData = {
             gamesPlayed: 0,
             gamesWon: 0,
             winRate: 0,
             currentStreak: 0,
             longestStreak: 0,
-            guessDistribution: [0, 0, 0, 0, 0, 0]
+            guessDistribution: [0, 0, 0, 0, 0, 0],
         };
 
         let newSettings: Settings = {
-            theme: 'light',
-            mode: 'normal'
+            theme: "light",
+            mode: "normal",
         };
-    
-        localStorage.setItem('gameState', JSON.stringify(newGameState));
-        localStorage.setItem('userData', JSON.stringify(newUserData));
-        localStorage.setItem('settings', JSON.stringify(newSettings));
+
+        localStorage.setItem("gameState", JSON.stringify(newGameState));
+        localStorage.setItem("userData", JSON.stringify(newUserData));
+        localStorage.setItem("settings", JSON.stringify(newSettings));
 
         gameState = newGameState;
         userData = newUserData;
         settings = newSettings;
-    
     } else {
-        userData = JSON.parse(localStorage.getItem('userData')) as UserData;
-        settings = JSON.parse(localStorage.getItem('settings')) as Settings;
+        userData = JSON.parse(localStorage.getItem("userData")) as UserData;
+        settings = JSON.parse(localStorage.getItem("settings")) as Settings;
     }
 
-    if (settings == null || localStorage.getItem('theme') != null) {
-        if (localStorage.getItem('theme') != null) {
-            localStorage.removeItem('theme');
+    if (settings == null || localStorage.getItem("theme") != null) {
+        if (localStorage.getItem("theme") != null) {
+            localStorage.removeItem("theme");
         }
 
         settings = {
-            theme: 'light',
-            mode: 'normal'
+            theme: "light",
+            mode: "normal",
         };
 
-        localStorage.setItem('settings', JSON.stringify(settings));
-
+        localStorage.setItem("settings", JSON.stringify(settings));
     }
-
 }
 
-export const getUserData = () : UserData => { return JSON.parse(localStorage.getItem('userData')) as UserData };
-export const getGameState = () : GameState => { return JSON.parse(localStorage.getItem('gameState')) as GameState };
-export const getSettings = () : Settings => { return JSON.parse(localStorage.getItem('settings')) as Settings };
+export const getUserData = (): UserData => {
+    return JSON.parse(localStorage.getItem("userData")) as UserData;
+};
+export const getGameState = (): GameState => {
+    return JSON.parse(localStorage.getItem("gameState")) as GameState;
+};
+export const getSettings = (): Settings => {
+    return JSON.parse(localStorage.getItem("settings")) as Settings;
+};
 
 export function newGameState() {
     let newGameState: GameState = {
         guesses: [],
         wordToGuess: getRandomWord(),
-        ttl: getMidnightTime()
+        ttl: getMidnightTime(),
     };
     gameState = newGameState;
-    localStorage.setItem('gameState', JSON.stringify(gameState));
+    localStorage.setItem("gameState", JSON.stringify(gameState));
 }
 
 export function updateGameStateGuesses(idx, val) {
     gameState.guesses[idx] = val;
-    localStorage.setItem('gameState', JSON.stringify(gameState));
+    localStorage.setItem("gameState", JSON.stringify(gameState));
 }
 
 export function updateStats(stat: Stats, val) {
-    if (stat === 'gamesPlayed') {
+    if (stat === "gamesPlayed") {
         userData.gamesPlayed = val;
-    } else if (stat === 'gamesWon') {
+    } else if (stat === "gamesWon") {
         userData.gamesWon = val;
-    } else if (stat === 'winRate') {
+    } else if (stat === "winRate") {
         userData.winRate = val;
-    } else if (stat === 'currentStreak') {
+    } else if (stat === "currentStreak") {
         userData.currentStreak = val;
-    } else if (stat === 'longestStreak') {
+    } else if (stat === "longestStreak") {
         userData.longestStreak = val;
     }
 
-    localStorage.setItem('userData', JSON.stringify(userData));
-
+    localStorage.setItem("userData", JSON.stringify(userData));
 }
- 
+
 export function updateGuessStats(idx) {
     userData.guessDistribution[idx]++;
-    localStorage.setItem('userData', JSON.stringify(userData));
+    localStorage.setItem("userData", JSON.stringify(userData));
 }
 
 export function updateTheme(theme: Theme) {
     settings.theme = theme;
-    localStorage.setItem('settings', JSON.stringify(settings));
+    localStorage.setItem("settings", JSON.stringify(settings));
 }
 
 export function updateMode(mode: Mode) {
     settings.mode = mode;
-    localStorage.setItem('settings', JSON.stringify(settings));
+    localStorage.setItem("settings", JSON.stringify(settings));
 }

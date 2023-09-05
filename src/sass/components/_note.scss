@@ -2,7 +2,7 @@
 
 .winner-note {
     position: absolute;
-    background-color: var(--primary);   
+    background-color: var(--primary);
     padding: 0.25rem 1rem;
     border-radius: 10px;
     top: 5%;
@@ -40,7 +40,7 @@
 
     &.error {
         background-color: #ff3333;
-        
+
         p {
             color: #fff;
         }
@@ -55,5 +55,4 @@
         background-color: rgb(89, 245, 89);
         color: black;
     }
-
 }

@@ -2314,5 +2314,5 @@ export const wordlist = [
     "youth",
     "zebra",
     "zesty",
-    "zonal"
-]
+    "zonal",
+];

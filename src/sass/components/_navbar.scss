@@ -21,11 +21,10 @@
         align-items: center;
         justify-content: left;
         cursor: pointer;
-    
+
         svg {
             fill: var(--secondary);
             width: clamp(1.15rem, 2vw, 2vw);
         }
     }
-    
 }

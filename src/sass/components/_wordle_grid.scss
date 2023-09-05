@@ -2,7 +2,6 @@
 @use "../abstracts/functions" as *;
 
 .wordle-grid-container {
-
     position: relative;
 
     width: clamp(480px, 35%, 50%);
@@ -11,7 +10,7 @@
 
     padding: 1rem;
     box-sizing: border-box;
-    
+
     align-self: center;
     justify-self: center;
 
@@ -45,7 +44,7 @@
 .square {
     position: relative;
     width: max(3rem, 7.5%);
-    aspect-ratio: 1;    // to make this a square
+    aspect-ratio: 1; // to make this a square
     border-radius: 5px;
     border: 3px solid rgba(var(--square-border-color-rgb), 0.25);
     display: flex;
@@ -55,7 +54,7 @@
 
     &.word-to-guess-sqr {
         width: max(2.25rem, 6.25%);
-        aspect-ratio: 1;    // to make this a square
+        aspect-ratio: 1; // to make this a square
     }
 
     &.tutorial-sqr {

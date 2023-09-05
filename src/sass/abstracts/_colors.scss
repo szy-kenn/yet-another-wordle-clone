@@ -1,5 +1,5 @@
 :root {
-    // dark mode colors 
+    // dark mode colors
     --dark-background-color: rgb(28, 25, 26);
     --dark-background-color-rgb: 28, 25, 26;
 
@@ -8,7 +8,7 @@
 
     --dark-filled-color: rgb(235, 241, 248);
     --dark-filled-color-rgb: 235, 241, 248;
-    
+
     // evaluated square colors
     --dark-correct: rgb(89, 147, 235);
     --dark-misplaced: rgb(221, 147, 132);
@@ -46,13 +46,13 @@
 
     --filled-color: var(--light-filled-color);
     --filled-color-rgb: var(--light-filled-color-rgb);
-    
+
     --correct: var(--light-correct);
     --misplaced: var(--light-misplaced);
     --wrong: var(--light-wrong);
 
     --primary: var(--light-primary);
     --primary-rgb: var(--light-primary-rgb);
-    --secondary: var(--light-secondary); 
+    --secondary: var(--light-secondary);
     --secondary-rgb: var(--light-secondary-rgb);
 }

@@ -9,11 +9,11 @@
     p {
         color: var(--secondary);
         font-size: clamp(1.25em, 2vw, 2vw);
-        
+
         .wordle {
             color: var(--correct);
         }
-        
+
         .clone {
             color: var(--misplaced);
         }

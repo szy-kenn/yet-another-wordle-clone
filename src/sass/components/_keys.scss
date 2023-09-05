@@ -62,9 +62,9 @@
         z-index: 999;
     }
 
-    &.enter, &.delete {
+    &.enter,
+    &.delete {
         font-size: clamp(0.7em, 0.9vw, 0.9vw);
         min-width: fit-content;
     }
-
 }
