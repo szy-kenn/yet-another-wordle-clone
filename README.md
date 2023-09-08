@@ -10,7 +10,11 @@ This project reached its completion with some modifications and improvements to 
 
 # Change Log
 
-## 2023-09-07
+## 2023-09-08
+
+### Fixed
+
+-   Fixed applying the error animation to the correct current row
 
 ## 2023-09-02
 
