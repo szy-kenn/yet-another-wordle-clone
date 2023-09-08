@@ -889,6 +889,8 @@ document.addEventListener("keydown", async (event) => {
                     }
                 } else {
                     const wrongRow = getRow(currentRow);
+
+                    console.log(currentRow);
                     wrongRow.classList.add("shake");
                     setTimeout(() => {
                         wrongRow.classList.remove("shake");
@@ -898,9 +900,6 @@ document.addEventListener("keydown", async (event) => {
         } else {
             return;
         }
-
-        console.log(revealedHints.misplaced);
-        console.log(usedMisplacedLetters);
 
         // make keypad press
         currentKey.classList.add("pressed");

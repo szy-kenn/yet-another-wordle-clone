@@ -110,7 +110,8 @@ export function getCell(row: number, squareIdx: number): HTMLElement {
 
 export function getRow(row: number): HTMLElement {
     // +1 since the childNodes has 'text' Element as its first child element
-    return gridContainer.childNodes[row + 1] as HTMLElement;
+    // (update: for some reasons, the 'text' Element is now gone so the +1 is now removed)
+    return gridContainer.childNodes[row] as HTMLElement;
 }
 
 export function getWord(row: number) {
