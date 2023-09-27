@@ -525,6 +525,12 @@ const enableDarkMode = () => {
         )
     );
     document.documentElement.style.setProperty(
+        "--error",
+        getComputedStyle(document.documentElement).getPropertyValue(
+            "--dark-error"
+        )
+    );
+    document.documentElement.style.setProperty(
         "--primary",
         getComputedStyle(document.documentElement).getPropertyValue(
             "--dark-primary"
@@ -603,6 +609,12 @@ const disableDarkMode = () => {
         "--wrong",
         getComputedStyle(document.documentElement).getPropertyValue(
             "--light-wrong"
+        )
+    );
+    document.documentElement.style.setProperty(
+        "--error",
+        getComputedStyle(document.documentElement).getPropertyValue(
+            "--light-error"
         )
     );
     document.documentElement.style.setProperty(
@@ -708,6 +720,9 @@ darkModeSwitchContainer.addEventListener("click", () => {
 keys.forEach((key) => {
     ["mousedown", "touchstart"].forEach((event) => {
         key.addEventListener(event, () => {
+            if (key.classList.contains("wrong")) {
+                key.classList.add("error");
+            }
             key.classList.add("pressed");
         });
     });
@@ -751,13 +766,18 @@ document.addEventListener("keydown", async (event) => {
         if (isLetter(event.key) && currentSquare <= WORD_LENGTH - 1) {
             // player should not be able to reuse letters that have already been marked as 'wrong' / incorrect
             if (getSettings().mode === "hard") {
+
+                const keyPressed = document.querySelector<HTMLElement>(`.keycode-${event.key.toLowerCase()}`);
+
                 if (
-                    document
-                        .querySelector<HTMLElement>(
-                            `.keycode-${event.key.toLowerCase()}`
-                        )
-                        .classList.contains("wrong")
+                    keyPressed.classList.contains("wrong")
                 ) {
+                    keyPressed.classList.add("pressed");
+                    keyPressed.classList.add("error");
+                    setTimeout(() => {
+                        keyPressed.classList.remove("error");
+                        keyPressed.classList.remove("pressed");
+                    }, 100);
                     return;
                 }
 

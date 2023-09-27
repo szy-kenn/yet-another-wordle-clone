@@ -39,10 +39,11 @@
     }
 
     &.error {
-        background-color: #ff3333;
+        background-color: var(--error);
 
         p {
             color: #fff;
+            font-weight: normal;
         }
     }
 

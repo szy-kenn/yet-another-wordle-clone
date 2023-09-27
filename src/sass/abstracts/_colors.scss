@@ -14,6 +14,8 @@
     --dark-misplaced: rgb(221, 147, 132);
     --dark-wrong: rgb(66, 59, 61);
 
+    --dark-error: rgb(223, 53, 69);
+
     --dark-primary: rgb(28, 25, 26);
     --dark-primary-rgb: 28, 25, 26;
     --dark-secondary: rgb(255, 255, 255);
@@ -33,10 +35,14 @@
     --light-misplaced: rgb(238, 69, 36);
     --light-wrong: rgb(230, 227, 230);
 
+    --light-error: rgb()
+
     --light-primary: rgb(255, 255, 255);
     --light-secondary: rgb(28, 25, 26);
     --light-primary-rgb: 255, 255, 255;
     --light-secondary-rgb: 28, 25, 26;
+
+    --light-error: rgb(249, 59, 85);
 
     --background-color: var(--light-background-color);
     --background-color-rgb: var(--light-background-color-rgb);
@@ -50,6 +56,8 @@
     --correct: var(--light-correct);
     --misplaced: var(--light-misplaced);
     --wrong: var(--light-wrong);
+
+    --error: var(--light-error);
 
     --primary: var(--light-primary);
     --primary-rgb: var(--light-primary-rgb);

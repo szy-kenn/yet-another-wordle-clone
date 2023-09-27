@@ -67,4 +67,9 @@
         font-size: clamp(0.7em, 0.9vw, 0.9vw);
         min-width: fit-content;
     }
+
+    &.error {
+        background-color: var(--error);
+        // animation: 0.1s pop ease;
+    }
 }
