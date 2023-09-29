@@ -792,6 +792,12 @@ document.addEventListener("keydown", async (event) => {
                         1000,
                         "error"
                     );
+                    keyPressed.classList.add("pressed");
+                    keyPressed.classList.add("error");
+                    setTimeout(() => {
+                        keyPressed.classList.remove("error");
+                        keyPressed.classList.remove("pressed");
+                    }, 100);
                     return;
                 }
 
