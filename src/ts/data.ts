@@ -11,12 +11,18 @@ let settings: Settings;
 
 function getRandomInt(min, max) {
     min = Math.ceil(min);
+    
     max = Math.ceil(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function daysIntoYear(date): number {
+    return (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(date.getFullYear(), 0, 0)) / 24 / 60 / 60 / 1000;
+}
+
 function getRandomWord() {
-    return wordlist[getRandomInt(0, wordlistLength)];
+    return wordlist[ wordlist.length % daysIntoYear(new Date()) ];
+    // return wordlist[getRandomInt(0, wordlistLength)];
 }
 
 function getMidnightTime() {

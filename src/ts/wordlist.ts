@@ -1,4 +1,6 @@
-export const wordlist = [
+import Chance from "chance";
+
+const _wordlist = [
     "aback",
     "abase",
     "abate",
@@ -2316,3 +2318,6 @@ export const wordlist = [
     "zesty",
     "zonal",
 ];
+
+const chance = new Chance("yet-another-wordle-clone!");
+export const wordlist = chance.shuffle(_wordlist);
