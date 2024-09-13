@@ -10,13 +10,13 @@ This project reached its completion with some modifications and improvements to 
 
 # Change Log
 
-### 2024-09-13
+## 2024-09-13
 
 ### Fixed
 
 - Fixed background and text color of pop-up notes.
 
-### 2024-09-12
+## 2024-09-12
 
 ### Changed
 
