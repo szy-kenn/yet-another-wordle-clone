@@ -10,6 +10,30 @@ This project reached its completion with some modifications and improvements to 
 
 # Change Log
 
+### 2024-09-13
+
+### Fixed
+
+- Fixed background and text color of pop-up notes.
+
+### 2024-09-12
+
+### Changed
+
+- **Word of the Day** is now the same for all players.
+
+## 2023-09-29
+
+### Added
+
+- Added error message when disabling hard mode while in the middle of the game.
+
+## 2023-09-27
+
+### Added
+
+- Added error animation when a letter that has already been marked as incorrect is clicked.
+
 ## 2023-09-08
 
 ### Fixed
