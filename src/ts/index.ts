@@ -44,6 +44,7 @@ const cover = document.querySelector<HTMLElement>(".cover");
 const statsIcon = document.querySelector<HTMLElement>(".stats-icon");
 const settingsIcon = document.querySelector<HTMLElement>(".settings-icon");
 const infoIcon = document.querySelector<HTMLElement>(".info-icon");
+const copyToClipboardBtn = document.querySelector<HTMLButtonElement>(".copy-to-clipboard-btn");
 
 // keypad keys
 const keys = document.querySelectorAll<HTMLElement>(".key");
@@ -196,6 +197,10 @@ async function end(isWinner: boolean, showNote: boolean, update: boolean) {
             .padStart(2, "0")}`;
         setText(newWordTimeLeft as Element, newTime);
     }, 1000);
+
+    // enable the copy to clipboard
+    // TODO: make this a separate function (this is duplicate with the other TODO)
+    copyToClipboardBtn.classList.remove("disabled");
 
     // reveal the word
     const wordToGuess = getGameState().wordToGuess;
@@ -400,6 +405,45 @@ function showStats(show: boolean = true, userData: UserData) {
 }
 
 /**
+ * 
+ * @param {GameState} gameState - the current game state (should be completed)
+ * @returns {void} - it will just copy to clipboard
+ */
+export function copyToClipboard(gameState: GameState) {
+    const blue: string = "🟦";
+    const orange: string = "🟧";
+    const gray: string = "⬛";
+
+    const evaluations: string[] = [
+        `Wordle ${new Date().toLocaleDateString()}`
+    ];
+
+    gameState.guesses.forEach((guess) => {
+        let squares = "";  
+        evaluate(guess, gameState.wordToGuess).result.forEach(res => {
+            if (res === "Correct") {
+                squares += blue;
+            } else if (res === "Misplaced") {
+                squares += orange;
+            } else {
+                squares += gray;
+            }
+        });
+        evaluations.push(squares);
+    });
+
+    if (gameState.guesses[gameState.guesses.length - 1] === gameState.wordToGuess) {
+        evaluations.push(`Guessed the word in ${gameState.guesses.length}  tries!`);
+    } else {
+        evaluations.push("Failed to guess the word for today.");
+    }
+
+    navigator.clipboard.writeText(evaluations.join("\n"));
+    alert("Copied to Clipboard!");
+}
+
+
+/**
  * Loads an existing game state to the browser
  *
  * @param {GameState} gameState - the game state object to be loaded
@@ -410,6 +454,8 @@ async function loadGameState(gameState: GameState) {
         if (gameState.ttl == null || gameState.ttl < new Date().getTime()) {
             newGameState();
             hideWordToGuess();
+            // TODO: make this a separate function
+            copyToClipboardBtn.classList.add("disabled");
             location.reload();
         }
 
@@ -468,6 +514,7 @@ async function loadGameState(gameState: GameState) {
         }
     });
 }
+
 
 const enableDarkMode = () => {
     document.documentElement.style.setProperty(
@@ -676,6 +723,10 @@ statsIcon.addEventListener("click", () => {
 
 settingsIcon.addEventListener("click", () => {
     showContainer(settingsContainer);
+});
+
+copyToClipboardBtn.addEventListener("click", () => {
+    copyToClipboard(getGameState());
 });
 
 hardModeSwitchContainer.addEventListener("click", () => {

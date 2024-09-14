@@ -2319,5 +2319,5 @@ const _wordlist = [
     "zonal",
 ];
 
-const chance = new Chance("yet-another-wordle-clone!");
+const chance = new Chance("yet-another-wordle-clone!!!");
 export const wordlist = chance.shuffle(_wordlist);

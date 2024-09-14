@@ -229,6 +229,28 @@
   font-weight: bold;
   background-color: var(--filled-color);
 }
+.stats-container .copy-to-clipboard-btn {
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  outline: none;
+  padding: 1rem 1.25rem;
+  background-color: var(--correct);
+  color: white;
+  font-size: clamp(0.925em, 1.175vw, 1em);
+  border-radius: 5px;
+  cursor: pointer;
+}
+.stats-container .copy-to-clipboard-btn:hover {
+  background-color: rgb(49, 129, 250);
+}
+.stats-container .copy-to-clipboard-btn.disabled {
+  display: none;
+}
 
 .settings-container .settings-option {
   position: relative;
