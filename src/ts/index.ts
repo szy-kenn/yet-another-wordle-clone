@@ -433,9 +433,13 @@ export function copyToClipboard(gameState: GameState) {
     });
 
     if (gameState.guesses[gameState.guesses.length - 1] === gameState.wordToGuess) {
-        evaluations.push(`Guessed the word in ${gameState.guesses.length}  tries!`);
+        evaluations.push(`Guessed the word in ${gameState.guesses.length} ${gameState.guesses.length === 1 ? "try" : "tries"} in ${getSettings().mode === "hard" ? "Hard Mode" : "Normal Mode"}.`);
     } else {
         evaluations.push("Failed to guess the word for today.");
+    }
+
+    if (getSettings().mode === "hard") {
+        evaluations.push("HARD MODE");
     }
 
     navigator.clipboard.writeText(evaluations.join("\n"));
