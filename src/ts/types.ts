@@ -13,6 +13,7 @@ export type GameState = {
     guesses?: string[];
     wordToGuess: string;
     ttl: number;
+    triggered?: number;
 };
 
 export type UserData = {

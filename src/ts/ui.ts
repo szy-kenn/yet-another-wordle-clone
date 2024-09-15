@@ -1,5 +1,6 @@
 import { Evaluation, NoteType } from "./types";
-import { WORD_LENGTH, TRIES } from "./game.config";
+import { WORD_LENGTH, TRIES as defaultTries } from "./game.config";
+import { TRIES } from ".";
 import { wordlist } from "./wordlist";
 import { validWords } from "./valid_words";
 
@@ -25,6 +26,13 @@ const notes = [
 // array of ALL HTML elements of squares in the grid
 let squares: HTMLElement[] = [];
 
+/**
+ * Initializes the UI by creating all the rows and squares based on the given length and tries.
+ * If no container is provided, it defaults to the gridContainer.
+ * @param {number} [length=WORD_LENGTH] The length of a word.
+ * @param {number} [tries=TRIES] The number of tries.
+ * @param {Element} [container=gridContainer] The container element for the rows.
+ */
 export function initializeUI(
     length: number = WORD_LENGTH,
     tries: number = TRIES,
@@ -39,7 +47,12 @@ export function initializeUI(
         for (let j = 0; j < length; j++) {
             // create square
             const square = document.createElement("div");
-            square.classList.add("square");
+
+            if (i == defaultTries) {
+                square.classList.add("square", "special");
+            } else {
+                square.classList.add("square");
+            }
 
             // create paragraph element for the text
             const p = document.createElement("p");
@@ -133,6 +146,53 @@ export function setText(cell: Element, text: string) {
 export function isValid(word: string) {
     return validWords.includes(word.toLowerCase());
 }
+
+export function triggerRareEvent() {
+
+    setTimeout(() => { 
+        displayNote("Wait, you're feeling EXTREMELY lucky today: You've been granted one more guess!", 0, 3500, "system");
+     }, 1000);
+    
+    setTimeout(() => { 
+        const row = document.createElement("div");
+        row.classList.add("row-container");
+
+        // add the squares in the row
+        for (let j = 0; j < WORD_LENGTH; j++) {
+            // create square
+            const square = document.createElement("div");
+            square.classList.add("square", "special");
+
+            // create paragraph element for the text
+            const p = document.createElement("p");
+            square.appendChild(p);
+
+            row.appendChild(square);
+            squares.push(square);
+        }
+        row.style.animation = "pop 0.2s"
+        gridContainer.appendChild(row);
+     }, 3000);
+
+        // // create a new row
+        // const row = document.createElement("div");
+        // row.classList.add("row-container");
+
+        // // add the squares in the row
+        // for (let j = 0; j < length; j++) {
+        //     // create square
+        //     const square = document.createElement("div");
+        //     square.classList.add("square");
+
+        //     // create paragraph element for the text
+        //     const p = document.createElement("p");
+        //     square.appendChild(p);
+
+        //     row.appendChild(square);
+        //     squares.push(square);
+        // }
+        // gridContainer.appendChild(row);
+};
 
 export async function animateResult(
     row: number,

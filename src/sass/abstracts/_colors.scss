@@ -21,6 +21,8 @@
     --dark-secondary: rgb(255, 255, 255);
     --dark-secondary-rgb: 255, 255, 255;
 
+    --dark-system-color-rgb: 74, 220, 133;
+
     // light mode colors
     --light-background-color: rgb(255, 255, 255);
     --light-background-color-rgb: 255, 255, 255;
@@ -36,6 +38,8 @@
     --light-wrong: rgb(230, 227, 230);
 
     --light-error: rgb();
+
+    --light-system-color-rgb: 35, 197, 98;
 
     --light-primary: rgb(255, 255, 255);
     --light-secondary: rgb(28, 25, 26);
@@ -63,4 +67,6 @@
     --primary-rgb: var(--light-primary-rgb);
     --secondary: var(--light-secondary);
     --secondary-rgb: var(--light-secondary-rgb);
+
+    --system-color-rgb: var(var(--light-system-color-rgb));
 }

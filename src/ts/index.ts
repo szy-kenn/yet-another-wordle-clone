@@ -1,5 +1,5 @@
 import { GameState, UserData, Stats, Evaluation } from "./types";
-import { WORD_LENGTH, TRIES } from "./game.config";
+import { WORD_LENGTH, TRIES as defaultTries } from "./game.config";
 
 import {
     initializeUI,
@@ -12,6 +12,7 @@ import {
     setText,
     displayNote,
     disableKeypad,
+    triggerRareEvent,
 } from "./ui";
 
 import {
@@ -27,6 +28,8 @@ import {
     updateMode,
     newGameState,
 } from "./data";
+
+export let TRIES = defaultTries;
 
 // ========================== HTML Elements =========================================
 
@@ -100,8 +103,10 @@ let shownContainer = null;
  * the initial function to call to start the game (initializes UI and game data)
  */
 function start() {
-    initializeUI();
     initializeGameData();
+
+    TRIES = defaultTries + (getGameState().triggered != null && getGameState().triggered === 1 ? 1 : 0);
+    initializeUI();
 
     // load theme
     if (getSettings().theme === "dark") {
@@ -163,6 +168,17 @@ function addMisplacedLetter(letter) {
  * @param {boolean} update - determines whether to update the game stats or not (useful for loading game state to avoid duplicating the data)
  */
 async function end(isWinner: boolean, showNote: boolean, update: boolean) {
+
+    console.log(getGameState())
+    if ((getGameState().triggered == null || getGameState().triggered !== 1) && Math.random() < 0.0001) {
+        triggerRareEvent();
+        localStorage.setItem("gameState", JSON.stringify({...getGameState(), triggered: 1}));
+        TRIES += 1;
+        currentSquare = 0;
+        currentRow = 6;
+        return;
+    }
+
     gameOver = true;
     disableKeypad(true);
 
@@ -346,6 +362,14 @@ function hideContainer(container: HTMLElement) {
  * @param {boolean} userData - the data that will be displayed
  */
 function showStats(show: boolean = true, userData: UserData) {
+
+    // only show the 7 in Guess Distribution if it is triggered, or the player already has a correct guess in the rare 7th try 
+    if (getGameState().triggered === 1 || getUserData().guessDistribution[defaultTries] > 0) {
+        document.getElementById("guess-distrib-7").style.display = "grid";
+    } else {
+        document.getElementById("guess-distrib-7").style.display = "none";
+    };
+
     if (show) {
         // flip the squares containing the revealed word (if the game is already over)
         if (gameOver) {
@@ -506,7 +530,7 @@ async function loadGameState(gameState: GameState) {
                 end(isWinner, true, false);
                 resolve();
                 break;
-            } else if (currentRow === WORD_LENGTH + 1) {
+            } else if (currentRow === TRIES) {
                 end(isWinner, true, false);
                 resolve();
                 break;
@@ -605,6 +629,12 @@ const enableDarkMode = () => {
             "--dark-secondary-rgb"
         )
     );
+    document.documentElement.style.setProperty(
+        "--system-color-rgb",
+        getComputedStyle(document.documentElement).getPropertyValue(
+            "--dark-system-color-rgb"
+        )
+    );
 };
 
 const disableDarkMode = () => {
@@ -690,6 +720,12 @@ const disableDarkMode = () => {
         "--secondary-rgb",
         getComputedStyle(document.documentElement).getPropertyValue(
             "--light-secondary-rgb"
+        )
+    );
+    document.documentElement.style.setProperty(
+        "--system-color-rgb",
+        getComputedStyle(document.documentElement).getPropertyValue(
+            "--light-system-color-rgb"
         )
     );
 };

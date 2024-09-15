@@ -14,6 +14,7 @@
   --dark-primary-rgb: 28, 25, 26;
   --dark-secondary: rgb(255, 255, 255);
   --dark-secondary-rgb: 255, 255, 255;
+  --dark-system-color-rgb: 74, 220, 133;
   --light-background-color: rgb(255, 255, 255);
   --light-background-color-rgb: 255, 255, 255;
   --light-square-border-color: rgb(0, 0, 0);
@@ -24,6 +25,7 @@
   --light-misplaced: rgb(238, 69, 36);
   --light-wrong: rgb(230, 227, 230);
   --light-error: rgb();
+  --light-system-color-rgb: 35, 197, 98;
   --light-primary: rgb(255, 255, 255);
   --light-secondary: rgb(28, 25, 26);
   --light-primary-rgb: 255, 255, 255;
@@ -43,6 +45,7 @@
   --primary-rgb: var(--light-primary-rgb);
   --secondary: var(--light-secondary);
   --secondary-rgb: var(--light-secondary-rgb);
+  --system-color-rgb: var(var(--light-system-color-rgb));
 }
 
 .container {
@@ -228,6 +231,9 @@
   color: var(--background-color);
   font-weight: bold;
   background-color: var(--filled-color);
+}
+.stats-container .guess-distrib-container #guess-distrib-7 {
+  display: none;
 }
 .stats-container .copy-to-clipboard-btn {
   display: flex;
@@ -479,7 +485,10 @@ body {
   background-color: rgb(250, 250, 50);
 }
 .winner-note.system {
-  background-color: rgb(89, 245, 89);
+  background-color: rgb(var(--system-color-rgb));
+}
+.winner-note.system p {
+  color: rgb(var(--primary-rgb));
 }
 
 .title {
@@ -555,6 +564,24 @@ body {
 .square.tutorial-sqr p {
   font-size: 1.25rem;
 }
+.square.special {
+  width: max(3rem + 6px, 7.5% + 6px);
+  border: none;
+  background: var(--primary);
+}
+.square.special:before, .square.special:after {
+  content: "";
+  position: absolute;
+  left: -2px;
+  top: -2px;
+  background: linear-gradient(45deg, #4b4193, #6fc7d8, #e94090, #eb5f35, #4b4193, #6fc7d8, #e94090, #eb5f35, #4b4193, #6fc7d8);
+  background-size: 200%;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  z-index: -1;
+  animation: steam 10s linear infinite;
+  border-radius: 5px;
+}
 .square.popped {
   animation: 0.1s pop ease-out;
 }
@@ -587,6 +614,9 @@ body {
 .square.wrong {
   border-color: var(--wrong);
   background-color: var(--wrong);
+}
+.square.wrong.special {
+  border: none;
 }
 .square p {
   color: var(--filled-color);
@@ -667,6 +697,17 @@ body {
   }
   to {
     transform: translateY(-20px);
+  }
+}
+@keyframes steam {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
   }
 }
 @media screen and (max-width: 480px) {

@@ -66,6 +66,27 @@
         }
     }
 
+    &.special {
+        width: max(calc(3rem + 6px), calc(7.5% + 6px));
+        border: none;
+        background: var(--primary);
+
+        &:before, &:after {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: -2px;
+            background: linear-gradient(45deg, #4b4193, #6fc7d8, #e94090,#eb5f35, #4b4193, #6fc7d8, 
+                #e94090, #eb5f35,#4b4193, #6fc7d8);
+            background-size: 200%;
+            width: calc(100% + 4px);
+            height: calc(100% + 4px);
+            z-index: -1;
+            animation: steam 10s linear infinite;
+            border-radius: 5px;
+        }
+    }
+
     &.popped {
         animation: 0.1s pop ease-out;
     }
@@ -107,6 +128,10 @@
     &.wrong {
         border-color: var(--wrong);
         background-color: var(--wrong);
+
+        &.special {
+            border: none;
+        }
     }
 
     p {

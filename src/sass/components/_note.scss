@@ -54,7 +54,10 @@
     }
 
     &.system {
-        background-color: rgb(89, 245, 89);
-        // color: black;
+        background-color: rgb(var(--system-color-rgb));
+        
+        p {
+            color: rgb(var(--primary-rgb));
+        }
     }
 }
