@@ -169,7 +169,6 @@ function addMisplacedLetter(letter) {
  */
 async function end(isWinner: boolean, showNote: boolean, update: boolean) {
 
-    console.log(getGameState())
     if ((getGameState().triggered == null || getGameState().triggered !== 1) && Math.random() < 0.0001) {
         triggerRareEvent();
         localStorage.setItem("gameState", JSON.stringify({...getGameState(), triggered: 1}));
@@ -460,10 +459,6 @@ export function copyToClipboard(gameState: GameState) {
         evaluations.push(`Guessed the word in ${gameState.guesses.length} ${gameState.guesses.length === 1 ? "try" : "tries"} in ${getSettings().mode === "hard" ? "Hard Mode" : "Normal Mode"}.`);
     } else {
         evaluations.push("Failed to guess the word for today.");
-    }
-
-    if (getSettings().mode === "hard") {
-        evaluations.push("HARD MODE");
     }
 
     navigator.clipboard.writeText(evaluations.join("\n"));
