@@ -432,7 +432,7 @@ function showStats(show: boolean = true, userData: UserData) {
  * @param {GameState} gameState - the current game state (should be completed)
  * @returns {void} - it will just copy to clipboard
  */
-export function copyToClipboard(gameState: GameState) {
+export async function copyToClipboard(gameState: GameState) {
     const blue: string = "🟦";
     const orange: string = "🟧";
     const gray: string = "⬛";
@@ -462,7 +462,8 @@ export function copyToClipboard(gameState: GameState) {
     }
 
     navigator.clipboard.writeText(evaluations.join("\n"));
-    alert("Copied to Clipboard!");
+    // alert("Copied to Clipboard!");
+    await displayNote("Copied to clipboard!", 0, 1500, "system");
 }
 
 
