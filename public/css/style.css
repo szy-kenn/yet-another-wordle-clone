@@ -86,7 +86,7 @@
   text-transform: uppercase;
   font-family: "Poppins";
   font-weight: bold;
-  font-size: clamp(0.75rem, 1.35vw, 1.35vw);
+  font-size: clamp(0.75rem, 1.15vw, 1rem);
 }
 
 .info-container .info-text {
