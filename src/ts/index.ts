@@ -456,7 +456,6 @@ export async function copyToClipboard() {
         evaluations.push(squares);
     });
 
-    console.log(gameState);
 
     if (gameState.guesses[gameState.guesses.length - 1].toLowerCase() === gameState.wordToGuess.toLowerCase()) {
         evaluations.push(`Guessed the word in ${gameState.guesses.length} ${gameState.guesses.length === 1 ? "try" : "tries"} in ${getSettings().mode === "hard" ? "Hard Mode" : "Normal Mode"}.`);
@@ -1006,7 +1005,6 @@ document.addEventListener("keydown", async (event) => {
                 } else {
                     const wrongRow = getRow(currentRow);
 
-                    console.log(currentRow);
                     wrongRow.classList.add("shake");
                     setTimeout(() => {
                         wrongRow.classList.remove("shake");
