@@ -456,7 +456,9 @@ export async function copyToClipboard() {
         evaluations.push(squares);
     });
 
-    if (gameState.guesses[gameState.guesses.length - 1] === gameState.wordToGuess) {
+    console.log(gameState);
+
+    if (gameState.guesses[gameState.guesses.length - 1].toLowerCase() === gameState.wordToGuess.toLowerCase()) {
         evaluations.push(`Guessed the word in ${gameState.guesses.length} ${gameState.guesses.length === 1 ? "try" : "tries"} in ${getSettings().mode === "hard" ? "Hard Mode" : "Normal Mode"}.`);
     } else {
         evaluations.push("Failed to guess the word for today.");
