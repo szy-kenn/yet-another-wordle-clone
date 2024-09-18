@@ -432,7 +432,8 @@ function showStats(show: boolean = true, userData: UserData) {
  * @param {GameState} gameState - the current game state (should be completed)
  * @returns {void} - it will just copy to clipboard
  */
-export async function copyToClipboard(gameState: GameState) {
+export async function copyToClipboard() {
+    const gameState: GameState = getGameState();
     const blue: string = "🟦";
     const orange: string = "🟧";
     const gray: string = "⬛";
@@ -762,7 +763,7 @@ settingsIcon.addEventListener("click", () => {
 });
 
 copyToClipboardBtn.addEventListener("click", () => {
-    copyToClipboard(getGameState());
+    copyToClipboard();
 });
 
 hardModeSwitchContainer.addEventListener("click", () => {
