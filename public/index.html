@@ -1,343 +1,318 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css?family=Lilita+One|Poppins:300,400,500,700"
-        />
-        <link rel="stylesheet" href="./css/style.css" />
-        <title>Wordle Clone 2</title>
-    </head>
-    <body>
-        <div class="wrapper">
-            <nav class="navbar">
-                <div class="icon info-icon">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 512 512"
-                    >
-                        <!--! Font Awesome Pro 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                        <path
-                            d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"
-                        />
-                    </svg>
-                </div>
-                <div class="title">
-                    <p>
-                        YA<span class="wordle">W</span
-                        ><span class="clone">C!</span>
-                    </p>
-                </div>
-                <div class="icon-group">
-                    <div class="icon stats-icon">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 512 512"
-                        >
-                            <!--! Font Awesome Pro 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                            <path
-                                d="M32 32c17.7 0 32 14.3 32 32V400c0 8.8 7.2 16 16 16H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H80c-44.2 0-80-35.8-80-80V64C0 46.3 14.3 32 32 32zm96 96c0-17.7 14.3-32 32-32l192 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-192 0c-17.7 0-32-14.3-32-32zm32 64H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H160c-17.7 0-32-14.3-32-32s14.3-32 32-32zm0 96H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H160c-17.7 0-32-14.3-32-32s14.3-32 32-32z"
-                            />
-                        </svg>
-                    </div>
-                    <div class="icon settings-icon">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 512 512"
-                        >
-                            <!--! Font Awesome Pro 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                            <path
-                                d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z"
-                            />
-                        </svg>
-                    </div>
-                </div>
-            </nav>
-
-            <div class="winner-note">
-                <p>Phew!</p>
-            </div>
-
-            <div class="cover"></div>
-
-            <div class="info-container container">
-                <div class="title">
-                    <p>
-                        YA<span class="wordle">W</span
-                        ><span class="clone">C!</span>
-                    </p>
-                </div>
-                <div class="info-text heading">
-                    <p>Guess the daily word in 6 tries!</p>
-                </div>
-                <hr class="separator" />
-                <div class="how-to-play">
-                    <p>How to play:</p>
-                </div>
-                <div class="tutorial-container">
-                    <div class="tutorial-step">
-                        <div class="tutorial-sqr-container">
-                            <div class="square tutorial-sqr correct">
-                                <p>G</p>
-                            </div>
-                            <div class="square tutorial-sqr"><p>U</p></div>
-                            <div class="square tutorial-sqr"><p>E</p></div>
-                            <div class="square tutorial-sqr"><p>S</p></div>
-                            <div class="square tutorial-sqr"><p>S</p></div>
-                        </div>
-                        <p class="tutorial-text">
-                            Letter G is in the word and in the correct position.
-                        </p>
-                    </div>
-                    <div class="tutorial-step">
-                        <div class="tutorial-sqr-container">
-                            <div class="square tutorial-sqr"><p>W</p></div>
-                            <div class="square tutorial-sqr"><p>O</p></div>
-                            <div class="square tutorial-sqr"><p>R</p></div>
-                            <div class="square tutorial-sqr misplaced">
-                                <p>L</p>
-                            </div>
-                            <div class="square tutorial-sqr"><p>D</p></div>
-                        </div>
-                        <p class="tutorial-text">
-                            Letter L is in the word but not in the correct
-                            position.
-                        </p>
-                    </div>
-                    <div class="tutorial-step">
-                        <div class="tutorial-sqr-container">
-                            <div class="square tutorial-sqr"><p>B</p></div>
-                            <div class="square tutorial-sqr wrong">
-                                <p>R</p>
-                            </div>
-                            <div class="square tutorial-sqr"><p>O</p></div>
-                            <div class="square tutorial-sqr"><p>W</p></div>
-                            <div class="square tutorial-sqr"><p>N</p></div>
-                        </div>
-                        <p class="tutorial-text">
-                            Letter R is not in the word.
-                        </p>
-                    </div>
-                </div>
-                <hr class="separator" />
-                <div class="info-text footer">
-                    <p>
-                        Made by:
-                        <a href="https://github.com/szy-kenn"
-                            >John Kenneth Velano</a
-                        >
-                    </p>
-                    <br />
-                    <p>
-                        This is an open-source project. You can view the code
-                        <a
-                            href="https://github.com/szy-kenn/yet-another-wordle-clone"
-                            >here.</a
-                        >
-                    </p>
-                </div>
-            </div>
-
-            <div class="stats-container container">
-                <div class="word-to-guess">
-                    <div class="square word-to-guess-sqr">
-                        <p></p>
-                    </div>
-                    <div class="square word-to-guess-sqr">
-                        <p></p>
-                    </div>
-                    <div class="square word-to-guess-sqr">
-                        <p></p>
-                    </div>
-                    <div class="square word-to-guess-sqr">
-                        <p></p>
-                    </div>
-                    <div class="square word-to-guess-sqr">
-                        <p></p>
-                    </div>
-                </div>
-                <div class="next-word-container">
-                    <p class="next-word-text">Next Word in:</p>
-                    <p class="next-word-time-value"></p>
-                </div>
-                <hr style="display: none" class="hr-one separator" />
-                <div class="header">
-                    <p>Statistics</p>
-                </div>
-                <div class="main-stats">
-                    <div class="games-played main-stats-sec">
-                        <div class="value">
-                            <p class="games-played-value-p">1</p>
-                        </div>
-                        <div class="stat-text">
-                            <p>Played</p>
-                        </div>
-                    </div>
-                    <div class="win-rate main-stats-sec">
-                        <div class="value">
-                            <p class="win-rate-value-p">100</p>
-                        </div>
-                        <div class="stat-text">
-                            <p>Win %</p>
-                        </div>
-                    </div>
-                    <div class="current-streak main-stats-sec">
-                        <div class="value">
-                            <p class="current-streak-value-p">1</p>
-                        </div>
-                        <div class="stat-text">
-                            <p>Current Streak</p>
-                        </div>
-                    </div>
-                    <div class="longest-streak main-stats-sec">
-                        <div class="value">
-                            <p class="longest-streak-value-p">1</p>
-                        </div>
-                        <div class="stat-text">
-                            <p>Longest Streak</p>
-                        </div>
-                    </div>
-                </div>
-                <hr class="separator" />
-                <div class="header">
-                    <p>Guess Distribution</p>
-                </div>
-                <div class="guess-distrib-container">
-                    <div class="guess-container">
-                        <p class="guess-number">1</p>
-                        <div class="guess-value">
-                            <p>0</p>
-                        </div>
-                    </div>
-                    <div class="guess-container">
-                        <p class="guess-number">2</p>
-                        <div class="guess-value">
-                            <p>0</p>
-                        </div>
-                    </div>
-                    <div class="guess-container">
-                        <p class="guess-number">3</p>
-                        <div class="guess-value">
-                            <p>0</p>
-                        </div>
-                    </div>
-                    <div class="guess-container">
-                        <p class="guess-number">4</p>
-                        <div class="guess-value">
-                            <p>0</p>
-                        </div>
-                    </div>
-                    <div class="guess-container">
-                        <p class="guess-number">5</p>
-                        <div class="guess-value">
-                            <p>0</p>
-                        </div>
-                    </div>
-                    <div class="guess-container">
-                        <p class="guess-number">6</p>
-                        <div class="guess-value">
-                            <p>0</p>
-                        </div>
-                    </div>
-                    <div class="guess-container" id="guess-distrib-7">
-                        <p class="guess-number">7</p>
-                        <div class="guess-value">
-                            <p>0</p>
-                        </div>
-                    </div>
-                </div>
-                <button class="copy-to-clipboard-btn disabled">
-                    <p>Copy to Clipboard</p>
-                </button>
-            </div>
-
-            <div class="settings-container container">
-                <div class="header">
-                    <p>Settings</p>
-                </div>
-                <hr class="separator" />
-                <div class="dark-mode-option settings-option">
-                    <p>Dark Mode</p>
-                    <div class="switch-container dark-mode-switch-container">
-                        <div
-                            class="switch-handle dark-mode-switch-handle"
-                        ></div>
-                    </div>
-                </div>
-                <div class="hard-mode-option settings-option">
-                    <p>Hard Mode</p>
-                    <div class="switch-container hard-mode-switch-container">
-                        <div
-                            class="switch-handle hard-mode-switch-handle"
-                        ></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="wordle-grid-container"></div>
-
-            <div class="key-container">
-                <div class="key-row keys-1">
-                    <button class="key keycode-q">Q</button>
-                    <button class="key keycode-w">W</button>
-                    <button class="key keycode-e">E</button>
-                    <button class="key keycode-r">R</button>
-                    <button class="key keycode-t">T</button>
-                    <button class="key keycode-y">Y</button>
-                    <button class="key keycode-u">U</button>
-                    <button class="key keycode-i">I</button>
-                    <button class="key keycode-o">O</button>
-                    <button class="key keycode-p">P</button>
-                </div>
-                <div class="key-row keys-2">
-                    <button class="key keycode-a">A</button>
-                    <button class="key keycode-s">S</button>
-                    <button class="key keycode-d">D</button>
-                    <button class="key keycode-f">F</button>
-                    <button class="key keycode-g">G</button>
-                    <button class="key keycode-h">H</button>
-                    <button class="key keycode-j">J</button>
-                    <button class="key keycode-k">K</button>
-                    <button class="key keycode-l">L</button>
-                </div>
-                <div class="key-row keys-3">
-                    <button class="key enter">Enter</button>
-                    <button class="key keycode-z">Z</button>
-                    <button class="key keycode-x">X</button>
-                    <button class="key keycode-c">C</button>
-                    <button class="key keycode-v">V</button>
-                    <button class="key keycode-b">B</button>
-                    <button class="key keycode-n">N</button>
-                    <button class="key keycode-m">M</button>
-                    <button class="key delete">Delete</button>
-                </div>
-            </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Lilita+One|Poppins:300,400,500,700"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <title>Wordle Clone 2</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <nav class="navbar">
+        <div class="icon info-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <!--! Font Awesome Pro 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+            <path
+              d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"
+            />
+          </svg>
         </div>
-        <script type="module">
-            // Import the functions you need from the SDKs you need
-            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.2.0/firebase-app.js";
-            import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.2.0/firebase-analytics.js";
-            // TODO: Add SDKs for Firebase products that you want to use
-            // https://firebase.google.com/docs/web/setup#available-libraries
+        <div class="title">
+          <p>YA<span class="wordle">W</span><span class="clone">C!</span></p>
+        </div>
+        <div class="icon-group">
+          <div class="icon stats-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              <!--! Font Awesome Pro 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+              <path
+                d="M32 32c17.7 0 32 14.3 32 32V400c0 8.8 7.2 16 16 16H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H80c-44.2 0-80-35.8-80-80V64C0 46.3 14.3 32 32 32zm96 96c0-17.7 14.3-32 32-32l192 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-192 0c-17.7 0-32-14.3-32-32zm32 64H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H160c-17.7 0-32-14.3-32-32s14.3-32 32-32zm0 96H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H160c-17.7 0-32-14.3-32-32s14.3-32 32-32z"
+              />
+            </svg>
+          </div>
+          <div class="icon settings-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              <!--! Font Awesome Pro 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+              <path
+                d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z"
+              />
+            </svg>
+          </div>
+        </div>
+      </nav>
 
-            // Your web app's Firebase configuration
-            // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-            const firebaseConfig = {
-                apiKey: "AIzaSyCXTdVrpP062FdyF5G3N_F124CV8gLKJwo",
-                authDomain: "yet-another-wordle-clone.firebaseapp.com",
-                projectId: "yet-another-wordle-clone",
-                storageBucket: "yet-another-wordle-clone.appspot.com",
-                messagingSenderId: "125079979526",
-                appId: "1:125079979526:web:c2fcdc570bfc40091ce587",
-                measurementId: "G-EMMCZENGBE",
-            };
+      <div class="winner-note">
+        <p>Phew!</p>
+      </div>
 
-            // Initialize Firebase
-            const app = initializeApp(firebaseConfig);
-            const analytics = getAnalytics(app);
-        </script>
-        <script src="./js/bundle.js"></script>
-    </body>
+      <div class="cover"></div>
+
+      <div class="info-container container">
+        <div class="title">
+          <p>YA<span class="wordle">W</span><span class="clone">C!</span></p>
+        </div>
+        <div class="info-text heading">
+          <p>Guess the daily word in 6 tries!</p>
+        </div>
+        <hr class="separator" />
+        <div class="how-to-play">
+          <p>How to play:</p>
+        </div>
+        <div class="tutorial-container">
+          <div class="tutorial-step">
+            <div class="tutorial-sqr-container">
+              <div class="square tutorial-sqr correct">
+                <p>G</p>
+              </div>
+              <div class="square tutorial-sqr"><p>U</p></div>
+              <div class="square tutorial-sqr"><p>E</p></div>
+              <div class="square tutorial-sqr"><p>S</p></div>
+              <div class="square tutorial-sqr"><p>S</p></div>
+            </div>
+            <p class="tutorial-text">
+              Letter G is in the word and in the correct position.
+            </p>
+          </div>
+          <div class="tutorial-step">
+            <div class="tutorial-sqr-container">
+              <div class="square tutorial-sqr"><p>W</p></div>
+              <div class="square tutorial-sqr"><p>O</p></div>
+              <div class="square tutorial-sqr"><p>R</p></div>
+              <div class="square tutorial-sqr misplaced">
+                <p>L</p>
+              </div>
+              <div class="square tutorial-sqr"><p>D</p></div>
+            </div>
+            <p class="tutorial-text">
+              Letter L is in the word but not in the correct position.
+            </p>
+          </div>
+          <div class="tutorial-step">
+            <div class="tutorial-sqr-container">
+              <div class="square tutorial-sqr"><p>B</p></div>
+              <div class="square tutorial-sqr wrong">
+                <p>R</p>
+              </div>
+              <div class="square tutorial-sqr"><p>O</p></div>
+              <div class="square tutorial-sqr"><p>W</p></div>
+              <div class="square tutorial-sqr"><p>N</p></div>
+            </div>
+            <p class="tutorial-text">Letter R is not in the word.</p>
+          </div>
+        </div>
+        <hr class="separator" />
+        <div class="info-text footer">
+          <p>
+            Made by:
+            <a href="https://github.com/szy-kenn">John Kenneth Velano</a>
+          </p>
+          <br />
+          <p>
+            This is an open-source project. You can view the code
+            <a href="https://github.com/szy-kenn/yet-another-wordle-clone"
+              >here.</a
+            >
+          </p>
+        </div>
+      </div>
+
+      <div class="stats-container container">
+        <div class="word-to-guess">
+          <div class="square word-to-guess-sqr">
+            <p></p>
+          </div>
+          <div class="square word-to-guess-sqr">
+            <p></p>
+          </div>
+          <div class="square word-to-guess-sqr">
+            <p></p>
+          </div>
+          <div class="square word-to-guess-sqr">
+            <p></p>
+          </div>
+          <div class="square word-to-guess-sqr">
+            <p></p>
+          </div>
+        </div>
+        <div class="next-word-container">
+          <p class="next-word-text">Next Word in:</p>
+          <p class="next-word-time-value"></p>
+        </div>
+        <hr style="display: none" class="hr-one separator" />
+        <div class="header">
+          <p>Statistics</p>
+        </div>
+        <div class="main-stats">
+          <div class="games-played main-stats-sec">
+            <div class="value">
+              <p class="games-played-value-p">1</p>
+            </div>
+            <div class="stat-text">
+              <p>Played</p>
+            </div>
+          </div>
+          <div class="win-rate main-stats-sec">
+            <div class="value">
+              <p class="win-rate-value-p">100</p>
+            </div>
+            <div class="stat-text">
+              <p>Win %</p>
+            </div>
+          </div>
+          <div class="current-streak main-stats-sec">
+            <div class="value">
+              <p class="current-streak-value-p">1</p>
+            </div>
+            <div class="stat-text">
+              <p>Current Streak</p>
+            </div>
+          </div>
+          <div class="longest-streak main-stats-sec">
+            <div class="value">
+              <p class="longest-streak-value-p">1</p>
+            </div>
+            <div class="stat-text">
+              <p>Longest Streak</p>
+            </div>
+          </div>
+        </div>
+        <hr class="separator" />
+        <div class="header">
+          <p>Guess Distribution</p>
+        </div>
+        <div class="guess-distrib-container">
+          <div class="guess-container">
+            <p class="guess-number">1</p>
+            <div class="guess-value">
+              <p>0</p>
+            </div>
+          </div>
+          <div class="guess-container">
+            <p class="guess-number">2</p>
+            <div class="guess-value">
+              <p>0</p>
+            </div>
+          </div>
+          <div class="guess-container">
+            <p class="guess-number">3</p>
+            <div class="guess-value">
+              <p>0</p>
+            </div>
+          </div>
+          <div class="guess-container">
+            <p class="guess-number">4</p>
+            <div class="guess-value">
+              <p>0</p>
+            </div>
+          </div>
+          <div class="guess-container">
+            <p class="guess-number">5</p>
+            <div class="guess-value">
+              <p>0</p>
+            </div>
+          </div>
+          <div class="guess-container">
+            <p class="guess-number">6</p>
+            <div class="guess-value">
+              <p>0</p>
+            </div>
+          </div>
+          <div class="guess-container" id="guess-distrib-7">
+            <p class="guess-number">7</p>
+            <div class="guess-value">
+              <p>0</p>
+            </div>
+          </div>
+        </div>
+        <button class="copy-to-clipboard-btn disabled">
+          <p>Copy to Clipboard</p>
+        </button>
+      </div>
+
+      <div class="settings-container container">
+        <div class="header">
+          <p>Settings</p>
+        </div>
+        <hr class="separator" />
+        <div class="dark-mode-option settings-option">
+          <p>Dark Mode</p>
+          <div class="switch-container dark-mode-switch-container">
+            <div class="switch-handle dark-mode-switch-handle"></div>
+          </div>
+        </div>
+        <div class="hard-mode-option settings-option">
+          <p>Hard Mode</p>
+          <div class="switch-container hard-mode-switch-container">
+            <div class="switch-handle hard-mode-switch-handle"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wordle-grid-container"></div>
+
+      <div class="key-container">
+        <div class="key-row keys-1">
+          <button class="key keycode-q">Q</button>
+          <button class="key keycode-w">W</button>
+          <button class="key keycode-e">E</button>
+          <button class="key keycode-r">R</button>
+          <button class="key keycode-t">T</button>
+          <button class="key keycode-y">Y</button>
+          <button class="key keycode-u">U</button>
+          <button class="key keycode-i">I</button>
+          <button class="key keycode-o">O</button>
+          <button class="key keycode-p">P</button>
+        </div>
+        <div class="key-row keys-2">
+          <button class="key keycode-a">A</button>
+          <button class="key keycode-s">S</button>
+          <button class="key keycode-d">D</button>
+          <button class="key keycode-f">F</button>
+          <button class="key keycode-g">G</button>
+          <button class="key keycode-h">H</button>
+          <button class="key keycode-j">J</button>
+          <button class="key keycode-k">K</button>
+          <button class="key keycode-l">L</button>
+        </div>
+        <div class="key-row keys-3">
+          <button class="key enter">Enter</button>
+          <button class="key keycode-z">Z</button>
+          <button class="key keycode-x">X</button>
+          <button class="key keycode-c">C</button>
+          <button class="key keycode-v">V</button>
+          <button class="key keycode-b">B</button>
+          <button class="key keycode-n">N</button>
+          <button class="key keycode-m">M</button>
+          <button class="key delete">Delete</button>
+        </div>
+      </div>
+    </div>
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.2.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.2.0/firebase-analytics.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: "AIzaSyCXTdVrpP062FdyF5G3N_F124CV8gLKJwo",
+        authDomain: "yet-another-wordle-clone.firebaseapp.com",
+        projectId: "yet-another-wordle-clone",
+        storageBucket: "yet-another-wordle-clone.appspot.com",
+        messagingSenderId: "125079979526",
+        appId: "1:125079979526:web:c2fcdc570bfc40091ce587",
+        measurementId: "G-EMMCZENGBE",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+    </script>
+    <script src="./js/bundle.js"></script>
+  </body>
 </html>

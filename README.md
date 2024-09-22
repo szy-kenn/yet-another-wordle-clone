@@ -38,36 +38,36 @@ This project reached its completion with some modifications and improvements to 
 
 ### Fixed
 
--   Fixed applying the error animation to the correct current row
+- Fixed applying the error animation to the correct current row
 
 ## 2023-09-02
 
 ### Added
 
--   Hard Mode has been implemented in the game
+- Hard Mode has been implemented in the game
 
 ### Changed
 
--   The game will now check the word's validity in a bigger wordlist
--   The wordlist for valid inputs and random daily words has been separated
+- The game will now check the word's validity in a bigger wordlist
+- The wordlist for valid inputs and random daily words has been separated
 
 ### Fixed
 
--   In case of repeating letters, the game's evaluation process will now prioritize checking if the letter is in the correct position before assessing any misplaced letters.
+- In case of repeating letters, the game's evaluation process will now prioritize checking if the letter is in the correct position before assessing any misplaced letters.
 
 ## 2023-09-01
 
 ### Added
 
--   Added toggle switches in settings
--   New key-value pair to store settings (mode, theme) in local storage
--   Light and Dark Mode toggle
+- Added toggle switches in settings
+- New key-value pair to store settings (mode, theme) in local storage
+- Light and Dark Mode toggle
 
 ### Changed
 
--   Reduced the size of the wordlist (removing extremely hard words)
+- Reduced the size of the wordlist (removing extremely hard words)
 
 ### Fixed
 
--   Initializes the size of the guess distribution graph to only fit the content
--   Repeating letter evaluation will now only be evaluated once if there is only a single letter existing in the word, the remaining letters will be evaluated as incorrect
+- Initializes the size of the guess distribution graph to only fit the content
+- Repeating letter evaluation will now only be evaluated once if there is only a single letter existing in the word, the remaining letters will be evaluated as incorrect

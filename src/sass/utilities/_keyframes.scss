@@ -1,107 +1,105 @@
 @keyframes flip {
-    0% {
-        transform: scaleY(1);
-    }
+  0% {
+    transform: scaleY(1);
+  }
 
-    50% {
-        transform: scaleY(0);
-    }
+  50% {
+    transform: scaleY(0);
+  }
 
-    100% {
-        transform: scaleY(1);
-    }
-
+  100% {
+    transform: scaleY(1);
+  }
 }
 
 @keyframes shake {
-    0% {
-        transform: translateX(0);
-    }
+  0% {
+    transform: translateX(0);
+  }
 
-    25% {
-        transform: translateX(-5%);
-    }
-    
-    50% {
-        transform: translateX(0);
-    }
+  25% {
+    transform: translateX(-5%);
+  }
 
-    75% {
-        transform: translateX(5%);
-    }
+  50% {
+    transform: translateX(0);
+  }
 
-    100% {
-        transform: translateX(0);
-    }
+  75% {
+    transform: translateX(5%);
+  }
 
+  100% {
+    transform: translateX(0);
+  }
 }
 
 @keyframes pop {
-    0% {
-        transform: scale(1);
-    }
+  0% {
+    transform: scale(1);
+  }
 
-    50% {
-        transform: scale(1.15);
-    }
+  50% {
+    transform: scale(1.15);
+  }
 
-    100% {
-        transform: scale(1);
-    }
+  100% {
+    transform: scale(1);
+  }
 }
 
 @keyframes out {
-    0% {
-        transform: scale(1);
-    }
+  0% {
+    transform: scale(1);
+  }
 
-    50% {
-        transform: scale(0.8);
-    }
+  50% {
+    transform: scale(0.8);
+  }
 
-    100% {
-        transform: scale(1);
-    }
+  100% {
+    transform: scale(1);
+  }
 }
 
 @keyframes zoomIn {
-    from {
-        transform: scale(1);
-    }
+  from {
+    transform: scale(1);
+  }
 
-    to {
-        transform: scale(1.2);
-    }
+  to {
+    transform: scale(1.2);
+  }
 }
 
 @keyframes zoomOut {
-    from {
-        transform: scale(1.2);
-    }
+  from {
+    transform: scale(1.2);
+  }
 
-    to {
-        transform: scale(1);
-    }
+  to {
+    transform: scale(1);
+  }
 }
 
 @keyframes jump {
-    from {
-        transform: translateY(0);
-    }
+  from {
+    transform: translateY(0);
+  }
 
-    to {
-        transform: translateY(-20px);
-    }
+  to {
+    transform: translateY(-20px);
+  }
 }
 
 @keyframes steam {
-	0% {
-		background-position: 0 0;
-	}
-	50% {
-		background-position: 400% 0;
-	}
-	100% {
-		background-position: 0 0;
-	}
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
 }

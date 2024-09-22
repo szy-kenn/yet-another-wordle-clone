@@ -1,21 +1,21 @@
 @use "../abstracts/colors" as *;
 
 .title {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
 
-    p {
-        color: var(--secondary);
-        font-size: clamp(1.25em, 2vw, 2vw);
+  p {
+    color: var(--secondary);
+    font-size: clamp(1.25em, 2vw, 2vw);
 
-        .wordle {
-            color: var(--correct);
-        }
-
-        .clone {
-            color: var(--misplaced);
-        }
+    .wordle {
+      color: var(--correct);
     }
+
+    .clone {
+      color: var(--misplaced);
+    }
+  }
 }

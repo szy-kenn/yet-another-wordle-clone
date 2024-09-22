@@ -2,143 +2,155 @@
 @use "../abstracts/functions" as *;
 
 .wordle-grid-container {
-    position: relative;
+  position: relative;
 
-    width: clamp(480px, 35%, 50%);
-    max-width: 100%;
-    max-height: 100%;
+  width: clamp(480px, 35%, 50%);
+  max-width: 100%;
+  max-height: 100%;
 
-    padding: 1rem;
-    box-sizing: border-box;
+  padding: 1rem;
+  box-sizing: border-box;
 
-    align-self: center;
-    justify-self: center;
+  align-self: center;
+  justify-self: center;
 
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(6, 1fr);
-    gap: clamp(0.25rem, 0.35vw, 0.35vw);
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(6, 1fr);
+  gap: clamp(0.25rem, 0.35vw, 0.35vw);
 }
 
 .row-container {
-    position: relative;
-    display: flex;
-    align-self: center;
-    align-items: center;
-    justify-content: center;
-    gap: clamp(0.25rem, 0.35vw, 0.35vw);
+  position: relative;
+  display: flex;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.25rem, 0.35vw, 0.35vw);
 
-    &.shake {
-        animation: 0.1s shake ease;
+  &.shake {
+    animation: 0.1s shake ease;
 
-        .square {
-            border-color: #F93B55;
+    .square {
+      border-color: #f93b55;
 
-            p {
-                color: #F93B55;
-            }
-        }
+      p {
+        color: #f93b55;
+      }
     }
+  }
 }
 
 .square {
-    position: relative;
-    width: max(3rem, 7.5%);
+  position: relative;
+  width: max(3rem, 7.5%);
+  aspect-ratio: 1; // to make this a square
+  border-radius: 5px;
+  border: 3px solid rgba(var(--square-border-color-rgb), 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  --flip-anim-speed: 0.5s;
+
+  &.word-to-guess-sqr {
+    width: max(2.25rem, 6.25%);
     aspect-ratio: 1; // to make this a square
-    border-radius: 5px;
-    border: 3px solid rgba(var(--square-border-color-rgb), 0.25);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    --flip-anim-speed: 0.5s;
+  }
 
-    &.word-to-guess-sqr {
-        width: max(2.25rem, 6.25%);
-        aspect-ratio: 1; // to make this a square
+  &.tutorial-sqr {
+    width: max(2.25rem, 6.25%);
+    aspect-ratio: 1;
+    border: 2px solid rgba(var(--square-border-color-rgb), 0.25);
+    p {
+      font-size: 1.25rem;
     }
+  }
 
-    &.tutorial-sqr {
-        width: max(2.25rem, 6.25%);
-        aspect-ratio: 1;
-        border: 2px solid rgba(var(--square-border-color-rgb), 0.25);
-        p {
-            font-size: 1.25rem;
-        }
+  &.special {
+    width: max(calc(3rem + 6px), calc(7.5% + 6px));
+    border: none;
+    background: var(--primary);
+
+    &:before,
+    &:after {
+      content: "";
+      position: absolute;
+      left: -2px;
+      top: -2px;
+      background: linear-gradient(
+        45deg,
+        #4b4193,
+        #6fc7d8,
+        #e94090,
+        #eb5f35,
+        #4b4193,
+        #6fc7d8,
+        #e94090,
+        #eb5f35,
+        #4b4193,
+        #6fc7d8
+      );
+      background-size: 200%;
+      width: calc(100% + 4px);
+      height: calc(100% + 4px);
+      z-index: -1;
+      animation: steam 10s linear infinite;
+      border-radius: 5px;
     }
+  }
 
-    &.special {
-        width: max(calc(3rem + 6px), calc(7.5% + 6px));
-        border: none;
-        background: var(--primary);
+  &.popped {
+    animation: 0.1s pop ease-out;
+  }
 
-        &:before, &:after {
-            content: '';
-            position: absolute;
-            left: -2px;
-            top: -2px;
-            background: linear-gradient(45deg, #4b4193, #6fc7d8, #e94090,#eb5f35, #4b4193, #6fc7d8, 
-                #e94090, #eb5f35,#4b4193, #6fc7d8);
-            background-size: 200%;
-            width: calc(100% + 4px);
-            height: calc(100% + 4px);
-            z-index: -1;
-            animation: steam 10s linear infinite;
-            border-radius: 5px;
-        }
-    }
+  &.out {
+    animation: 0.1s out ease-out;
+  }
 
-    &.popped {
-        animation: 0.1s pop ease-out;
-    }
+  &.flipped {
+    animation: var(--flip-anim-speed) flip ease;
+  }
 
-    &.out {
-        animation: 0.1s out ease-out;
-    }
+  &.jumped {
+    animation: 0.2s jump ease-out;
+  }
 
-    &.flipped {
-        animation: var(--flip-anim-speed) flip ease;
-    }
+  &.filled {
+    border-color: var(--filled-color);
+  }
 
-    &.jumped {
-        animation: 0.2s jump ease-out;
-    }
-
-    &.filled {
-        border-color: var(--filled-color);
-    }
-
-    &.correct {
-        border-color: var(--correct);
-        background-color: var(--correct);
-
-        p {
-            color: var(--background-color);
-        }
-    }
-
-    &.misplaced {
-        border-color: var(--misplaced);
-        background-color: var(--misplaced);
-
-        p {
-            color: var(--background-color);
-        }
-    }
-
-    &.wrong {
-        border-color: var(--wrong);
-        background-color: var(--wrong);
-
-        &.special {
-            border: none;
-        }
-    }
+  &.correct {
+    border-color: var(--correct);
+    background-color: var(--correct);
 
     p {
-        color: var(--filled-color);
-        font-size: 1.5em;
-        text-transform: uppercase;
-        text-align: center;
-        // font-weight: bold;
+      color: var(--background-color);
     }
+  }
+
+  &.misplaced {
+    border-color: var(--misplaced);
+    background-color: var(--misplaced);
+
+    p {
+      color: var(--background-color);
+    }
+  }
+
+  &.wrong {
+    border-color: var(--wrong);
+    background-color: var(--wrong);
+
+    &.special {
+      border: none;
+    }
+  }
+
+  p {
+    color: var(--filled-color);
+    font-size: 1.5em;
+    text-transform: uppercase;
+    text-align: center;
+    // font-weight: bold;
+  }
 }

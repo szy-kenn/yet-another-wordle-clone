@@ -1,15 +1,19 @@
 {
   "hosting": {
     "public": "public",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "headers": [
-        { "source":"**/*.css|**/*.scss|**/*.js|**/*.html", "headers": [{"key": "Cache-Control", "value": "no-cache, no-store, must-revalidate"}] }
-      ]
-  }, 
+      {
+        "source": "**/*.css|**/*.scss|**/*.js|**/*.html",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, no-store, must-revalidate"
+          }
+        ]
+      }
+    ]
+  },
   "emulators": {
     "hosting": {
       "port": 5000,

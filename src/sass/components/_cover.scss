@@ -1,24 +1,24 @@
 @use "../abstracts/colors" as *;
 
 .cover {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    z-index: 998;
-    background-color: rgba(0, 0, 0, 0.8);
-    width: 100dvw;
-    height: 100dvh;
-    opacity: 0;
-    user-select: none;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 998;
+  background-color: rgba(0, 0, 0, 0.8);
+  width: 100dvw;
+  height: 100dvh;
+  opacity: 0;
+  user-select: none;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
 
-    &.displayed {
-        opacity: 1;
-        transition: opacity 0.2s ease;
-        user-select: all;
-        pointer-events: all;
-    }
+  &.displayed {
+    opacity: 1;
+    transition: opacity 0.2s ease;
+    user-select: all;
+    pointer-events: all;
+  }
 }

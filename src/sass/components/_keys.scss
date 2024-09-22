@@ -1,75 +1,75 @@
 @use "../abstracts/colors" as *;
 
 .key-container {
-    position: relative;
-    display: grid;
-    grid-template-columns: minmax(0, auto);
-    grid-template-rows: repeat(3, minmax(0, 1fr));
-    padding: 0.5rem;
-    box-sizing: border-box;
-    gap: 0.25rem;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, auto);
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  padding: 0.5rem;
+  box-sizing: border-box;
+  gap: 0.25rem;
 
-    width: clamp(480px, 35%, 50%);
-    height: 100%;
-    max-width: 100%;
-    justify-self: center;
-    align-content: center;
+  width: clamp(480px, 35%, 50%);
+  height: 100%;
+  max-width: 100%;
+  justify-self: center;
+  align-content: center;
 }
 
 .key-row {
-    display: flex;
-    gap: 0.25rem;
+  display: flex;
+  gap: 0.25rem;
 }
 
 .key {
-    position: relative;
-    font-size: clamp(0.7em, 1vw, 1vw);
-    font-weight: bold;
-    height: 100%;
-    width: 100%;
-    color: var(--square-border-color);
+  position: relative;
+  font-size: clamp(0.7em, 1vw, 1vw);
+  font-weight: bold;
+  height: 100%;
+  width: 100%;
+  color: var(--square-border-color);
+  background-color: var(--wrong);
+  border: none;
+  padding: 0;
+  border-radius: 5px;
+  transform: scale(1);
+  transition: transform 0.1s ease;
+  z-index: inherit;
+  user-select: none;
+
+  &.wrong {
+    opacity: 0.5;
     background-color: var(--wrong);
-    border: none;
-    padding: 0;
-    border-radius: 5px;
-    transform: scale(1);
+  }
+
+  &.misplaced {
+    background-color: var(--misplaced);
+    color: var(--background-color);
+    border-color: rgba(var(--background-color-rgb), 0.5);
+  }
+
+  &.correct {
+    background-color: var(--correct);
+    color: var(--background-color);
+    border-color: rgba(var(--background-color-rgb), 0.5);
+  }
+
+  &.pressed {
+    background-color: var(--filled-color);
+    color: var(--background-color);
+    transform: scale(1.1);
     transition: transform 0.1s ease;
-    z-index: inherit;
-    user-select: none;
+    z-index: 999;
+  }
 
-    &.wrong {
-        opacity: 0.5;
-        background-color: var(--wrong);
-    }
+  &.enter,
+  &.delete {
+    font-size: clamp(0.7em, 0.9vw, 0.9vw);
+    min-width: fit-content;
+  }
 
-    &.misplaced {
-        background-color: var(--misplaced);
-        color: var(--background-color);
-        border-color: rgba(var(--background-color-rgb), 0.5);
-    }
-
-    &.correct {
-        background-color: var(--correct);
-        color: var(--background-color);
-        border-color: rgba(var(--background-color-rgb), 0.5);
-    }
-
-    &.pressed {
-        background-color: var(--filled-color);
-        color: var(--background-color);
-        transform: scale(1.1);
-        transition: transform 0.1s ease;
-        z-index: 999;
-    }
-
-    &.enter,
-    &.delete {
-        font-size: clamp(0.7em, 0.9vw, 0.9vw);
-        min-width: fit-content;
-    }
-
-    &.error {
-        background-color: var(--error);
-        // animation: 0.1s pop ease;
-    }
+  &.error {
+    background-color: var(--error);
+    // animation: 0.1s pop ease;
+  }
 }
