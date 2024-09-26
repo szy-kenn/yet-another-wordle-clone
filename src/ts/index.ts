@@ -144,8 +144,12 @@ async function start() {
     onSignOut();
   }
   
-  const gameState = await getGameState(); 
+  let gameState = await getGameState(); 
   initializeGameData(gameState);
+
+  if (gameState == null) { 
+    gameState = await getGameState();
+  }
 
   TRIES =
     defaultTries +
