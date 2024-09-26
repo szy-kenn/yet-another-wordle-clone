@@ -5,7 +5,7 @@ import { wordlist } from "./wordlist";
 import { validWords } from "./valid_words";
 
 // Recommended way, to include only the icons you need.
-import { createIcons, Menu, ArrowRight, Globe, ChartBarBig, ChartBar, Info, Trophy, CircleUserRound, Settings2 } from 'lucide';
+import { createIcons, Flame, ChartBar, Info, Trophy, CircleUserRound, Settings2 } from 'lucide';
 
 createIcons({
   icons: {
@@ -13,7 +13,8 @@ createIcons({
     ChartBar,
     Trophy,
     CircleUserRound,
-    Settings2
+    Settings2,
+    Flame
   },
 });
 

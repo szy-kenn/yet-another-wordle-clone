@@ -95,6 +95,7 @@ export const updateUser = async (user, gameState, userData, username, photoURL) 
 
 export const updateUsername = async (user, username) => {
   try {
+    const userRef = doc(colRef, user.uid);
     const userSnapshot = await getDoc(userRef);
     const updatedDoc = await updateDoc(userRef, {
       ...userSnapshot.data(),

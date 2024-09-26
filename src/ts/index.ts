@@ -522,9 +522,6 @@ export async function showLeaderboards() {
   const leaderboardCardsContainer = document.querySelector<HTMLDivElement>(".leaderboard-cards-container");
   leaderboardCardsContainer.textContent = '';
   
-
-  console.log(leaderboards);
-
   leaderboards.forEach((card, idx) => {
 
 
@@ -552,7 +549,17 @@ export async function showLeaderboards() {
           <img src="${card.photoURL}" width="48px" height="48px" />
         </div>
         <div class="leaderboard-content">
-          <p class="leaderboard-name" ${ card.id === auth.currentUser.uid ? "style='color: var(--correct); font-weight: semibold;'" : ""}>${card.username}</p>
+          <div class="leaderboard-name-streak" style="display: flex; align-items: center; gap: 0.25rem;">
+          <p class="leaderboard-name" ${ card.id === auth.currentUser.uid ? "style='color: var(--correct); font-weight: semibold;'" : ""}>
+              ${card.username} 
+          </p>
+          <div style="display: flex; padding: 0.375rem; padding-block: 0.125rem; background: var(--wrong); align-items: center; border-radius: 5px; gap: 0.125rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--error)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flame"  style="width: 16px; height: 16px;">
+              <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+            </svg>
+            <p style="font-family: 'Poppins'; font-weight: semibold; font-size: 0.825rem; color: var(--filled-color);">${card.userData.currentStreak}</p>
+          </div> 
+          </div>
           <p class="leaderboard-winrate" style="font-family: 'Poppins';">${card.userData.winRate}% WR</p>
         </div>
       </div>
@@ -578,6 +585,8 @@ export async function showLeaderboards() {
 };
 
 export const showAccountSettings = async () => {
+  const user = await getUser(auth.currentUser);
+  usernameInput.value = user.username;
   showContainer(accountContainer);
 };
 
@@ -1220,19 +1229,19 @@ const onSignIn = async (auth: Auth)  => {
   const unsub = getLeaderboardsListener();
   const user = await getUser(auth.currentUser);
 
-  console.log(user);
-
   usernameInput.value = user.username;
-  usernameInput.addEventListener("input", (e: InputEvent) => {
-    if ((e.target as HTMLInputElement).value !== user.username) {
-      accountSaveBtn.disabled = false;
-    } else {
-      accountSaveBtn.disabled = true;
-    }
-  });
+  // usernameInput.addEventListener("input", (e: InputEvent) => {
+  //   if ((e.target as HTMLInputElement).value !== user.username) {
+  //     accountSaveBtn.disabled = false;
+  //   } else {
+  //     accountSaveBtn.disabled = true;
+  //   }
+  // });
 
   accountSaveBtn.addEventListener("click", async () => {
       await updateUsername(auth.currentUser, usernameInput.value);
+      await displayNote("Username updated!", 0, 1000, "system");
+      hideContainer(accountContainer);
     });
 }
 
