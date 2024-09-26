@@ -29,7 +29,7 @@ import {
   newGameState,
 } from "./data";
 
-import { googleSignUpPopup } from "../firebase";
+import { googleSignUpPopup, updateUser, updateUserGameState, leaderboards, getLeaderboardsListener, pointsLookUp, updateUsername, getUser } from "../firebase";
 import { Auth, getAdditionalUserInfo, getAuth, GoogleAuthProvider, onAuthStateChanged, signOut, UserCredential } from "firebase/auth";
 
 import {
@@ -47,6 +47,7 @@ import {
   setDoc,
 } from "firebase/firestore";
 
+const auth = getAuth();
 export let TRIES = defaultTries;
 
 // ========================== HTML Elements =========================================
@@ -133,15 +134,24 @@ let shownContainer = null;
 /**
  * the initial function to call to start the game (initializes UI and game data)
  */
-function start() {
-  initializeGameData();
+async function start() {
+  initializeUI();
+  await auth.authStateReady();
+  
+  if (auth.currentUser) {
+    onSignIn(auth);
+  } else {
+    onSignOut();
+  }
+  
+  const gameState = await getGameState(); 
+  initializeGameData(gameState);
 
   TRIES =
     defaultTries +
-    (getGameState().triggered != null && getGameState().triggered === 1
+    (gameState.triggered != null && gameState.triggered === 1
       ? 1
       : 0);
-  initializeUI();
 
   // load theme
   if (getSettings().theme === "dark") {
@@ -167,6 +177,10 @@ function start() {
     hideWordToGuess();
     location.reload();
   }, timeBeforeMidnight);
+
+  loadGameState(gameState);
+  addAllListeners();
+
 }
 
 /**
@@ -203,15 +217,25 @@ function addMisplacedLetter(letter) {
  * @param {boolean} update - determines whether to update the game stats or not (useful for loading game state to avoid duplicating the data)
  */
 async function end(isWinner: boolean, showNote: boolean, update: boolean) {
+
+  const gameState = await getGameState();
+  const userData = await getUserData();
+
   if (
-    (getGameState().triggered == null || getGameState().triggered !== 1) &&
-    Math.random() < 0.0001
+    (gameState.triggered == null || gameState.triggered !== 1) &&
+    Math.random() < 0.0001 && !isWinner
+    // Math.random() < 1 && !isWinner
   ) {
     triggerRareEvent();
-    localStorage.setItem(
-      "gameState",
-      JSON.stringify({ ...getGameState(), triggered: 1 }),
-    );
+
+    if (auth.currentUser !== null) {
+      await updateUserGameState(auth.currentUser, {gameState, triggered: 1});
+    } else {
+      localStorage.setItem(
+        "gameState",
+        JSON.stringify({ gameState, triggered: 1 }),
+      );
+    }
     TRIES += 1;
     currentSquare = 0;
     currentRow = 6;
@@ -255,7 +279,7 @@ async function end(isWinner: boolean, showNote: boolean, update: boolean) {
   copyToClipboardBtn.classList.remove("disabled");
 
   // reveal the word
-  const wordToGuess = getGameState().wordToGuess;
+  const wordToGuess = gameState.wordToGuess;
   const lastEvalScore = evaluate(getWord(currentRow - 1), wordToGuess);
 
   for (let i = 0; i < wordToGuess.length; i++) {
@@ -264,19 +288,20 @@ async function end(isWinner: boolean, showNote: boolean, update: boolean) {
   }
 
   if (update) {
-    updateStats("gamesPlayed", getUserData().gamesPlayed + 1);
+    await updateStats("gamesPlayed", userData.gamesPlayed + 1);
   }
 
   if (isWinner) {
     // update all stats
     if (update) {
-      updateGuessStats(currentRow - 1);
-      updateStats("gamesWon", getUserData().gamesWon + 1);
-      updateStats("currentStreak", getUserData().currentStreak + 1);
+      await updateGuessStats(currentRow - 1);
+      await updateStats("gamesWon", userData.gamesWon + 1);
+      await updateStats("currentStreak", userData.currentStreak + 1);
 
       // change longest streak if current streak is already higher
-      if (getUserData().currentStreak > getUserData().longestStreak) {
-        updateStats("longestStreak", getUserData().currentStreak);
+      // +1 since the userData obj is not updated yet
+      if (userData.currentStreak + 1 > userData.longestStreak) {
+        await updateStats("longestStreak", userData.currentStreak);
       }
     }
 
@@ -291,7 +316,7 @@ async function end(isWinner: boolean, showNote: boolean, update: boolean) {
   } else {
     if (update) {
       // make the currentStreak zero
-      updateStats("currentStreak", 0);
+      await updateStats("currentStreak", 0);
     }
     if (showNote) {
       // display the popping note
@@ -300,14 +325,15 @@ async function end(isWinner: boolean, showNote: boolean, update: boolean) {
   }
 
   if (update) {
-    updateStats(
+    await updateStats(
       "winRate",
-      Math.round((getUserData().gamesWon / getUserData().gamesPlayed) * 100),
+      Math.round((userData.gamesWon / userData.gamesPlayed) * 100),
     );
   }
 
   // show stats after
-  showStats(true, getUserData());
+  const updatedUserData = await getUserData();
+  showStats(true, updatedUserData);
 }
 
 /**
@@ -389,11 +415,14 @@ function hideContainer(container: HTMLElement) {
  * @param {boolean} show - whether to show the stats container or not
  * @param {boolean} userData - the data that will be displayed
  */
-function showStats(show: boolean = true, userData: UserData) {
+async function showStats(show: boolean = true, userData: UserData) {
+
+  const gameState = await getGameState();
+
   // only show the 7 in Guess Distribution if it is triggered, or the player already has a correct guess in the rare 7th try
   if (
-    getGameState().triggered === 1 ||
-    getUserData().guessDistribution[defaultTries] > 0
+    gameState.triggered === 1 ||
+    userData.guessDistribution[defaultTries] > 0
   ) {
     document.getElementById("guess-distrib-7").style.display = "grid";
   } else {
@@ -413,10 +442,19 @@ function showStats(show: boolean = true, userData: UserData) {
       }
     }
 
+    const guessContainers = document.querySelectorAll<HTMLDivElement>(".guess-value-container");
+
     if (isWinner) {
       // highlight the guess number
       const guessNum = guessStats[currentRow - 1];
       guessNum.classList.add("added");
+
+      if (guessContainers[currentRow - 1].children.length == 1) {
+        const p = document.createElement("p");
+        p.className = "points-added";
+        p.textContent = "+" + pointsLookUp[currentRow - 1].toString();
+        guessContainers[currentRow - 1].appendChild(p);
+      }
     }
 
     // update stats in texts
@@ -428,6 +466,7 @@ function showStats(show: boolean = true, userData: UserData) {
       userData.currentStreak.toString();
     document.querySelector<HTMLElement>(".longest-streak-value-p").textContent =
       userData.longestStreak.toString();
+
 
     for (let i = 0; i < TRIES; i++) {
       setText(guessStats[i], userData.guessDistribution[i].toString());
@@ -455,13 +494,95 @@ function showStats(show: boolean = true, userData: UserData) {
   }
 }
 
+let prev_leaderboards = [];
+let current_leaderboards = [];
+export async function showLeaderboards() {
+
+  let isChanged = false;
+
+  if (current_leaderboards.length == 0) {
+    current_leaderboards = leaderboards;
+  }
+
+  if (prev_leaderboards.length == 0) {
+    prev_leaderboards = current_leaderboards;
+  }
+
+
+  if (current_leaderboards.toString() != leaderboards.toString()) {
+    isChanged = true;
+    prev_leaderboards = current_leaderboards;
+    current_leaderboards = leaderboards;
+  }
+
+  const leaderboardCardsContainer = document.querySelector<HTMLDivElement>(".leaderboard-cards-container");
+  leaderboardCardsContainer.textContent = '';
+  
+
+  console.log(leaderboards);
+
+  leaderboards.forEach((card, idx) => {
+
+
+    const element = document.createElement("div");
+    element.className = "leaderboard-card";
+
+    const previous_rank = prev_leaderboards.findIndex(c => c.id === card.id);
+    let rank_changes; 
+
+    if (previous_rank > idx) {
+      rank_changes = "+";
+    } else if (previous_rank < idx) {
+      rank_changes = "-";
+    } else {
+      rank_changes = "=";
+    }
+
+    element.innerHTML = `          
+    <div class="leaderboard-ranking">
+      <p>${idx + 1}</p>
+    </div>
+    <div class="leaderboard-content">
+      <div class="leaderboard-left">
+        <div class="leaderboard-card-avatar-container">
+          <img src="${card.photoURL}" width="48px" height="48px" />
+        </div>
+        <div class="leaderboard-content">
+          <p class="leaderboard-name" ${ card.id === auth.currentUser.uid ? "style='color: var(--correct); font-weight: semibold;'" : ""}>${card.username}</p>
+          <p class="leaderboard-winrate" style="font-family: 'Poppins';">${card.userData.winRate}% WR</p>
+        </div>
+      </div>
+      <p style="font-family: 'Poppins'; font-weight: bold; color: var(--filled-color);">${card.points}</p>
+    </div>
+  `
+    leaderboardCardsContainer.appendChild(element);
+  })
+
+  if (leaderboards.length == 0) {
+    const element = document.createElement("p");
+    element.style.color = "var(--filled-color)";
+    element.style.opacity = "0.5";
+    element.style.textAlign = "center";
+    element.style.width = "100%";
+    element.style.fontFamily = "Poppins";
+    element.textContent = "No data yet";
+    leaderboardCardsContainer.appendChild(element);
+  }
+
+  showContainer(leaderboardsContainer);
+};
+
+export const showAccountSettings = async () => {
+  showContainer(accountContainer);
+};
+
 /**
  *
  * @param {GameState} gameState - the current game state (should be completed)
  * @returns {void} - it will just copy to clipboard
  */
 export async function copyToClipboard() {
-  const gameState: GameState = getGameState();
+  const gameState: GameState = await getGameState();
   const blue: string = "🟦";
   const orange: string = "🟧";
   const gray: string = "⬛";
@@ -505,15 +626,19 @@ export async function copyToClipboard() {
  * @returns {Promise} - returns a new Promise that will be resolved after loading the game state
  */
 async function loadGameState(gameState: GameState) {
+
+  await displayNote("Please wait while we load the game...", 0, 1000, "system");
+
   return new Promise<void>(async (resolve, reject) => {
+
     if (gameState.ttl == null || gameState.ttl < new Date().getTime()) {
-      newGameState();
+      await newGameState();
       hideWordToGuess();
       // TODO: make this a separate function
       copyToClipboardBtn.classList.add("disabled");
       location.reload();
     }
-
+    
     for (let i = 0; i < gameState.guesses.length; i++) {
       for (let j = 0; j < gameState.guesses[i].length; j++) {
         // get current cell in row i and square index j to get the p element and load the text in gameState
@@ -531,7 +656,7 @@ async function loadGameState(gameState: GameState) {
       }
 
       const word: string = getWord(i); // get current word
-      const evalScore = evaluate(word, getGameState().wordToGuess); // evaluate the current word
+      const evalScore = evaluate(word, gameState.wordToGuess); // evaluate the current word
 
       usedMisplacedLetters = [];
 
@@ -549,11 +674,11 @@ async function loadGameState(gameState: GameState) {
       if (evalScore.correctLetters() === WORD_LENGTH) {
         //  if the user has already input the correct word
         isWinner = true;
-        end(isWinner, true, false);
+        await end(isWinner, true, false);
         resolve();
         break;
       } else if (currentRow === TRIES) {
-        end(isWinner, true, false);
+        await end(isWinner, true, false);
         resolve();
         break;
       }
@@ -747,310 +872,335 @@ const disableDarkMode = () => {
   );
 };
 
-cover.addEventListener("click", () => {
-  // if the cover is displayed, clicking it should close the stats
-  hideContainer(shownContainer);
-});
-
-infoIcon.addEventListener("click", () => {
-  showContainer(infoContainer);
-
-  // animate squares with evaluated colors
-  const flipSquares = [
-    document.querySelector<HTMLElement>(".square.tutorial-sqr.correct"),
-    document.querySelector<HTMLElement>(".square.tutorial-sqr.misplaced"),
-    document.querySelector<HTMLElement>(".square.tutorial-sqr.wrong"),
-  ];
-
-  // animate colored squares
-  for (let i = 0; i < flipSquares.length; i++) {
-    setTimeout(() => {
-      flipSquares[i].classList.add("flipped");
-    }, i * 250);
-
-    setTimeout(
-      () => {
-        flipSquares[i].classList.remove("flipped");
-      },
-      i * 250 + 500,
-    );
-  }
-});
-
-leaderboardsIcon.addEventListener("click", () => {
-  showContainer(leaderboardsContainer);
-});
-
-accountIcon.addEventListener("click", () => {
-  showContainer(accountContainer);
-})
-
-statsIcon.addEventListener("click", () => {
-  showStats(true, getUserData());
-});
-
-settingsIcon.addEventListener("click", () => {
-  showContainer(settingsContainer);
-});
-
-copyToClipboardBtn.addEventListener("click", () => {
-  copyToClipboard();
-});
-
-hardModeSwitchContainer.addEventListener("click", () => {
-  if (currentRow === 0) {
-    hardModeSwitchContainer.classList.toggle("on");
-    if (hardModeSwitchContainer.classList.contains("on")) {
-      updateMode("hard");
-    } else {
-      updateMode("normal");
-    }
-  } else {
-    if (hardModeSwitchContainer.classList.contains("on")) {
-      displayNote(
-        "Hard mode can only be disabled at the start of the round.",
-        0,
-        1500,
-        "error",
-      );
-    } else {
-      displayNote(
-        "Hard mode can only be enabled at the start of the round.",
-        0,
-        1500,
-        "error",
+const addAllListeners = () => {
+  cover.addEventListener("click", () => {
+    // if the cover is displayed, clicking it should close the stats
+    hideContainer(shownContainer);
+  });
+  
+  infoIcon.addEventListener("click", () => {
+    showContainer(infoContainer);
+  
+    // animate squares with evaluated colors
+    const flipSquares = [
+      document.querySelector<HTMLElement>(".square.tutorial-sqr.correct"),
+      document.querySelector<HTMLElement>(".square.tutorial-sqr.misplaced"),
+      document.querySelector<HTMLElement>(".square.tutorial-sqr.wrong"),
+    ];
+  
+    // animate colored squares
+    for (let i = 0; i < flipSquares.length; i++) {
+      setTimeout(() => {
+        flipSquares[i].classList.add("flipped");
+      }, i * 250);
+  
+      setTimeout(
+        () => {
+          flipSquares[i].classList.remove("flipped");
+        },
+        i * 250 + 500,
       );
     }
-  }
-});
-
-darkModeSwitchContainer.addEventListener("click", () => {
-  darkModeSwitchContainer.classList.toggle("on");
-  if (darkModeSwitchContainer.classList.contains("on")) {
-    enableDarkMode();
-    updateTheme("dark");
-  } else {
-    disableDarkMode();
-    updateTheme("light");
-  }
-});
-
-// keypad
-keys.forEach((key) => {
-  ["mousedown", "touchstart"].forEach((event) => {
-    key.addEventListener(event, () => {
-      if (key.classList.contains("wrong")) {
-        key.classList.add("error");
+  });
+  
+  leaderboardsIcon.addEventListener("click", () => {
+    showLeaderboards();
+  });
+  
+  accountIcon.addEventListener("click", () => {
+    showContainer(accountContainer);
+    showAccountSettings();
+  })
+  
+  statsIcon.addEventListener("click", async () => {
+    showStats(true, await getUserData());
+  });
+  
+  settingsIcon.addEventListener("click", () => {
+    showContainer(settingsContainer);
+  });
+  
+  copyToClipboardBtn.addEventListener("click", () => {
+    copyToClipboard();
+  });
+  
+  hardModeSwitchContainer.addEventListener("click", () => {
+    if (currentRow === 0) {
+      hardModeSwitchContainer.classList.toggle("on");
+      if (hardModeSwitchContainer.classList.contains("on")) {
+        updateMode("hard");
+      } else {
+        updateMode("normal");
       }
-      key.classList.add("pressed");
-    });
-  });
-
-  ["mouseup", "touchend"].forEach((event) => {
-    key.addEventListener(event, () => {
-      key.classList.remove("pressed");
-    });
-  });
-
-  ["mouseleave", "touchcancel"].forEach((event) => {
-    key.addEventListener(event, () => {
-      if (key.classList.contains("pressed")) {
-        key.classList.remove("pressed");
-      }
-    });
-  });
-
-  key.addEventListener("click", () => {
-    key.classList.add("popped");
-    setTimeout(() => {
-      key.classList.remove("popped");
-    }, 100);
-
-    // fire an event that simulates a keydown event
-    let keyCode = key.textContent;
-
-    if (key.textContent === "Delete") {
-      keyCode = "Backspace";
-    }
-
-    const keyEvent = new KeyboardEvent("keydown", { key: keyCode });
-    document.dispatchEvent(keyEvent);
-  });
-});
-
-document.addEventListener("keydown", async (event) => {
-  if (!gameOver && !isAnimating) {
-    let currentKey;
-
-    if (isLetter(event.key) && currentSquare <= WORD_LENGTH - 1) {
-      // player should not be able to reuse letters that have already been marked as 'wrong' / incorrect
-      if (getSettings().mode === "hard") {
-        const keyPressed = document.querySelector<HTMLElement>(
-          `.keycode-${event.key.toLowerCase()}`,
+    } else {
+      if (hardModeSwitchContainer.classList.contains("on")) {
+        displayNote(
+          "Hard mode can only be disabled at the start of the round.",
+          0,
+          1500,
+          "error",
         );
-
-        if (keyPressed.classList.contains("wrong")) {
-          keyPressed.classList.add("pressed");
-          keyPressed.classList.add("error");
-          setTimeout(() => {
-            keyPressed.classList.remove("error");
-            keyPressed.classList.remove("pressed");
-          }, 100);
-          return;
-        }
-
-        if (
-          revealedHints.correct[currentSquare] !== undefined &&
-          revealedHints.correct[currentSquare] !== event.key.toLowerCase()
-        ) {
-          displayNote(
-            "Hard mode is enabled. Revealed hints must be used.",
-            0,
-            1000,
-            "error",
-          );
-          keyPressed.classList.add("pressed");
-          keyPressed.classList.add("error");
-          setTimeout(() => {
-            keyPressed.classList.remove("error");
-            keyPressed.classList.remove("pressed");
-          }, 100);
-          return;
-        }
-
-        if (
-          revealedHints.misplaced.includes(event.key.toLowerCase()) &&
-          revealedHints.correct[currentSquare] !== event.key.toLowerCase()
-        ) {
-          let used = revealedHints.misplaced.splice(
-            revealedHints.misplaced.indexOf(event.key.toLowerCase()),
-            1,
-          );
-          usedMisplacedLetters = usedMisplacedLetters.concat(used);
-        }
+      } else {
+        displayNote(
+          "Hard mode can only be enabled at the start of the round.",
+          0,
+          1500,
+          "error",
+        );
       }
-
-      const currentCell = getCell(currentRow, currentSquare); // get current cell to fill
-      setText(currentCell.firstElementChild, event.key); // change text content to the corresponding event key
-
-      currentCell.classList.add("popped");
-      currentCell.classList.add("filled"); // change the border color to white (filled cell)
-      currentCell.classList.remove("out");
-
-      currentKey = document.querySelector<HTMLElement>(
-        `.keycode-${event.key.toLowerCase()}`,
-      );
-      // update the tracker variables
-      currentSquare++;
-    } else if (event.key === "Backspace") {
-      currentKey = document.querySelector<HTMLElement>(`.delete`);
-
-      if (currentSquare !== 0) {
-        const currentCell = getCell(currentRow, currentSquare - 1);
-
+    }
+  });
+  
+  darkModeSwitchContainer.addEventListener("click", () => {
+    darkModeSwitchContainer.classList.toggle("on");
+    if (darkModeSwitchContainer.classList.contains("on")) {
+      enableDarkMode();
+      updateTheme("dark");
+    } else {
+      disableDarkMode();
+      updateTheme("light");
+    }
+  });
+  
+  // keypad
+  keys.forEach((key) => {
+    ["mousedown", "touchstart"].forEach((event) => {
+      key.addEventListener(event, () => {
+        if (key.classList.contains("wrong")) {
+          key.classList.add("error");
+        }
+        key.classList.add("pressed");
+      });
+    });
+  
+    ["mouseup", "touchend"].forEach((event) => {
+      key.addEventListener(event, () => {
+        key.classList.remove("pressed");
+      });
+    });
+  
+    ["mouseleave", "touchcancel"].forEach((event) => {
+      key.addEventListener(event, () => {
+        if (key.classList.contains("pressed")) {
+          key.classList.remove("pressed");
+        }
+      });
+    });
+  
+    key.addEventListener("click", () => {
+      key.classList.add("popped");
+      setTimeout(() => {
+        key.classList.remove("popped");
+      }, 100);
+  
+      // fire an event that simulates a keydown event
+      let keyCode = key.textContent;
+  
+      if (key.textContent === "Delete") {
+        keyCode = "Backspace";
+      }
+  
+      const keyEvent = new KeyboardEvent("keydown", { key: keyCode });
+      document.dispatchEvent(keyEvent);
+    });
+  });
+  
+  document.addEventListener("keydown", async (event) => {
+    if (!gameOver && !isAnimating) {
+      let currentKey;
+  
+      if (isLetter(event.key) && currentSquare <= WORD_LENGTH - 1) {
+        // player should not be able to reuse letters that have already been marked as 'wrong' / incorrect
         if (getSettings().mode === "hard") {
+          const keyPressed = document.querySelector<HTMLElement>(
+            `.keycode-${event.key.toLowerCase()}`,
+          );
+  
+          if (keyPressed.classList.contains("wrong")) {
+            keyPressed.classList.add("pressed");
+            keyPressed.classList.add("error");
+            setTimeout(() => {
+              keyPressed.classList.remove("error");
+              keyPressed.classList.remove("pressed");
+            }, 100);
+            return;
+          }
+  
           if (
-            usedMisplacedLetters.includes(
-              currentCell.firstElementChild.textContent.toLowerCase(),
-            )
+            revealedHints.correct[currentSquare] !== undefined &&
+            revealedHints.correct[currentSquare] !== event.key.toLowerCase()
           ) {
-            usedMisplacedLetters.splice(
-              usedMisplacedLetters.indexOf(
-                currentCell.firstElementChild.textContent.toLowerCase(),
-              ),
+            displayNote(
+              "Hard mode is enabled. Revealed hints must be used.",
+              0,
+              1000,
+              "error",
+            );
+            keyPressed.classList.add("pressed");
+            keyPressed.classList.add("error");
+            setTimeout(() => {
+              keyPressed.classList.remove("error");
+              keyPressed.classList.remove("pressed");
+            }, 100);
+            return;
+          }
+  
+          if (
+            revealedHints.misplaced.includes(event.key.toLowerCase()) &&
+            revealedHints.correct[currentSquare] !== event.key.toLowerCase()
+          ) {
+            let used = revealedHints.misplaced.splice(
+              revealedHints.misplaced.indexOf(event.key.toLowerCase()),
               1,
             );
-            addMisplacedLetter(
-              currentCell.firstElementChild.textContent.toLowerCase(),
-            );
+            usedMisplacedLetters = usedMisplacedLetters.concat(used);
           }
         }
-
-        currentCell.firstElementChild.textContent = "";
-        currentCell.classList.add("out");
-        currentCell.classList.remove("filled");
-        currentCell.classList.remove("popped");
-
-        currentSquare--;
-      }
-    } else if (event.key === "Enter") {
-      currentKey = document.querySelector<HTMLElement>(`.enter`);
-
-      if (currentSquare === WORD_LENGTH) {
-        const word = getWord(currentRow);
-
-        if (isValid(word)) {
-          if (currentRow === 0) {
-            hardModeSwitchContainer.classList.add("disabled");
-          }
-
+  
+        const currentCell = getCell(currentRow, currentSquare); // get current cell to fill
+        setText(currentCell.firstElementChild, event.key); // change text content to the corresponding event key
+  
+        currentCell.classList.add("popped");
+        currentCell.classList.add("filled"); // change the border color to white (filled cell)
+        currentCell.classList.remove("out");
+  
+        currentKey = document.querySelector<HTMLElement>(
+          `.keycode-${event.key.toLowerCase()}`,
+        );
+        // update the tracker variables
+        currentSquare++;
+      } else if (event.key === "Backspace") {
+        currentKey = document.querySelector<HTMLElement>(`.delete`);
+  
+        if (currentSquare !== 0) {
+          const currentCell = getCell(currentRow, currentSquare - 1);
+  
           if (getSettings().mode === "hard") {
-            if (revealedHints.misplaced.length > 0) {
-              displayNote("All revealed hints must be used.", 0, 1000, "error");
-              return;
-            } else {
-              usedMisplacedLetters = [];
+            if (
+              usedMisplacedLetters.includes(
+                currentCell.firstElementChild.textContent.toLowerCase(),
+              )
+            ) {
+              usedMisplacedLetters.splice(
+                usedMisplacedLetters.indexOf(
+                  currentCell.firstElementChild.textContent.toLowerCase(),
+                ),
+                1,
+              );
+              addMisplacedLetter(
+                currentCell.firstElementChild.textContent.toLowerCase(),
+              );
             }
           }
-
-          const evalScore = evaluate(word, getGameState().wordToGuess); // get evaluation of the current word
-
-          // flip the row and show the result based on evalScore
-          disableKeypad(true);
-          isAnimating = true;
-          await animateResult(currentRow, evalScore, 200, 250, true);
-          disableKeypad(false);
-          isAnimating = false;
-
-          // save the inputted word in the current game state
-          updateGameStateGuesses(currentRow, word);
-
-          // if the player got all correct scores in evalScore
-          if (evalScore.correctLetters() === WORD_LENGTH) {
-            currentRow++;
-            isWinner = true;
-            end(isWinner, true, true);
-          } else if (currentRow < TRIES - 1) {
-            // if there is still any remaining tries
-            currentRow++;
-            currentSquare = 0;
-          } else {
-            // if there are no more remaining tries left
-            currentRow++;
-            end(isWinner, true, true);
-          }
-        } else {
-          const wrongRow = getRow(currentRow);
-
-          wrongRow.classList.add("shake");
-          setTimeout(() => {
-            wrongRow.classList.remove("shake");
-          }, 100);
+  
+          currentCell.firstElementChild.textContent = "";
+          currentCell.classList.add("out");
+          currentCell.classList.remove("filled");
+          currentCell.classList.remove("popped");
+  
+          currentSquare--;
         }
+      } else if (event.key === "Enter") {
+        currentKey = document.querySelector<HTMLElement>(`.enter`);
+  
+        if (currentSquare === WORD_LENGTH) {
+          const word = getWord(currentRow);
+  
+          if (isValid(word)) {
+            if (currentRow === 0) {
+              hardModeSwitchContainer.classList.add("disabled");
+            }
+  
+            if (getSettings().mode === "hard") {
+              if (revealedHints.misplaced.length > 0) {
+                displayNote("All revealed hints must be used.", 0, 1000, "error");
+                return;
+              } else {
+                usedMisplacedLetters = [];
+              }
+            }
+  
+            const gameState = await getGameState();
+            const evalScore = evaluate(word, gameState.wordToGuess); // get evaluation of the current word
+  
+            // flip the row and show the result based on evalScore
+            disableKeypad(true);
+            isAnimating = true;
+            await animateResult(currentRow, evalScore, 200, 250, true);
+            disableKeypad(false);
+            isAnimating = false;
+  
+            // save the inputted word in the current game state
+            await updateGameStateGuesses(currentRow, word);
+  
+            // if the player got all correct scores in evalScore
+            if (evalScore.correctLetters() === WORD_LENGTH) {
+              currentRow++;
+              isWinner = true;
+              await end(isWinner, true, true);
+            } else if (currentRow < TRIES - 1) {
+              // if there is still any remaining tries
+              currentRow++;
+              currentSquare = 0;
+            } else {
+              // if there are no more remaining tries left
+              currentRow++;
+              await end(isWinner, true, true);
+            }
+          } else {
+            const wrongRow = getRow(currentRow);
+            wrongRow.classList.add("shake");
+            setTimeout(() => {
+              wrongRow.classList.remove("shake");
+            }, 100);
+          }
+        }
+      } else {
+        return;
       }
-    } else {
-      return;
+  
+      // make keypad press
+      currentKey.classList.add("pressed");
+      setTimeout(() => {
+        currentKey.classList.remove("pressed");
+      }, 50);
     }
+  });
 
-    // make keypad press
-    currentKey.classList.add("pressed");
-    setTimeout(() => {
-      currentKey.classList.remove("pressed");
-    }, 50);
-  }
-});
+  signInWithGoogleBtns.forEach(btn => {
+    btn.addEventListener("click", async () => {
+      try {
+        const res = await googleSignUpPopup();
+        const isNewUser = getAdditionalUserInfo(res).isNewUser;
+        if (isNewUser) {
+          await updateUser(res.user, JSON.parse(localStorage.getItem("gameState")), JSON.parse(localStorage.getItem("userData")), res.user.displayName.split(" ")[0], res.user.photoURL);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  });
 
-// firestore
+  signOutGoogleBtns.forEach(btn => {
+    btn.addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.reload();
+    })
+  });
 
-const db = getFirestore();
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      onSignIn(auth);
+    } else {
+      onSignOut();
+    }
+  });
+}
 
-const colRef = collection(db, "users");
 
 // authentication
 
-const auth = getAuth();
-
-const onSignIn = (auth: Auth)  => {
+const onSignIn = async (auth: Auth)  => {
   googleSignInDivs.forEach((div) => div.style.display = "none");
   const signedInDivs = document.querySelectorAll<HTMLDivElement>(".google-signed-in");
   currentUserAvatars.forEach((avatar) => {
@@ -1061,18 +1211,24 @@ const onSignIn = (auth: Auth)  => {
   signedInDivs.forEach((div) => {
     div.style.display = "flex";
   });
-  usernameInput.value = auth.currentUser.displayName.slice(0, 20);
+
+  const unsub = getLeaderboardsListener();
+  const user = await getUser(auth.currentUser);
+
+  console.log(user);
+
+  usernameInput.value = user.username;
   usernameInput.addEventListener("input", (e: InputEvent) => {
-    if ((e.target as HTMLInputElement).value !== auth.currentUser.displayName) {
+    if ((e.target as HTMLInputElement).value !== user.username) {
       accountSaveBtn.disabled = false;
     } else {
       accountSaveBtn.disabled = true;
     }
   });
 
-  accountSaveBtn.addEventListener("click", () => {
-
-  })
+  accountSaveBtn.addEventListener("click", async () => {
+      await updateUsername(auth.currentUser, usernameInput.value);
+    });
 }
 
 const onSignOut = () => {
@@ -1083,48 +1239,5 @@ const onSignOut = () => {
   });
 }
 
-signInWithGoogleBtns.forEach(btn => {
-    btn.addEventListener("click", async () => {
-      try {
-        const res = await googleSignUpPopup();
-        const isNewUser = getAdditionalUserInfo(res).isNewUser;
-
-        if (isNewUser) {
-          await setDoc(doc(colRef, auth.currentUser.uid), {
-            username: usernameInput.value,
-            gameState: JSON.parse(localStorage.getItem("gameState")),
-            userData: JSON.parse(localStorage.getItem("userData")),
-            points: 0
-          });
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    });
-});
-
-signOutGoogleBtns.forEach(btn => {
-  btn.addEventListener("click", async () => {
-    await signOut(auth);
-    window.location.reload();
-  })
-});
-
-
-if (auth.currentUser) {
-  onSignIn(auth);
-} else {
-  onSignOut();
-}
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    onSignIn(auth);
-  } else {
-    onSignOut();
-  }
-});
-
 // Starts the game
 start();
-loadGameState(getGameState());

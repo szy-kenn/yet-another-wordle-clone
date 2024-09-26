@@ -1,6 +1,10 @@
 import { GameState, UserData, Stats, Settings, Theme, Mode } from "./types";
 import { wordlist } from "./wordlist";
+// import { auth } from ".";
+import { updateUserGameState, updateUserData, updateUser, getUser } from "../firebase";
+import { getAuth, User } from "firebase/auth";
 
+const auth = getAuth();
 const wordlistLength = wordlist.length;
 
 function getRandomInt(min, max) {
@@ -38,7 +42,10 @@ export function getTimeBeforeMidnight() {
   return getMidnightTime() - new Date().getTime();
 }
 
-export function initializeGameData() {
+export async function initializeGameData(gameState: GameState) {
+
+  // gameState = await getGameState();
+
   if (gameState == null) {
     let newGameState: GameState = {
       guesses: [],
@@ -62,16 +69,28 @@ export function initializeGameData() {
       mode: "normal",
     };
 
-    localStorage.setItem("gameState", JSON.stringify(newGameState));
-    localStorage.setItem("userData", JSON.stringify(newUserData));
-    localStorage.setItem("settings", JSON.stringify(newSettings));
+    if (auth.currentUser != null) {
+      await updateUserGameState(auth.currentUser, newGameState);
+      await updateUserData(auth.currentUser, newUserData);
+    } else {
+      localStorage.setItem("gameState", JSON.stringify(newGameState));
+      localStorage.setItem("userData", JSON.stringify(newUserData));
+      localStorage.setItem("settings", JSON.stringify(newSettings));
+    }
 
     gameState = newGameState;
     userData = newUserData;
     settings = newSettings;
   } else {
-    userData = JSON.parse(localStorage.getItem("userData")) as UserData;
+
+    if (auth.currentUser !== null) {
+      const userData = await getUserData();
+    } else {
+      userData = JSON.parse(localStorage.getItem("userData")) as UserData;
+    }
+    
     settings = JSON.parse(localStorage.getItem("settings")) as Settings;
+  
   }
 
   if (settings == null || localStorage.getItem("theme") != null) {
@@ -88,17 +107,27 @@ export function initializeGameData() {
   }
 }
 
-export const getUserData = (): UserData => {
+export const getUserData = async () => {
+  if (auth.currentUser !== null) {
+    const userData = (await getUser(auth.currentUser)).userData as UserData;
+    // console.log("getUserData(): ", userData);
+    return userData;
+  }
   return JSON.parse(localStorage.getItem("userData")) as UserData;
 };
-export const getGameState = (): GameState => {
+export const getGameState = async () => {
+
+  if (auth.currentUser !== null) {
+    const gameState = (await getUser(auth.currentUser)).gameState as GameState;
+    return await gameState;
+  }
   return JSON.parse(localStorage.getItem("gameState")) as GameState;
 };
 export const getSettings = (): Settings => {
   return JSON.parse(localStorage.getItem("settings")) as Settings;
 };
 
-export function newGameState() {
+export async function newGameState() {
   let newGameState: GameState = {
     guesses: [],
     wordToGuess: getRandomWord(),
@@ -106,16 +135,25 @@ export function newGameState() {
     triggered: 0,
   };
   gameState = newGameState;
-  localStorage.setItem("gameState", JSON.stringify(gameState));
+
+  if (auth.currentUser != null) {
+    await updateUserGameState(auth.currentUser, newGameState);
+  } else {
+    localStorage.setItem("gameState", JSON.stringify(gameState));
+  }
 }
 
-export function updateGameStateGuesses(idx, val) {
-  gameState = getGameState();
+export async function updateGameStateGuesses(idx, val) {
+  gameState = await getGameState();
   gameState.guesses[idx] = val;
-  localStorage.setItem("gameState", JSON.stringify(gameState));
+  if (auth.currentUser != null) {
+    await updateUserGameState(auth.currentUser, gameState);
+  } else {
+    localStorage.setItem("gameState", JSON.stringify(gameState));
+  }
 }
 
-export function updateStats(stat: Stats, val) {
+export async function updateStats(stat: Stats, val) {
   if (stat === "gamesPlayed") {
     userData.gamesPlayed = val;
   } else if (stat === "gamesWon") {
@@ -128,12 +166,20 @@ export function updateStats(stat: Stats, val) {
     userData.longestStreak = val;
   }
 
-  localStorage.setItem("userData", JSON.stringify(userData));
+  if (auth.currentUser != null) {
+    await updateUserData(auth.currentUser, userData);    
+  } else {
+    localStorage.setItem("userData", JSON.stringify(userData));
+  }
 }
 
-export function updateGuessStats(idx) {
+export async function updateGuessStats(idx) {
   userData.guessDistribution[idx]++;
-  localStorage.setItem("userData", JSON.stringify(userData));
+  if (auth.currentUser != null) {
+    await updateUserData(auth.currentUser, userData);    
+  } else {
+    localStorage.setItem("userData", JSON.stringify(userData));
+  }
 }
 
 export function updateTheme(theme: Theme) {
@@ -146,6 +192,7 @@ export function updateMode(mode: Mode) {
   localStorage.setItem("settings", JSON.stringify(settings));
 }
 
-let gameState: GameState = getGameState();
+
+let gameState: GameState;
 let userData: UserData;
 let settings: Settings;

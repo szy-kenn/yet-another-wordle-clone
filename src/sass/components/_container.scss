@@ -122,41 +122,90 @@
     }
   }
 
-  .leaderboard-card {
-    display: grid;
-    grid-template-columns: 1.35fr 8.65fr;
-    color: var(--secondary);
-    padding-right: 0.5rem;
+  .leaderboard-cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  
+    .leaderboard-card {
+      display: grid;
+      grid-template-columns: 1fr 9fr;
+      color: var(--secondary);
+      gap: 0.5rem;
+      // padding-right: 0.25rem;
 
-    .leaderboard-ranking {
-      display: flex;
-      align-items: center;
-      p {
-        font-size: 1.25rem;
-      }
-    }
-
-    .leaderboard-content {
-
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-      align-items: center;
-
-      .leaderboard-left {
+      .leaderboard-ranking {
+        position: relative;
         display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-
-        .leaderboard-winrate {
-          opacity: 0.5;
-          font-size: 0.825rem;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        p {
+          font-family: 'Poppins';
+          font-size: 0.925rem;
         }
-
       }
+  
+      .leaderboard-content {
+  
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        align-items: center;
+  
+        .leaderboard-left {
+          position: relative;
+          display: flex;
+          justify-content: flex-start;
+          width: 100%;
+          height: 100%;
+          gap: 1rem;
 
+          .leaderboard-card-avatar-container {
+            position: relative;
+            border-radius: 999px;
+            overflow: hidden;
+            height: 100%;
+            aspect-ratio: 1;
+
+            img {
+              position: absolute;
+              // top: 0;
+              // left: 0;
+              height: 100%;
+              width: 100%;
+              // aspect-ratio: 1;
+              // object-position: 50%;
+              object-fit: cover;
+            }
+          }
+
+          .leaderboard-content {
+
+              position: relative;
+              width: fit-content;
+              height: 100%;
+              display: flex;
+              align-items: flex-start;
+              flex-direction: column;
+              gap: 0.25rem;
+
+            .leaderboard-name {
+              font-size: 1rem;
+              font-family: 'Poppins';
+            }
+    
+            .leaderboard-winrate {
+              opacity: 0.5;
+              font-size: 0.875rem;
+            }
+          }
+
+        }
+  
+      }
+  
     }
-
   }
 }
 
@@ -237,6 +286,7 @@
     flex-direction: column;
     gap: 0.25rem;
 
+
     .guess-container {
       display: grid;
       grid-template-columns: 1fr 19fr;
@@ -252,25 +302,42 @@
         font-family: "Poppins";
       }
 
-      .guess-value {
-        font-family: "Poppins";
-        font-size: 0.75em;
-        // border: 1px solid red;
-        border-radius: 5px;
-        background-color: var(--wrong);
-        padding: 0.25rem;
-        box-sizing: border-box;
-        width: fit-content;
-        min-width: fit-content;
+      .guess-value-container {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        gap: 0.25rem;
 
-        p {
-          text-align: right;
+        .points-added {
+          font-family: 'Poppins';
+          font-size: 0.75rem;
+          // line-height: 75%;
+          vertical-align: middle;
+          padding: 0.25rem 0.5rem;
+          border: 1px solid rgba(var(--secondary-rgb), 0.25);
+          border-radius: 25px;
         }
 
-        &.added {
-          color: var(--background-color);
-          font-weight: bold;
-          background-color: var(--filled-color);
+        .guess-value {
+          font-family: "Poppins";
+          font-size: 0.75em;
+          // border: 1px solid red;
+          border-radius: 5px;
+          background-color: var(--wrong);
+          padding: 0.25rem;
+          box-sizing: border-box;
+          width: fit-content;
+          min-width: fit-content;
+  
+          p {
+            text-align: right;
+          }
+  
+          &.added {
+            color: var(--background-color);
+            font-weight: bold;
+            background-color: var(--filled-color);
+          }
         }
       }
     }

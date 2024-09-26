@@ -149,33 +149,71 @@
   font-family: "Poppins";
   line-height: 125%;
 }
-.leaderboards-container .leaderboard-card {
-  display: grid;
-  grid-template-columns: 1.35fr 8.65fr;
-  color: var(--secondary);
-  padding-right: 0.5rem;
+.leaderboards-container .leaderboard-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
-.leaderboards-container .leaderboard-card .leaderboard-ranking {
+.leaderboards-container .leaderboard-cards-container .leaderboard-card {
+  display: grid;
+  grid-template-columns: 1fr 9fr;
+  color: var(--secondary);
+  gap: 0.5rem;
+}
+.leaderboards-container .leaderboard-cards-container .leaderboard-card .leaderboard-ranking {
+  position: relative;
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 100%;
 }
-.leaderboards-container .leaderboard-card .leaderboard-ranking p {
-  font-size: 1.25rem;
+.leaderboards-container .leaderboard-cards-container .leaderboard-card .leaderboard-ranking p {
+  font-family: "Poppins";
+  font-size: 0.925rem;
 }
-.leaderboards-container .leaderboard-card .leaderboard-content {
+.leaderboards-container .leaderboard-cards-container .leaderboard-card .leaderboard-content {
   display: flex;
   justify-content: space-between;
   width: 100%;
   align-items: center;
 }
-.leaderboards-container .leaderboard-card .leaderboard-content .leaderboard-left {
+.leaderboards-container .leaderboard-cards-container .leaderboard-card .leaderboard-content .leaderboard-left {
+  position: relative;
   display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  gap: 1rem;
+}
+.leaderboards-container .leaderboard-cards-container .leaderboard-card .leaderboard-content .leaderboard-left .leaderboard-card-avatar-container {
+  position: relative;
+  border-radius: 999px;
+  overflow: hidden;
+  height: 100%;
+  aspect-ratio: 1;
+}
+.leaderboards-container .leaderboard-cards-container .leaderboard-card .leaderboard-content .leaderboard-left .leaderboard-card-avatar-container img {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+.leaderboards-container .leaderboard-cards-container .leaderboard-card .leaderboard-content .leaderboard-left .leaderboard-content {
+  position: relative;
+  width: fit-content;
+  height: 100%;
+  display: flex;
+  align-items: flex-start;
   flex-direction: column;
   gap: 0.25rem;
 }
-.leaderboards-container .leaderboard-card .leaderboard-content .leaderboard-left .leaderboard-winrate {
+.leaderboards-container .leaderboard-cards-container .leaderboard-card .leaderboard-content .leaderboard-left .leaderboard-content .leaderboard-name {
+  font-size: 1rem;
+  font-family: "Poppins";
+}
+.leaderboards-container .leaderboard-cards-container .leaderboard-card .leaderboard-content .leaderboard-left .leaderboard-content .leaderboard-winrate {
   opacity: 0.5;
-  font-size: 0.825rem;
+  font-size: 0.875rem;
 }
 
 .stats-container .word-to-guess {
@@ -257,7 +295,21 @@
   font-size: 0.75em;
   font-family: "Poppins";
 }
-.stats-container .guess-distrib-container .guess-container .guess-value {
+.stats-container .guess-distrib-container .guess-container .guess-value-container {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.25rem;
+}
+.stats-container .guess-distrib-container .guess-container .guess-value-container .points-added {
+  font-family: "Poppins";
+  font-size: 0.75rem;
+  vertical-align: middle;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid rgba(var(--secondary-rgb), 0.25);
+  border-radius: 25px;
+}
+.stats-container .guess-distrib-container .guess-container .guess-value-container .guess-value {
   font-family: "Poppins";
   font-size: 0.75em;
   border-radius: 5px;
@@ -267,10 +319,10 @@
   width: fit-content;
   min-width: fit-content;
 }
-.stats-container .guess-distrib-container .guess-container .guess-value p {
+.stats-container .guess-distrib-container .guess-container .guess-value-container .guess-value p {
   text-align: right;
 }
-.stats-container .guess-distrib-container .guess-container .guess-value.added {
+.stats-container .guess-distrib-container .guess-container .guess-value-container .guess-value.added {
   color: var(--background-color);
   font-weight: bold;
   background-color: var(--filled-color);
