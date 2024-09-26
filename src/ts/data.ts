@@ -3,12 +3,6 @@ import { wordlist } from "./wordlist";
 
 const wordlistLength = wordlist.length;
 
-let gameState: GameState = JSON.parse(
-  localStorage.getItem("gameState"),
-) as GameState;
-let userData: UserData;
-let settings: Settings;
-
 function getRandomInt(min, max) {
   min = Math.ceil(min);
 
@@ -151,3 +145,7 @@ export function updateMode(mode: Mode) {
   settings.mode = mode;
   localStorage.setItem("settings", JSON.stringify(settings));
 }
+
+let gameState: GameState = getGameState();
+let userData: UserData;
+let settings: Settings;

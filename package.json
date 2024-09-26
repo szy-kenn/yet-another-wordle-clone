@@ -41,6 +41,9 @@
     "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
-    "chance": "^1.1.12"
+    "@clerk/clerk-js": "^5.22.3",
+    "chance": "^1.1.12",
+    "firebase": "^10.13.2",
+    "lucide": "^0.446.0"
   }
 }

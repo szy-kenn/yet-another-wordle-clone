@@ -4,6 +4,19 @@ import { TRIES } from ".";
 import { wordlist } from "./wordlist";
 import { validWords } from "./valid_words";
 
+// Recommended way, to include only the icons you need.
+import { createIcons, Menu, ArrowRight, Globe, ChartBarBig, ChartBar, Info, Trophy, CircleUserRound, Settings2 } from 'lucide';
+
+createIcons({
+  icons: {
+    Info,
+    ChartBar,
+    Trophy,
+    CircleUserRound,
+    Settings2
+  },
+});
+
 const config = require("./game.config");
 
 // main containers

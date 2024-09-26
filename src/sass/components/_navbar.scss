@@ -2,17 +2,20 @@
 
 .navbar {
   position: relative;
-  display: grid;
-  grid-template-columns: 2fr 6fr 2fr;
+  display: flex;
   border-bottom: 2px solid rgba(var(--secondary-rgb), 0.3);
-  padding: 0 1rem;
+  padding: 0 2rem;
   box-sizing: border-box;
 
   .icon-group {
     display: flex;
-    justify-content: right;
+    justify-content: center;
     align-items: center;
-    gap: clamp(0.5rem, 1vw, 1vw);
+    // gap: clamp(0.5rem, 1vw, 1vw);
+  }
+
+  .title {
+    width: 100%;
   }
 
   .icon {
@@ -21,10 +24,24 @@
     align-items: center;
     justify-content: left;
     cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 5px;
 
-    svg {
-      fill: var(--secondary);
-      width: clamp(1.15rem, 2vw, 2vw);
+    &:hover {
+      background: rgba(var(--secondary-rgb), 0.2);
     }
   }
 }
+
+.lucide {
+  /* Change this! */
+  position: relative;
+  display: flex;
+  color: var(--secondary);
+  width: clamp(20px, 1.5vw, 1.5vw);
+  height: clamp(20px, 1.5vw, 1.5vw);
+  stroke-width: 2px;
+}
+
+
+

@@ -29,9 +29,34 @@ import {
   newGameState,
 } from "./data";
 
+import { googleSignUpPopup } from "../firebase";
+import { Auth, getAdditionalUserInfo, getAuth, GoogleAuthProvider, onAuthStateChanged, signOut, UserCredential } from "firebase/auth";
+
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  addDoc,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  query,
+  orderBy,
+  updateDoc,
+  getDoc,
+  setDoc,
+} from "firebase/firestore";
+
 export let TRIES = defaultTries;
 
 // ========================== HTML Elements =========================================
+
+const signInWithGoogleBtns = document.querySelectorAll<HTMLButtonElement>(".sign-in-google-btn");
+const signOutGoogleBtns = document.querySelectorAll<HTMLButtonElement>(".sign-out-google-btn");
+const googleSignInDivs = document.querySelectorAll<HTMLDivElement>(".google-sign-in");
+const currentUserAvatars = document.querySelectorAll<HTMLImageElement>(".user-avatar-img-element");
+const usernameInput = document.querySelector<HTMLInputElement>(".google-signed-in-username-input");
+const accountSaveBtn = document.querySelector<HTMLButtonElement>(".account-settings-save-btn");
 
 // guess distribution values
 const statsContainer = document.querySelector<HTMLElement>(".stats-container");
@@ -39,6 +64,8 @@ const settingsContainer = document.querySelector<HTMLElement>(
   ".settings-container",
 );
 const infoContainer = document.querySelector<HTMLElement>(".info-container");
+const leaderboardsContainer = document.querySelector<HTMLElement>(".leaderboards-container");
+const accountContainer = document.querySelector<HTMLElement>(".account-container");
 const statsText = document.querySelectorAll<HTMLElement>(".value");
 const guessStats = document.querySelectorAll<HTMLElement>(".guess-value");
 
@@ -47,6 +74,8 @@ const cover = document.querySelector<HTMLElement>(".cover");
 const statsIcon = document.querySelector<HTMLElement>(".stats-icon");
 const settingsIcon = document.querySelector<HTMLElement>(".settings-icon");
 const infoIcon = document.querySelector<HTMLElement>(".info-icon");
+const leaderboardsIcon = document.querySelector<HTMLElement>(".leaderboards-icon");
+const accountIcon = document.querySelector<HTMLElement>(".account-icon");
 const copyToClipboardBtn = document.querySelector<HTMLButtonElement>(
   ".copy-to-clipboard-btn",
 );
@@ -748,6 +777,14 @@ infoIcon.addEventListener("click", () => {
   }
 });
 
+leaderboardsIcon.addEventListener("click", () => {
+  showContainer(leaderboardsContainer);
+});
+
+accountIcon.addEventListener("click", () => {
+  showContainer(accountContainer);
+})
+
 statsIcon.addEventListener("click", () => {
   showStats(true, getUserData());
 });
@@ -1000,6 +1037,91 @@ document.addEventListener("keydown", async (event) => {
     setTimeout(() => {
       currentKey.classList.remove("pressed");
     }, 50);
+  }
+});
+
+// firestore
+
+const db = getFirestore();
+
+const colRef = collection(db, "users");
+
+// authentication
+
+const auth = getAuth();
+
+const onSignIn = (auth: Auth)  => {
+  googleSignInDivs.forEach((div) => div.style.display = "none");
+  const signedInDivs = document.querySelectorAll<HTMLDivElement>(".google-signed-in");
+  currentUserAvatars.forEach((avatar) => {
+    avatar.src = auth.currentUser.photoURL
+    console.log("Src: ", avatar.src);
+  });
+  
+  signedInDivs.forEach((div) => {
+    div.style.display = "flex";
+  });
+  usernameInput.value = auth.currentUser.displayName.slice(0, 20);
+  usernameInput.addEventListener("input", (e: InputEvent) => {
+    if ((e.target as HTMLInputElement).value !== auth.currentUser.displayName) {
+      accountSaveBtn.disabled = false;
+    } else {
+      accountSaveBtn.disabled = true;
+    }
+  });
+
+  accountSaveBtn.addEventListener("click", () => {
+
+  })
+}
+
+const onSignOut = () => {
+  googleSignInDivs.forEach((div) => div.style.display = "flex");
+  const signedInDivs = document.querySelectorAll<HTMLDivElement>(".google-signed-in");
+  signedInDivs.forEach((div) => {
+    div.style.display = "none";
+  });
+}
+
+signInWithGoogleBtns.forEach(btn => {
+    btn.addEventListener("click", async () => {
+      try {
+        const res = await googleSignUpPopup();
+        const isNewUser = getAdditionalUserInfo(res).isNewUser;
+
+        if (isNewUser) {
+          await setDoc(doc(colRef, auth.currentUser.uid), {
+            username: usernameInput.value,
+            gameState: JSON.parse(localStorage.getItem("gameState")),
+            userData: JSON.parse(localStorage.getItem("userData")),
+            points: 0
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+});
+
+signOutGoogleBtns.forEach(btn => {
+  btn.addEventListener("click", async () => {
+    await signOut(auth);
+    window.location.reload();
+  })
+});
+
+
+if (auth.currentUser) {
+  onSignIn(auth);
+} else {
+  onSignOut();
+}
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    onSignIn(auth);
+  } else {
+    onSignOut();
   }
 });
 
