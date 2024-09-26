@@ -564,8 +564,9 @@ export async function showLeaderboards() {
     element.style.opacity = "0.5";
     element.style.textAlign = "center";
     element.style.width = "100%";
+    element.style.lineHeight = "150%";
     element.style.fontFamily = "Poppins";
-    element.textContent = "No data yet";
+    element.textContent = "Please sign in to see leaderboards";
     leaderboardCardsContainer.appendChild(element);
   }
 
